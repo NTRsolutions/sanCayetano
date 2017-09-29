@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Entity.ClientEntityAdd;
+import com.apreciasoft.admin.asremis.Entity.Company;
 import com.apreciasoft.admin.asremis.Entity.RequetClient;
 import com.apreciasoft.admin.asremis.Entity.acountCompany;
 import com.apreciasoft.admin.asremis.Entity.costCenterCompany;
@@ -60,17 +61,20 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
     public  EditText pass;
     public  EditText phone;
 
+    public  int idCompanyKf;
     public  int idCostCenter;
     public  int idCompanyAcount;
+    public Spinner spinner0;
     public Spinner spinner1;
     public Spinner spinner2;
 
     public List<acountCompany> listAcountCompany = null;
     public  List<costCenterCompany>   listCostCenter  = null;
+    public  List<Company>   listCompany  = null;
 
     private static String[] COSTCENTER = new String[0];
+    private static String[] COMPANY = new String[0];
     private static String[] ACOUNT = new String[0];
-
 
 
 
@@ -103,6 +107,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
                 .displayBottomNavigation(true) // It is true by default, so in this case this line is not necessary
                 .init();
 
+        spinner0 = (Spinner) findViewById(R.id.spinner_company);
         spinner1 = (Spinner) findViewById(R.id.spinner_cuenta);
         spinner2 = (Spinner) findViewById(R.id.spinner_ccosto);
 
@@ -159,11 +164,11 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
             try
             {
 
-                Call<List<acountCompany>> call = this.apiDriver.validatorDomaint(parts[1]);
+                Call<List<Company>> call = this.apiDriver.validatorDomaint(parts[1]);
 
-                call.enqueue(new Callback<List<acountCompany>>() {
+                call.enqueue(new Callback<List<Company>>() {
                     @Override
-                    public void onResponse(Call<List<acountCompany>> call, Response<List<acountCompany>> response) {
+                    public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
 
                         Log.d("Call request", call.request().toString());
                         Log.d("Call request header", call.request().headers().toString());
@@ -175,11 +180,11 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
                         if (response.code() == 200) {
 
                             //the response-body is already parseable to your ResponseBody object
-                            List<acountCompany> r = (List<acountCompany>) response.body();
+                            List<Company> r = (List<Company>) response.body();
 
 
-                            listAcountCompany = r;
-                            _setSpinersAcaunt();
+                            listCompany = r;
+                            _setSpinersCompany();
                         } else if (response.code() == 404) {
 
                            /* Toast.makeText(getBaseContext(),
@@ -206,7 +211,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
                     }
 
                     @Override
-                    public void onFailure(Call<List<acountCompany>> call, Throwable t) {
+                    public void onFailure(Call<List<Company>> call, Throwable t) {
 
 
                         Log.d("ERROR", t.getMessage());
@@ -298,6 +303,80 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
 
 
 
+
+    public void serviceGetAcountByidCompany() {
+
+
+
+
+        if (this.apiDriver == null) { this.apiDriver = HttpConexion.getUri().create(ServicesDriver.class); }
+        Call<List<acountCompany>> call = this.apiDriver.getAcountByidCompany(idCompanyKf);
+
+        call.enqueue(new Callback<List<acountCompany>>() {
+            @Override
+            public void onResponse(Call<List<acountCompany>> call, Response<List<acountCompany>> response) {
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Call request header", call.request().headers().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", String.valueOf(response.raw().body()));
+                Log.d("Response code", String.valueOf(response.code()));
+
+
+                if (response.code() == 200) {
+
+                    //the response-body is already parseable to your ResponseBody object
+                    List<acountCompany> r  = (List<acountCompany>) response.body();
+                    listAcountCompany = r;
+                    _setSpinersAcaunt();
+                } else if (response.code() == 404) {
+
+                    Toast.makeText(getBaseContext(),
+                            "No Exiten , Centros de Costos de esta cuenta", Toast.LENGTH_SHORT)
+                            .show();
+
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
+                    alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
+                    alertDialog.setMessage(response.errorBody().source().toString());
+                    Log.w("***", response.errorBody().source().toString());
+
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<acountCompany>> call, Throwable t) {
+                AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
+                alertDialog.setTitle("ERROR");
+                alertDialog.setMessage(t.getMessage());
+
+                Log.d("**", t.getMessage());
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
+
+    }
+
+
+
     public void _setSpinersAcaunt() {
 
 
@@ -324,6 +403,38 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
             dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             // attaching data adapter to spinner
             spinner1.setAdapter(dataAdapter1);
+            //************************************//
+        }
+
+    }
+
+
+    public void _setSpinersCompany() {
+
+
+        //**************************************//
+        //***********    EMPRESA    ************//
+
+        List<String> list2 = new ArrayList<String>();
+
+        if(listCompany!= null) {
+
+            COMPANY = new String[listCompany.size()];
+
+
+            for (int i = 0; i < listCompany.size(); i++) {
+                list2.add(listCompany.get(i).getNameClientCompany());
+            }
+            list2.toArray(COMPANY);
+
+            // Spinner click listener
+            spinner0.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+            // Creating adapter for spinner
+            ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list2);
+            // Drp down layout style - list view with radio button
+            dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // attaching data adapter to spinner
+            spinner0.setAdapter(dataAdapter1);
             //************************************//
         }
 
@@ -487,6 +598,12 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
             case R.id.spinner_ccosto:
                 this.idCostCenter =  listCostCenter.get(position).getIdCostCenter();
                 break;
+            case R.id.spinner_company:
+                this.idCompanyKf =  listCompany.get(position).getIdClientKf();
+                serviceGetAcountByidCompany();
+                break;
+
+
         }
     }
 
@@ -521,7 +638,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
                             latName.getText().toString(),
                             mail.getText().toString(),
                             pass.getText().toString(),
-                            1,idCompanyAcount,phone.getText().toString(),idCostCenter
+                            1,idCompanyAcount,phone.getText().toString(),idCostCenter,idCompanyKf
                     )
             );
 

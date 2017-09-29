@@ -1,6 +1,7 @@
 package com.apreciasoft.admin.asremis.Services;
 
 import com.apreciasoft.admin.asremis.Entity.ClientEntityAdd;
+import com.apreciasoft.admin.asremis.Entity.Company;
 import com.apreciasoft.admin.asremis.Entity.DriverCurrentAcountEntity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RequetClient;
@@ -78,11 +79,15 @@ public interface ServicesDriver {
 
     @Headers("Content-Type: application/json")
     @GET("company/validatorDomaint/{mail}")
-    Call<List<acountCompany>> validatorDomaint(@Path("mail") String mail);
+    Call<List<Company>> validatorDomaint(@Path("mail") String mail);
 
     @Headers("Content-Type: application/json")
     @GET("company/costCenterByidAcount/{id}")
     Call<List<costCenterCompany>> costCenterByidAcount(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
+    @GET("company/getAcountByidCompany/{id}")
+    Call<List<acountCompany>> getAcountByidCompany(@Path("id") int id);
 
 
 

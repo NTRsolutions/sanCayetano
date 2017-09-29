@@ -44,6 +44,20 @@ public class ClientEntityAdd {
     public int idCostCenter;
 
 
+
+    @Expose
+    @SerializedName("idCompanyKf")
+    public int idCompanyKf;
+
+
+    public int getIdCompanyKf() {
+        return idCompanyKf;
+    }
+
+    public void setIdCompanyKf(int idCompanyKf) {
+        this.idCompanyKf = idCompanyKf;
+    }
+
     public int getIdCompanyAcount() {
         return idCompanyAcount;
     }
@@ -108,7 +122,8 @@ public class ClientEntityAdd {
         this.idTypeClient = idTypeClient;
     }
 
-    public ClientEntityAdd(String firtNameClient, String lastNameClient, String mailClient, String passClient, int idTypeClient, int idCompanyAcount, String phone, int idCostCenter) {
+    public ClientEntityAdd(String firtNameClient, String lastNameClient, String mailClient, String passClient, int idTypeClient, int idCompanyAcount, String phone,
+                           int idCostCenter,int idCompanyKf) {
         this.firtNameClient = firtNameClient;
         this.lastNameClient = lastNameClient;
         this.mailClient = mailClient;
@@ -117,5 +132,6 @@ public class ClientEntityAdd {
         this.idCompanyAcount = idCompanyAcount;
         this.phone = phone;
         this.idCostCenter = idCostCenter;
+        this.idCompanyKf = idCompanyKf;
     }
 }
