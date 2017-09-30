@@ -560,6 +560,10 @@ public class HomeFragment extends Fragment implements
 
                        Polyline line = mGoogleMap.addPolyline(options);
                        line.setColor(Color.parseColor("#579ea8"));
+                   }else
+                   {
+                       options = null;
+                       listPosition.clear();
                    }
 
 
