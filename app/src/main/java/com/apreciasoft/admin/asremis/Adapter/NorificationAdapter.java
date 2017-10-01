@@ -170,6 +170,12 @@ public class NorificationAdapter
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+
+        int r = 0;
+        if(mDataset != null)
+        {
+            r = mDataset.size();
+        }
+        return r;
     }
 }

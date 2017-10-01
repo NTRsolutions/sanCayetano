@@ -1045,23 +1045,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         btPreFinishVisible(false);
 
+        Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
+
 
         /* DITANCIA TOTAL RECORRIDA */
-        km_total =  0.001;
         m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
-        kilometros_total = (m_total + currentTravel.getDistanceSave()) * km_total;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+        kilometros_total = (m_total + currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
         //**************************//
 
         /* DITANCIA TOTAL VULETA */
-        km_vuelta =  0.001;
         m_vuelta  = HomeFragment.calculateMiles()[1];//BUSCAMOS LA DISTANCIA VUELTA
-        kilometros_vuelta = m_vuelta*km_vuelta;//LO CONVERTIMOS A KILOMETRO
+        kilometros_vuelta = m_vuelta * 0.001;//LO CONVERTIMOS A KILOMETRO
         //**************************//
 
         /* DITANCIA TOTAL IDA */
-        km_ida = km_total - km_vuelta;
+        km_ida = kilometros_total - kilometros_vuelta;
         m_ida  = m_total - m_vuelta;//BUSCAMOS LA DISTANCIA IDA
-        kilometros_ida = m_ida*km_ida;//LO CONVERTIMOS A KILOMETRO
+        kilometros_ida = m_ida * 0.001;//LO CONVERTIMOS A KILOMETRO
         //**************************//
 
 
@@ -1486,7 +1486,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-               // Log.d("setLocationVehicheDriver 1", gson.toJson(travel));
+                Log.d("setLocationVehicheDriver", gson.toJson(travel));
 
 
                 Call<RemisSocketInfo> call = this.daoTravel.sendPosition(travel);
