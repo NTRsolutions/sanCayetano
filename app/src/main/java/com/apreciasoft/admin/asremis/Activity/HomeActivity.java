@@ -583,6 +583,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 btPreFinishVisible(false);
                 btnFlotingVisible(true);
 
+                btInitVisible(false);
+                btCancelVisible(false);
+
                 viewAlert = false;
                 currentTravel = null;
                 HomeFragment.MarkerPoints = null;
@@ -600,6 +603,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(getApplicationContext(), "VIAJE Cancelado por Cliente!", Toast.LENGTH_LONG).show();
                 btPreFinishVisible(false);
                 btnFlotingVisible(true);
+
+                btInitVisible(false);
+                btCancelVisible(false);
 
                 viewAlert = false;
                 currentTravel = null;
