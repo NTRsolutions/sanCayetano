@@ -420,12 +420,20 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/bt_confirmar_reserva"
                 android:background="@color/succes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.09"
                 android:text="Confirmar" />
+
+            <Button
+                android:id="@+id/btn_init_reserva"
+                android:background="@color/blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.09"
+                android:text="Buscar Cliente" />
 
 
         </RelativeLayout>

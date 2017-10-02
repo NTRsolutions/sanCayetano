@@ -152,7 +152,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public View parentLayout =  null;
 
     int PARAM_20  = 0;
-  public static  int param25 = 0;
+    public static  int param25 = 0;
 
     /*DIALOG*/
     public TravelDialog dialogTravel = null;
@@ -207,12 +207,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        // BOTON PARA PRE FINALIZAR UN VIAJE //
+        // BOTON PARA PONER RETORNO DE  UN VIAJE //
         btnReturn = (Button) findViewById(R.id.btn_return);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                isRoundTrip();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                builder.setMessage("Presione 'Retornar'  Confirmar el  Retorno del Viaje!")
+                        .setCancelable(false)
+                        .setPositiveButton("Retornar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                isRoundTrip();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
             }
         });
 
@@ -666,6 +682,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void controlVieTravel()
     {
 
+
+
+
         try {
 
 
@@ -753,15 +772,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void enviarTokenAlServidor(String str_token,int idUser) {
 
 
-        if (this.daoLoguin == null) { this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class); }
+        if(str_token != null && idUser > 0) {
 
-        try {
+
+            if (this.daoLoguin == null) {
+                this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
+            }
+
+            try {
                 token T = new token();
-                T.setToken(new tokenFull(str_token, idUser,gloval.getGv_id_driver()));
+                T.setToken(new tokenFull(str_token, idUser, gloval.getGv_id_driver()));
 
-                    GsonBuilder builder = new GsonBuilder();
-                    Gson gson = builder.create();
-            Log.d("Response JSON", gson.toJson(T));
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                Log.d("Response JSON", gson.toJson(T));
 
                 Call<Boolean> call = this.daoLoguin.token(T);
 
@@ -780,12 +804,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     public void onFailure(Call<Boolean> call, Throwable t) {
 
 
-                        Log.d("ERROR",t.getMessage());
+                        Log.d("ERROR", t.getMessage());
                     }
                 });
 
-        } finally {
-            this.daoTravel = null;
+            } finally {
+                this.daoTravel = null;
+            }
         }
 
 
@@ -1835,7 +1860,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     /* METODO PARA ACEPATAR EL VIAJE*/
     public  void  aceptTravel(int idTravel)
     {
-        Log.d("fatal","acepto");
+
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
 
