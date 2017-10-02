@@ -772,7 +772,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void enviarTokenAlServidor(String str_token,int idUser) {
 
 
-        if(str_token != null && idUser > 0) {
+        if(idUser > 0) {
 
 
             if (this.daoLoguin == null) {
