@@ -1188,7 +1188,7 @@ public class HomeClientActivity extends AppCompatActivity
 
         try {
             token T = new token();
-            T.setToken(new tokenFull(str_token, idUser,gloval.getGv_id_driver()));
+            T.setToken(new tokenFull(str_token, idUser,gloval.getGv_id_driver(),MainActivity.version));
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();

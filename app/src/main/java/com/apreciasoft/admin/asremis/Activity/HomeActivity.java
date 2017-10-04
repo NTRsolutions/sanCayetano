@@ -152,6 +152,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public View parentLayout =  null;
 
     int PARAM_20  = 0;
+    int PARAM_39  = 0; // ACTIVAR BOTON DE VUELTA
     public static  int param25 = 0;
 
     /*DIALOG*/
@@ -209,28 +210,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // BOTON PARA PONER RETORNO DE  UN VIAJE //
         btnReturn = (Button) findViewById(R.id.btn_return);
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                builder.setMessage("Presione 'Retornar'  Confirmar el  Retorno del Viaje!")
-                        .setCancelable(false)
-                        .setPositiveButton("Retornar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                isRoundTrip();
-                            }
-                        })
-                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
+        PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
+        if(PARAM_39 == 1)
+        {
+            btnReturn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
 
-            }
-        });
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setMessage("Presione 'Retornar'  Confirmar el  Retorno del Viaje!")
+                            .setCancelable(false)
+                            .setPositiveButton("Retornar", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    isRoundTrip();
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                }
+            });
+        }else
+        {
+            btnReturn.setEnabled(false);
+        }
 
 
 
@@ -687,14 +696,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void controlVieTravel()
     {
-
-
-
-
         try {
-
-
-
             cliaerNotificationAndoid();
 
             if (gloval.getGv_id_profile() == 3) {
@@ -787,7 +789,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             try {
                 token T = new token();
-                T.setToken(new tokenFull(str_token, idUser, gloval.getGv_id_driver()));
+                T.setToken(new tokenFull(str_token, idUser, gloval.getGv_id_driver(),MainActivity.version));
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
@@ -852,7 +854,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         textTiempo = (TextView) findViewById(R.id.textTiempo);
         textTiempo.setVisibility(View.VISIBLE);
-        textTiempo.setText("Tiempo de Espera: "+tiempoTxt+" Segundos");
+        textTiempo.setText(tiempoTxt+"s");
 
         isWait(0);
 
@@ -887,8 +889,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
            //ojoooo tolti modalll Toast.makeText(getApplicationContext(),  intent.getExtras().getBundle("message"), Toast.LENGTH_SHORT).show();
-
-
 
             currentTravel = gloval.getGv_travel_current();
             Log.d("BroadcastReceiver", String.valueOf(currentTravel));
@@ -1690,6 +1690,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     btCancelVisible(false);
                     btInitVisible(false);
                     HomeFragment.clearInfo();
+                    viewAlert = false;
 
 
                 }
@@ -1831,7 +1832,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
                     isRoundTrip = true;
-                    currentTravel.setRoundTrip(true);
+
+                    if(currentTravel != null) {
+                        currentTravel.setRoundTrip(true);
+                    }
                     setInfoTravel();
 
                 }

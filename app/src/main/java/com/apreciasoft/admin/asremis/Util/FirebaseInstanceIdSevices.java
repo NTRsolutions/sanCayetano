@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.apreciasoft.admin.asremis.Activity.MainActivity;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
@@ -35,8 +36,8 @@ public class FirebaseInstanceIdSevices extends FirebaseInstanceIdService {
 
         String token = FirebaseInstanceId.getInstance().getToken();
 
-
-        //enviarTokenAlServidor(token);
+        Log.d(TAG, "***Refreshed token*** " + token);
+        enviarTokenAlServidor(token);
     }
 
     private void enviarTokenAlServidor(String _str_token) {
@@ -46,7 +47,7 @@ public class FirebaseInstanceIdSevices extends FirebaseInstanceIdService {
 
 
         token T = new token();
-        T.setToken(new tokenFull(_str_token, gloval.getGv_user_id(),gloval.getGv_id_driver()));
+        T.setToken(new tokenFull(_str_token, gloval.getGv_user_id(),gloval.getGv_id_driver(), MainActivity.version));
 
         Call<Boolean> call = this.apiService.token(T);
 

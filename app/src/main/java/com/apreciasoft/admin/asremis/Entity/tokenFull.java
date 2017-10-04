@@ -21,16 +21,25 @@ public class tokenFull {
     @SerializedName("idDriver")
     public int idDriver;
 
+    @Expose
+    @SerializedName("latVersionApp")
+    public String latVersionApp;
 
 
-
-
-    public tokenFull(String tokenFB, int idUser,int idDriver) {
+    public tokenFull(String tokenFB, int idUser, int idDriver, String latVersionApp) {
         this.tokenFB = tokenFB;
         this.idUser = idUser;
         this.idDriver = idDriver;
+        this.latVersionApp = latVersionApp;
     }
 
+    public String getLatVersionApp() {
+        return latVersionApp;
+    }
+
+    public void setLatVersionApp(String latVersionApp) {
+        this.latVersionApp = latVersionApp;
+    }
 
     public int getIdDriver() {
         return idDriver;
