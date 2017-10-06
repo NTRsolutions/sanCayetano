@@ -17,7 +17,7 @@ public class dataAddPlusDriverEntity {
     @SerializedName("fleet")
     public fleet fleet;
 
-    public dataAddPlusDriverEntity(driverAdd driver, com.apreciasoft.admin.asremis.Entity.fleet fleet) {
+    public dataAddPlusDriverEntity(driverAdd driver, fleet fleet) {
         this.driver = driver;
         this.fleet = fleet;
     }
@@ -30,11 +30,11 @@ public class dataAddPlusDriverEntity {
         this.driver = driver;
     }
 
-    public com.apreciasoft.admin.asremis.Entity.fleet getFleet() {
+    public fleet getFleet() {
         return fleet;
     }
 
-    public void setFleet(com.apreciasoft.admin.asremis.Entity.fleet fleet) {
+    public void setFleet(fleet fleet) {
         this.fleet = fleet;
     }
 }

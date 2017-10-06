@@ -36,7 +36,7 @@ public class DriverCurrentAcountEntity {
     }
 
 
-    public DriverCurrentAcountEntity(List<LiquidationEntity> liquidation, List<LiquidationEntity> advance, List<LiquidationEntity> pay, com.apreciasoft.admin.asremis.Entity.total total) {
+    public DriverCurrentAcountEntity(List<LiquidationEntity> liquidation, List<LiquidationEntity> advance, List<LiquidationEntity> pay, total total) {
         this.liquidation = liquidation;
         this.advance = advance;
         this.pay = pay;
@@ -51,11 +51,11 @@ public class DriverCurrentAcountEntity {
         this.advance = advance;
     }
 
-    public com.apreciasoft.admin.asremis.Entity.total getTotal() {
+    public total getTotal() {
         return total;
     }
 
-    public void setTotal(com.apreciasoft.admin.asremis.Entity.total total) {
+    public void setTotal(total total) {
         this.total = total;
     }
 

@@ -62,11 +62,11 @@ public class userAuthEntity {
         this.instance = instance;
     }
 
-    public com.apreciasoft.admin.asremis.Entity.user getUser() {
+    public user getUser() {
         return user;
     }
 
-    public void setUser(com.apreciasoft.admin.asremis.Entity.user user) {
+    public void setUser(user user) {
         this.user = user;
     }
 
@@ -86,19 +86,19 @@ public class userAuthEntity {
         this.currentTravel = currentTravel;
     }
 
-    public com.apreciasoft.admin.asremis.Entity.driver getDriver() {
+    public driver getDriver() {
         return driver;
     }
 
-    public void setDriver(com.apreciasoft.admin.asremis.Entity.driver driver) {
+    public void setDriver(driver driver) {
         this.driver = driver;
     }
 
-    public com.apreciasoft.admin.asremis.Entity.client getClient() {
+    public client getClient() {
         return client;
     }
 
-    public void setClient(com.apreciasoft.admin.asremis.Entity.client client) {
+    public void setClient(client client) {
         this.client = client;
     }
 
