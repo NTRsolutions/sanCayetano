@@ -76,7 +76,7 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         txt_client_info.setText(travel.getClient().toString());
 
         txt_km_info.setText(travel.getDistanceLabel().toString());
-
+        button1 = (Button) findViewById(R.id.button1);
 
         if(HomeActivity.param25 == 1) {
             txt_amount_info.setText(travel.getAmountCalculate().toString());
@@ -85,23 +85,28 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         }
 
 
-        if(travel.getIsAceptReservationByDriver() == 1)
-        {
-            if(HomeActivity.currentTravel == null) {
-                btn_init_reserva.setVisibility(View.VISIBLE);
-            }else
-            {
+        if(travel.getIdSatatusTravel() != 5 && travel.getIdSatatusTravel() != 4) {
+            if (travel.getIsAceptReservationByDriver() == 1) {
+                if (HomeActivity.currentTravel == null) {
+                    btn_init_reserva.setVisibility(View.VISIBLE);
+                } else {
 
-                btn_init_reserva.setEnabled(false);
+                    btn_init_reserva.setEnabled(false);
+                }
+
+
+                bt_confirmar_reserva.setVisibility(View.INVISIBLE);
+
+            } else {
+                btn_init_reserva.setVisibility(View.INVISIBLE);
+                bt_confirmar_reserva.setVisibility(View.VISIBLE);
             }
-
-
-            bt_confirmar_reserva.setVisibility(View.INVISIBLE);
-
         }else
         {
-            btn_init_reserva.setVisibility(View.INVISIBLE);
-            bt_confirmar_reserva.setVisibility(View.VISIBLE);
+            btn_init_reserva.setEnabled(false);
+            bt_confirmar_reserva.setEnabled(false);
+            button1.setEnabled(false);
+
         }
 
 
@@ -113,7 +118,7 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
 
 
-        button1 = (Button) findViewById(R.id.button1);
+
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click

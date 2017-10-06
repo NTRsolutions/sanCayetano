@@ -11,12 +11,14 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.LayerDrawable;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -171,6 +173,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
 
 
@@ -440,7 +444,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
     }
 
 
@@ -552,6 +555,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void checkPermision()
     {
+        LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        // Comprobamos si está disponible el proveedor GPS.
+        if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+            alertDialog.setTitle("GPS INACTIVO!");
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setMessage("Active el GPS para continuar!");
+
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }// end if.
+
        /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 
             Toast.makeText(this, "This version is not Android 6 or later " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
@@ -1886,7 +1908,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
                 Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-                Log.d("fatal",response.body().toString());
+             //   Log.d("fatal",response.body().toString());
 
 
                 btnFlotingVisible(false);
@@ -1983,8 +2005,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void finishTravelCreditCar()
     {
 
-        Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
-        startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+        idPaymentFormKf = 3;
+        finishTravel();
+
+        //Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
+        //startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
     }
 
 
