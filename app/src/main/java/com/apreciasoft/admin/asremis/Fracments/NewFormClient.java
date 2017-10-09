@@ -159,12 +159,12 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
         String mailTxt = mail.getText().toString();
 
         if(mailTxt.contains("@")) {
-            String[] parts = mailTxt.split("@");
+            //String[] parts = mailTxt.split("@");
 
             try
             {
 
-                Call<List<Company>> call = this.apiDriver.validatorDomaint(parts[1]);
+                Call<List<Company>> call = this.apiDriver.validatorDomaint(mailTxt);
 
                 call.enqueue(new Callback<List<Company>>() {
                     @Override
