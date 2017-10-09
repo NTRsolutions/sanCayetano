@@ -1,10 +1,14 @@
 package com.apreciasoft.admin.asremis.Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.Settings;
 
 /**
  * Created by usario on 25/4/2017.
@@ -44,4 +48,6 @@ public class Utils {
         }
         return bConectado;
     }
+
+
 }

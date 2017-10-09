@@ -1410,12 +1410,16 @@ public class HomeClientActivity extends AppCompatActivity
                 isTravelComany = true;
             }
 
-
-            if(HomeClientActivity.ReservationName != "")
+            if(HomeClientActivity.ReservationName != null)
             {
-                Log.d("ORIGEN -3",HomeClientActivity.location.toString());
-                this.location = HomeClientActivity.ReservationName.toString();
+                if(HomeClientActivity.ReservationName.length() > 0)
+                {
+                    Log.d("ORIGEN -3",HomeClientActivity.location.toString());
+                    this.location = HomeClientActivity.ReservationName.toString();
+                }
             }
+
+
 
 
             travel.setTravelBody(
