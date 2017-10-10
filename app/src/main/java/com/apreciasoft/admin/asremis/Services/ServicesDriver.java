@@ -1,6 +1,5 @@
 package com.apreciasoft.admin.asremis.Services;
 
-import com.apreciasoft.admin.asremis.Entity.ClientEntityAdd;
 import com.apreciasoft.admin.asremis.Entity.Company;
 import com.apreciasoft.admin.asremis.Entity.DriverCurrentAcountEntity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
@@ -13,8 +12,6 @@ import com.apreciasoft.admin.asremis.Entity.fleetType;
 import com.apreciasoft.admin.asremis.Entity.modelEntity;
 import com.apreciasoft.admin.asremis.Entity.resp;
 import com.apreciasoft.admin.asremis.Entity.responseFilterVehicle;
-import com.apreciasoft.admin.asremis.Entity.token;
-import com.apreciasoft.admin.asremis.Entity.user;
 
 import java.util.List;
 

@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Adapter.NorificationAdapter;
-import com.apreciasoft.admin.asremis.Adapter.ReservationsAdapter;
-import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;

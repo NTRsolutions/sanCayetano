@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.R;
-import com.apreciasoft.admin.asremis.Util.GlovalVar;
 
 import java.util.List;
 

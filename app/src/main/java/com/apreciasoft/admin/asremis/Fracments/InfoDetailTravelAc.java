@@ -1,6 +1,4 @@
 package com.apreciasoft.admin.asremis.Fracments;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -13,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
