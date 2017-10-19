@@ -646,7 +646,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
               //  _activeTimer();
             }else  if(currentTravel.getIdSatatusTravel() == 6)
             {
-                Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
 
                 btPreFinishVisible(false);
                 btnFlotingVisible(true);

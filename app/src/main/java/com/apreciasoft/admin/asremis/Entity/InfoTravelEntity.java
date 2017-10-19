@@ -274,6 +274,18 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("priceMinTravel")
     public double priceMinTravel;
 
+    @Expose
+    @SerializedName("reason")
+    public String reason;
+
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public double getPriceMinTravel() {
         return priceMinTravel;

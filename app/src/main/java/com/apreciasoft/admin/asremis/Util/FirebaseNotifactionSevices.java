@@ -41,8 +41,6 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Notificación: " + remoteMessage.getNotification().getBody());
 
-
-
         }
 
         if (remoteMessage.getData().size() > 0) {
@@ -98,16 +96,18 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
         if(gloval.getGv_travel_current() != null)
         {
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setContentTitle(title)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentText(gloval.getGv_travel_current().getNameOrigin())
-                    .setAutoCancel(true)
-                    .setSound(soundUri)
-                    .setContentIntent(pendingIntent);
+            if(gloval.getGv_travel_current().getNameOrigin() != null) {
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                        .setContentTitle(title)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentText(gloval.getGv_travel_current().getNameOrigin())
+                        .setAutoCancel(true)
+                        .setSound(soundUri)
+                        .setContentIntent(pendingIntent);
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(0, notificationBuilder.build());
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0, notificationBuilder.build());
+            }
         }
 
 

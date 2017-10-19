@@ -63,6 +63,8 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         final TextView txt_origin_info = (TextView) findViewById(R.id.txt_origin_info);
         final TextView txt_destination_info = (TextView) findViewById(R.id.txt_destination_info);
         final TextView txt_observationFromDriver = (TextView) findViewById(R.id.txt_observationFromDriver);
+        final TextView txt_pasajeros_info = (TextView) findViewById(R.id.txt_pasajeros_info);
+
 
 
         bt_confirmar_reserva = (Button) findViewById(R.id.bt_confirmar_reserva);
@@ -112,9 +114,7 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         txt_origin_info.setText(travel.getNameOrigin().toString());
         txt_destination_info.setText(travel.getNameDestination().toString());
         txt_observationFromDriver.setText(travel.getObservationFromDriver().toString());
-
-
-
+        txt_pasajeros_info.setText(travel.getPasajero());
 
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

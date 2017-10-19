@@ -156,9 +156,8 @@
                 android:orientation="horizontal">
 
                 <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -179,13 +178,13 @@
                         android:id="@+id/txt_pasajeros_info"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:paddingTop="12dp"
                         android:text="No se cargo informacion"
                         android:textColor="@color/place_autocomplete_prediction_secondary_text"
-                        android:textSize="15dp" />
+                        android:textSize="13dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
 
                 </RelativeLayout>
             </LinearLayout>

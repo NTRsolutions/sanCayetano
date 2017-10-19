@@ -255,7 +255,7 @@ public class HomeClientActivity extends AppCompatActivity
         floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
         floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
 
-        //Boton Reservar viaje - Leandro Pérez
+
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
@@ -283,7 +283,7 @@ public class HomeClientActivity extends AppCompatActivity
             }
         });
 
-        //Boton Solicitar viaje - Leandro Pérez
+
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu second item clicked
@@ -1320,7 +1320,8 @@ public class HomeClientActivity extends AppCompatActivity
             materialDesignFAM.setVisibility(View.INVISIBLE);
 
 
-            if(currentTravel.getIdSatatusTravel() == 4
+            if(currentTravel.getIdSatatusTravel() == 0
+                    || currentTravel.getIdSatatusTravel() == 4
                     || currentTravel.getIdSatatusTravel() == 5
                     || currentTravel.getIdSatatusTravel() == 6
                     || currentTravel.getIdSatatusTravel() == 7)
@@ -1346,7 +1347,7 @@ public class HomeClientActivity extends AppCompatActivity
                     // HomeClientFragment.panelTopIsVisible(false);
                 }
                 else if(currentTravel.getIdSatatusTravel() == 7) {
-                    Toast.makeText(getApplicationContext(), "Viaje Reachazado por el Chofer!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Viaje Reachazado!", Toast.LENGTH_SHORT).show();
                     HomeClientFragment.txtStatus.setText("Viaje Reachazado por el Chofer!");
                     currentTravel = null;
                     materialDesignFAM.setVisibility(View.VISIBLE);
@@ -1354,6 +1355,16 @@ public class HomeClientActivity extends AppCompatActivity
                     HomeClientFragment.clearInfo();
                     // HomeClientFragment.panelTopIsVisible(false);
                 }
+                else if(currentTravel.getIdSatatusTravel() == 0) {
+                    Toast.makeText(getApplicationContext(), "Viaje Reachazado!, "+currentTravel.getReason(), Toast.LENGTH_LONG).show();
+                   // HomeClientFragment.txtStatus.setText(currentTravel.getReason());
+                    currentTravel = null;
+                    materialDesignFAM.setVisibility(View.VISIBLE);
+                    gloval.setGv_travel_current(null);
+                    HomeClientFragment.clearInfo();
+                    // HomeClientFragment.panelTopIsVisible(false);
+                }
+
 
                 setInfoTravel();
 
@@ -1540,7 +1551,7 @@ public class HomeClientActivity extends AppCompatActivity
 
     }
 
-    //Contenerdor para solicitar viaje - Leandro Pérez
+
     public  void  contetRequestTravelVisible(boolean visible)
     {
         if(visible)
