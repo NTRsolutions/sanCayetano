@@ -56,9 +56,6 @@ public class ReservationsFrangment extends Fragment  implements RecyclerViewClic
     }
 
 
-
-
-    // this is just for demonstration, not real code!
     private  void refreshContent(){
 
         rv = (RecyclerView) myView.findViewById(R.id.rv_recycler_view);
