@@ -12,6 +12,7 @@ import com.apreciasoft.admin.asremis.Entity.client;
 import com.apreciasoft.admin.asremis.Entity.driver;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
+import com.apreciasoft.admin.asremis.Http.HttpConexion;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 
  public class GlovalVar extends Application {
 
-    private String gv_base_intance = "as_nube";
+    private String gv_base_intance = HttpConexion.instance;
     private String gv_user_name;
     private int gv_user_id;
     private String gv_user_mail;

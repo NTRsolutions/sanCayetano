@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -168,6 +169,7 @@ public class HomeClientActivity extends AppCompatActivity
 
     public FloatingActionMenu materialDesignFAM;
     public FloatingActionButton floatingActionButton1, floatingActionButton2;
+    public    SharedPreferences.Editor editor;
 
 
 
@@ -179,6 +181,10 @@ public class HomeClientActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+        editor = pref.edit();
 
         //evitar que la pantalla se apague
         final PowerManager pm=(PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -1631,6 +1637,10 @@ public class HomeClientActivity extends AppCompatActivity
 
         // enviarTokenAlServidor("",gloval.getGv_user_id());
         ws.coseWebSocket();
+
+
+        editor.clear();
+        editor.commit(); // commit changes
 
         finish();
 

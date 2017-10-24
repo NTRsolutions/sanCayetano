@@ -5,7 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+        import android.content.SharedPreferences;
+        import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -20,8 +21,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apreciasoft.admin.asremis.Entity.login;
-import com.apreciasoft.admin.asremis.Entity.user;
+        import com.apreciasoft.admin.asremis.Entity.VehicleType;
+        import com.apreciasoft.admin.asremis.Entity.login;
+        import com.apreciasoft.admin.asremis.Entity.paramEntity;
+        import com.apreciasoft.admin.asremis.Entity.user;
 import com.apreciasoft.admin.asremis.Entity.userFull;
 import com.apreciasoft.admin.asremis.Fracments.RegisterForm;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
@@ -30,8 +33,12 @@ import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+        import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
+        import org.json.JSONArray;
+
+        import java.lang.reflect.Type;
+        import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,20 +54,63 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "1.8.63";
+    public static String version = "1.8.70";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
     public static final int REGISTER_ACTIVITY = 1;
+    public  SharedPreferences.Editor editor;
+    public   SharedPreferences pref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+        editor = pref.edit();
+
+        editor.clear();
+        editor.commit(); // commit changes
+*/
 
         this.gloval = ((GlovalVar) getApplicationContext());
+        pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
 
-        if(gloval.getGv_logeed() == true)
+        if (pref.getBoolean("isLoged",false) == true){
+
+
+
+            Log.d("-******-", String.valueOf(pref.getBoolean("isLoged",false)));
+            gloval.setGv_logeed(true);
+            gloval.setGv_user_id(pref.getInt("user_id",0));
+            gloval.setGv_idResourceSocket(pref.getInt("is_resourceSocket",0));
+            gloval.setGv_id_cliet(pref.getInt("client_id",0));
+            gloval.setGv_id_profile(pref.getInt("profile_id",0));
+            gloval.setGv_id_driver(pref.getInt("driver_id",0));
+            gloval.setGv_user_mail(pref.getString("user_mail",""));
+            gloval.setGv_user_name(pref.getString("user_name",""));
+            gloval.setGv_base_intance(pref.getString("instance",""));
+            HttpConexion.setBase(pref.getString("instance",""));
+
+            Gson gson = new Gson();
+
+
+            TypeToken<List<paramEntity>> token = new TypeToken<List<paramEntity>>(){};
+            List<paramEntity> param = gson.fromJson(pref.getString("param",""), token.getType());
+            gloval.setGv_param(param);
+
+            Log.d("param", String.valueOf(pref.getString("param","")));
+
+            TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>(){};
+            List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle",""), token2.getType());
+            gloval.setGv_listvehicleType(vehicleTypenew);
+
+
+
+        }
+
+        if(gloval.getGv_logeed() == true )
         {
             if(gloval.getGv_id_profile() == 2)
             {
@@ -77,66 +127,58 @@ public class MainActivity extends AppCompatActivity {
         {
             setContentView(R.layout.activity_main);
 
-
-
-
-
-        if (!verificaConexion(this)) {
+            if (!verificaConexion(this)) {
             Toast.makeText(getBaseContext(),
                     "Comprueba tu conexión a Internet ... ", Toast.LENGTH_SHORT)
                     .show();
-            //this.finish();
-        }
+            }
 
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            // only for gingerbread and newer versions
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                // only for gingerbread and newer versions
 
-            checkAndRequestPermissions();
-        }
-
-
-        //evitar que la pantalla se apague
-        final PowerManager pm=(PowerManager)getSystemService(Context.POWER_SERVICE);
-        this.wakelock=pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
-        wakelock.acquire();
+                checkAndRequestPermissions();
+            }
 
 
-        // ESTO PERMITE QUE CUANDO LA APP ESTE EN SEGUNDO PLADONO Y LA NOTIFICACION LLEGUE SI LÑE DA CLICK ABRAE LA APP EN HOME ACTIVITY
-        if (getIntent().getExtras() != null) {
-            // Call your NotificationActivity here..
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            startActivity(intent);
-        }
-        else
-        {
-            HttpConexion.setBase("as_nube");
+            //evitar que la pantalla se apague
+            final PowerManager pm=(PowerManager)getSystemService(Context.POWER_SERVICE);
+            this.wakelock=pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
+            wakelock.acquire();
 
 
-
-            final Button btnLogin = (Button) findViewById(R.id.btn_login);
-            btnLogin.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Perform action on click
-                    checkVersion();
-                }
-            });
-
-            final Button btn_newacount = (Button) findViewById(R.id.btn_newacount);
-            btn_newacount.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Perform action on click
-                    openFromRegister();
-                }
-            });
+            // ESTO PERMITE QUE CUANDO LA APP ESTE EN SEGUNDO PLADONO Y LA NOTIFICACION LLEGUE SI LÑE DA CLICK ABRAE LA APP EN HOME ACTIVITY
+            if (getIntent().getExtras() != null) {
+                // Call your NotificationActivity here..
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+            else
+            {
+                HttpConexion.setBase(HttpConexion.instance);
 
 
 
+                final Button btnLogin = (Button) findViewById(R.id.btn_login);
+                btnLogin.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // Perform action on click
+                        checkVersion();
+                    }
+                });
+
+                final Button btn_newacount = (Button) findViewById(R.id.btn_newacount);
+                btn_newacount.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // Perform action on click
+                        openFromRegister();
+                    }
+                });
 
 
-            TextView txtVersion = (TextView)findViewById(R.id.lbl_version);
-            txtVersion.setText("V: "+version);
-        }
+                TextView txtVersion = (TextView)findViewById(R.id.lbl_version);
+                txtVersion.setText("V: "+version);
+            }
 
 
 
@@ -305,15 +347,22 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             loading.dismiss();
                             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                            alertDialog.setTitle("Existe Una Nueva version debe Atualizar para poder iniciar ");
+                            alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
 
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Descargar",
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                                    Uri.parse("http://as-nube.com/apk.apk"));
-                                            startActivity(browserIntent);
+                                           // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                             //       Uri.parse("http://as-nube.com/apk.apk"));
+                                            //startActivity(browserIntent);
+
+                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                                            try {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                            } catch (android.content.ActivityNotFoundException anfe) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                            }
                                         }
                                     });
                             alertDialog.show();
@@ -439,6 +488,26 @@ public class MainActivity extends AppCompatActivity {
                             }
 
 
+                            /** PREFERENCIAS LOCALES **/
+                            pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+                            editor = pref.edit();
+
+                            Gson gson = new Gson();
+
+                            editor.putBoolean("isLoged", true);
+                            editor.putInt("user_id", gloval.getGv_user_id());
+                            editor.putInt("is_resourceSocket", gloval.getGv_idResourceSocket());
+                            editor.putInt("client_id", gloval.getGv_id_cliet());
+                            editor.putInt("profile_id", gloval.getGv_id_profile());
+                            editor.putInt("driver_id", gloval.getGv_id_driver());
+                            editor.putString("user_mail", gloval.getGv_user_mail());
+                            editor.putString("user_name", gloval.getGv_user_name());
+                            editor.putString("instance", gloval.getGv_base_intance());
+                            editor.putString("param",gson.toJson(gloval.getGv_param()));
+                            editor.putString("list_vehichle",gson.toJson(gloval.getGv_listvehicleType()));
+                            editor.commit(); // commit changes
+                            /************************/
+
                             loading.dismiss();
 
                         }
@@ -454,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                             alertDialog.show();
-                            HttpConexion.setBase("as_nube");
+                            HttpConexion.setBase(HttpConexion.instance);
 
                         }
 
@@ -472,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                         alertDialog.show();
-                        HttpConexion.setBase("as_nube");
+                        HttpConexion.setBase(HttpConexion.instance);
 
 
                 }  else if (response.code() == 212)  {
@@ -487,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                     alertDialog.show();
-                        HttpConexion.setBase("as_nube");
+                        HttpConexion.setBase(HttpConexion.instance);
 
                 }
                     else if (response.code() == 400)  {
@@ -516,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                         alertDialog.show();
-                        HttpConexion.setBase("as_nube");
+                        HttpConexion.setBase(HttpConexion.instance);
                     }
                 }
 
@@ -537,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                     alertDialog.show();
-                    HttpConexion.setBase("as_nube");
+                    HttpConexion.setBase(HttpConexion.instance);
 
 
                 }

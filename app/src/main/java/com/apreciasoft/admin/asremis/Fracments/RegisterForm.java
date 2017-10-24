@@ -29,7 +29,7 @@ public class RegisterForm extends AppCompatActivity {
         setTitle("Registro de Usuario!");
 
         //HttpConexion.setBase("as_remis_web");
-        HttpConexion.setBase("developer");
+        HttpConexion.setBase(HttpConexion.instance);
 
         final ImageButton btn_new_driver = (ImageButton) findViewById(R.id.btn_new_driver);
         btn_new_driver.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +54,7 @@ public class RegisterForm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                HttpConexion.setBase("as_nube");
+                HttpConexion.setBase(HttpConexion.instance);
                 this.finish();
 
                 return true;
@@ -67,7 +67,7 @@ public class RegisterForm extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        HttpConexion.setBase("as_nube");
+        HttpConexion.setBase(HttpConexion.instance);
         finish();
 
     }

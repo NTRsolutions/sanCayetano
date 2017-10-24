@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -162,6 +165,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  Button btnFinishCar;
     public  Button btnFinishVo;
     public  Button btnFinishCash;
+    public    SharedPreferences.Editor editor;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -171,7 +175,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+        editor = pref.edit();
 
         //evitar que la pantalla se apague
         final PowerManager pm=(PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -488,6 +493,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             } else {
                                 fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause));
                             }
+
+                            fab.setBackgroundTintList(ColorStateList.valueOf(Color
+                                    .parseColor("#26c281")));
                         }else{
                             str = "Servicio Inactivado! 'No Recibira Viajes'";
 
@@ -496,6 +504,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             } else {
                                 fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play));
                             }
+
+                            fab.setBackgroundTintList(ColorStateList.valueOf(Color
+                                    .parseColor("#e35b5a")));
                         }
 
                         Snackbar.make(parentLayout , str, Snackbar.LENGTH_LONG)
@@ -700,7 +711,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-
+        editor.clear();
+        editor.commit(); // commit changes
         finish();
 
 
@@ -1903,7 +1915,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
                 Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-             //   Log.d("fatal",response.body().toString());
+              //  Log.d("fatal",response.body().toString());
 
 
                 btnFlotingVisible(false);

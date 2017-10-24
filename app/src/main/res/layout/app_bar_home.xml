@@ -98,7 +98,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/cast_ic_expanded_controller_pause"
-        app:backgroundTint="@color/colorPrimary"/>
+        app:backgroundTint="@color/succes"/>
 
     <include
         android:id="@+id/payment"
