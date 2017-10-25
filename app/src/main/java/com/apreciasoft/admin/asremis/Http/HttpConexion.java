@@ -13,8 +13,9 @@ public class HttpConexion {
 
 
     public static String base;
-    //public static String ip = "192.168.0.6";
-     public static String ip = "54.245.175.10";
+    public static String ip = "10.10.0.134";
+    public  static String instance = "as_remis_web";
+    //public static String ip = "54.245.175.10";
 
 
 
