@@ -264,6 +264,13 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("isPaymentCash")
     public int isPaymentCash;
 
+
+    @Expose
+    @SerializedName("isConfirReservationFromWeb")
+    public int isConfirReservationFromWeb;
+
+
+
     @Expose
     @SerializedName("distanceSave")
     public double distanceSave;
@@ -775,5 +782,13 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setMultiDestinationDesc(String multiDestinationDesc) {
         MultiDestinationDesc = multiDestinationDesc;
+    }
+
+    public int getIsConfirReservationFromWeb() {
+        return isConfirReservationFromWeb;
+    }
+
+    public void setIsConfirReservationFromWeb(int isConfirReservationFromWeb) {
+        this.isConfirReservationFromWeb = isConfirReservationFromWeb;
     }
 }

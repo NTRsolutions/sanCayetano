@@ -1317,6 +1317,8 @@ public class HomeClientActivity extends AppCompatActivity
     private void controlViewTravel()
     {
 
+
+
         cliaerNotificationAndoid();
 
         if(currentTravel != null)
@@ -1324,6 +1326,9 @@ public class HomeClientActivity extends AppCompatActivity
             activeGif(false,"");
 
             materialDesignFAM.setVisibility(View.INVISIBLE);
+
+
+           // Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel.getIdSatatusTravel()));
 
 
             if(currentTravel.getIdSatatusTravel() == 0
@@ -1369,10 +1374,20 @@ public class HomeClientActivity extends AppCompatActivity
                     gloval.setGv_travel_current(null);
                     HomeClientFragment.clearInfo();
                     // HomeClientFragment.panelTopIsVisible(false);
+                    activeGif(false,"");
                 }
 
 
                 setInfoTravel();
+
+            }else if (currentTravel.getIdSatatusTravel() == 1) {
+
+                Toast.makeText(getApplicationContext(), "El Viaje ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, "+currentTravel.getReason(), Toast.LENGTH_LONG).show();
+                currentTravel = null;
+                materialDesignFAM.setVisibility(View.VISIBLE);
+                gloval.setGv_travel_current(null);
+                HomeClientFragment.clearInfo();
+                activeGif(false,"");
 
             }
 
