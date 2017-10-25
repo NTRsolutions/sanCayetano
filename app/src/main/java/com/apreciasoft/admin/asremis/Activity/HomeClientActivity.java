@@ -1381,13 +1381,13 @@ public class HomeClientActivity extends AppCompatActivity
                 setInfoTravel();
 
             }else if (currentTravel.getIdSatatusTravel() == 1) {
-
+                activeGif(false,"");
                 Toast.makeText(getApplicationContext(), "El Viaje ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, "+currentTravel.getReason(), Toast.LENGTH_LONG).show();
                 currentTravel = null;
                 materialDesignFAM.setVisibility(View.VISIBLE);
                 gloval.setGv_travel_current(null);
                 HomeClientFragment.clearInfo();
-                activeGif(false,"");
+
 
             }
 
