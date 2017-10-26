@@ -1339,7 +1339,17 @@ public class HomeClientActivity extends AppCompatActivity
             {
 
                 if(currentTravel.getIdSatatusTravel() == 4) {
-                    Toast.makeText(getApplicationContext(), "Viaje Aceptado, Chofer en camino!", Toast.LENGTH_SHORT).show();
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                    alertDialog.setTitle("Viaje Aceptado");
+                    alertDialog.setMessage("Viaje Aceptado, Chofer en camino..!, ");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
                     //  HomeClientFragment.panelTopIsVisible(true);
 
                 }
@@ -1367,8 +1377,19 @@ public class HomeClientActivity extends AppCompatActivity
                     // HomeClientFragment.panelTopIsVisible(false);
                 }
                 else if(currentTravel.getIdSatatusTravel() == 0) {
-                    Toast.makeText(getApplicationContext(), "Viaje Reachazado!, "+currentTravel.getReason(), Toast.LENGTH_LONG).show();
-                   // HomeClientFragment.txtStatus.setText(currentTravel.getReason());
+
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                    alertDialog.setTitle("Viaje Reachazado!");
+                    alertDialog.setMessage(currentTravel.getReason());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+
                     currentTravel = null;
                     materialDesignFAM.setVisibility(View.VISIBLE);
                     gloval.setGv_travel_current(null);
@@ -1382,7 +1403,20 @@ public class HomeClientActivity extends AppCompatActivity
 
             }else if (currentTravel.getIdSatatusTravel() == 1) {
                 activeGif(false,"");
-                Toast.makeText(getApplicationContext(), "El Viaje ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, "+currentTravel.getReason(), Toast.LENGTH_LONG).show();
+
+                AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                alertDialog.setTitle("Viaje Aceptado");
+                alertDialog.setMessage("El Viaje ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, ");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+
+
                 currentTravel = null;
                 materialDesignFAM.setVisibility(View.VISIBLE);
                 gloval.setGv_travel_current(null);
