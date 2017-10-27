@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:text="Esperando que un Conductor Acepte tu Viaje!"
+                        android:text="A la Brevedad le confirmaremos su solicitud!"
                         android:textSize="25sp"
                         android:layout_alignParentTop="true"
                         android:layout_toRightOf="@+id/progressBar"
