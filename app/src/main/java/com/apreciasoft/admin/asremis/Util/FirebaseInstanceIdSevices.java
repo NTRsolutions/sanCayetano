@@ -43,32 +43,37 @@ public class FirebaseInstanceIdSevices extends FirebaseInstanceIdService {
     private void enviarTokenAlServidor(String _str_token) {
         // Enviar token al servidor
 
-        this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
+
+        if(gloval != null) {
+            this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
 
 
-        token T = new token();
-        T.setToken(new tokenFull(_str_token, gloval.getGv_user_id(),gloval.getGv_id_driver(), MainActivity.version));
-
-        Call<Boolean> call = this.apiService.token(T);
+            token T = new token();
 
 
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        System.out.println(gson.toJson(T));
+            T.setToken(new tokenFull(_str_token, gloval.getGv_user_id(), gloval.getGv_id_driver(), MainActivity.version));
 
-        call.enqueue(new Callback<Boolean>() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-
-            }
-
-            public void onFailure(Call<Boolean> call, Throwable t) {
+            Call<Boolean> call = this.apiService.token(T);
 
 
-                Log.d("**",t.getMessage());
-            }
-        });
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            System.out.println(gson.toJson(T));
+
+            call.enqueue(new Callback<Boolean>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+
+
+                    Log.d("**", t.getMessage());
+                }
+            });
+        }
 
 
     }
