@@ -51,7 +51,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             gloval = ((GlovalVar) getApplicationContext());
 
             System.out.println(gson.toJson(remoteMessage.getData()));
-            gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+//            gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
 
 
 
@@ -59,7 +59,8 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             Intent intent = new Intent("update-message");
 
 
-            intent.putExtra("message", gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+           // intent.putExtra("message", gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+            intent.putExtra("message", "CANGUE INFO FIREBASE (ASREMIS)");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -266,6 +267,23 @@ public  class InfoTravelEntity implements Serializable {
 
 
     @Expose
+    @SerializedName("isBenefitKmClientList")
+    public int isBenefitKmClientList;
+
+    @Expose
+    @SerializedName("idBenefitKmClientKf")
+    public int idBenefitKmClientKf;
+
+
+
+    @Expose
+    @SerializedName("listBeneficio")
+    public List<BeneficioEntity> listBeneficio;
+
+
+
+
+    @Expose
     @SerializedName("isConfirReservationFromWeb")
     public int isConfirReservationFromWeb;
 
@@ -285,6 +303,14 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("reason")
     public String reason;
 
+
+    public List<BeneficioEntity> getListBeneficio() {
+        return listBeneficio;
+    }
+
+    public void setListBeneficio(List<BeneficioEntity> listBeneficio) {
+        this.listBeneficio = listBeneficio;
+    }
 
     public String getReason() {
         return reason;
@@ -790,5 +816,22 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setIsConfirReservationFromWeb(int isConfirReservationFromWeb) {
         this.isConfirReservationFromWeb = isConfirReservationFromWeb;
+    }
+
+
+    public int getIsBenefitKmClientList() {
+        return isBenefitKmClientList;
+    }
+
+    public void setIsBenefitKmClientList(int isBenefitKmClientList) {
+        this.isBenefitKmClientList = isBenefitKmClientList;
+    }
+
+    public int getIdBenefitKmClientKf() {
+        return idBenefitKmClientKf;
+    }
+
+    public void setIdBenefitKmClientKf(int idBenefitKmClientKf) {
+        this.idBenefitKmClientKf = idBenefitKmClientKf;
     }
 }

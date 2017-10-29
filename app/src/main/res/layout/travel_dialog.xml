@@ -566,9 +566,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="top|center"
                 android:background="@drawable/circle_btn_red"
-                android:drawableTop="@android:drawable/ic_menu_close_clear_cancel"
+                android:drawableTop="@drawable/ic_close_black_24dp"
                 android:paddingTop="20dp"
                 android:text="RECHAZAR"
+                android:textSize="13dp"
                 android:textColor="#fff"
                 app:layout_anchorGravity="bottom|left" />
         </RelativeLayout>
@@ -586,9 +587,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="top|center"
                 android:background="@drawable/circle_btn_gren"
-                android:drawableTop="@drawable/ic_collapse_00001"
+                android:drawableTop="@drawable/ic_check_black_24dp"
                 android:paddingTop="20dp"
-                android:text="ACEPTAR VIAJE"
+                android:text="ACEPTAR"
                 android:textColor="#fff"
                 android:tint="@color/colorPrimary"
                 app:layout_anchorGravity="bottom|left" />

@@ -46,6 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Dialog.TravelDialog;
+import com.apreciasoft.admin.asremis.Entity.BeneficioEntity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
@@ -172,6 +173,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
 
 
@@ -918,10 +920,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
            //ojoooo tolti modalll Toast.makeText(getApplicationContext(),  intent.getExtras().getBundle("message"), Toast.LENGTH_SHORT).show();
-
-            currentTravel = gloval.getGv_travel_current();
-            Log.d("BroadcastReceiver", String.valueOf(currentTravel));
-            setNotification(currentTravel);
+            searchTravelByIdDriver();
+            //currentTravel = gloval.getGv_travel_current();
+            //Log.d("BroadcastReceiver", String.valueOf(currentTravel));
+           // setNotification(currentTravel);
         }
     };
 
@@ -1064,6 +1066,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         lg.setVisibility(View.VISIBLE);
 
 
+
         if(timer != null) {
             timer.cancel();
         }
@@ -1179,12 +1182,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         else // PARTICULARES
         {
-            amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
+
+
+
+            // VERIFICAMOS EL BEMEFICIO POR KM PARA CLIENTES PARTICULARES //
+            Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmClientList()));
+
+            if(currentTravel.getIsBenefitKmClientList() == 1) {
+
+                amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_total);
+
+            }else {
+                amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
+            }
+
             Log.d("-TRAVEL amounCalculateGps (6)-", String.valueOf(amounCalculateGps));
             if(isRoundTrip)
             {
                 Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
-                amounCalculateGps = kilometros_ida * PARAM_1;
+
+
+                if(currentTravel.getIsBenefitKmClientList() == 1) {
+                    amounCalculateGps = this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
+                }else{
+                    amounCalculateGps = kilometros_ida * PARAM_1;
+
+                }
+
+
                 Log.d("-TRAVEL amounCalculateGps (8)-", String.valueOf(amounCalculateGps));
                 amounCalculateGps =  amounCalculateGps + kilometros_vuelta * PARAM_6;
                 Log.d("-TRAVEL amounCalculateGps (9)-", String.valueOf(amounCalculateGps));
@@ -2360,6 +2385,45 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             return imagen;
         }
 
+    }
+
+
+
+
+    public double getPriceReturnBylistBeneficion(List<BeneficioEntity> list,double distance){
+        double value = 0;
+
+        for (int i =0;i < list.size();i++){
+
+            // EVALUAMOS LOS DISTINTOS BENEFICIOS //
+            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm()) && distance <=  Double.parseDouble(list.get(i).getBenefitsToKm())){
+                value = distance *  Double.parseDouble(list.get(i).getBenefitPreceReturnKm());
+                break;
+            }
+        }
+
+        return  value;
+    }
+
+    public double getPriceBylistBeneficion(List<BeneficioEntity> list,double distance){
+        double value = 0;
+
+        for (int i =0;i < list.size();i++){
+
+            Log.d("-TRAVEL value (*distance)-", String.valueOf(distance));
+            Log.d("-TRAVEL value (*distance)-", String.valueOf(list.get(i).getBenefitsFromKm()));
+            Log.d("-TRAVEL value (*distance)-", String.valueOf(list.get(i).getBenefitsToKm()));
+
+            // EVALUAMOS LOS DISTINTOS BENEFICIOS //
+            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm()) && distance <=  Double.parseDouble(list.get(i).getBenefitsToKm())){
+                value = distance *  Double.parseDouble(list.get(i).getBenefitsPreceKm());
+
+                Log.d("-TRAVEL value (*1)-", String.valueOf(value));
+                break;
+            }
+        }
+
+        return  value;
     }
 
 
