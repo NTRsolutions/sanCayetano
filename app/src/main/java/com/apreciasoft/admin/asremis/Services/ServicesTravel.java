@@ -23,6 +23,18 @@ import retrofit2.http.Path;
 public interface ServicesTravel {
 
     @Headers("Content-Type: application/json")
+    @GET("travel/getCurrentTravelByIdDriver/{id}")
+    Call<InfoTravelEntity> getCurrentTravelByIdDriver(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
+    @GET("travel/getCurrentTravelByIdClient/{id}")
+    Call<InfoTravelEntity> getCurrentTravelByIdClient(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
+    @GET("travel/getCurrentTravelByIdUserCompany/{id}")
+    Call<InfoTravelEntity> getCurrentTravelByIdUserCompany(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
     @POST("travel/add")
     Call<resp> addTravel(@Body TravelEntity user);
 
@@ -42,7 +54,13 @@ public interface ServicesTravel {
     @GET("travel/isWait/{id}/{value}")
     Call<Boolean> isWait(@Path("id")  int id,@Path("value")  int value);
 
+    @Headers("Content-Type: application/json")
+    @GET("travel/confirmCancelByClient/{id}")
+    Call<Boolean> confirmCancelByClient(@Path("id") int id);
 
+    @Headers("Content-Type: application/json")
+    @GET("travel/confirmCancelByDriver/{id}")
+    Call<Boolean> confirmCancelByDriver(@Path("id") int id);
 
     @Headers("Content-Type: application/json")
     @POST("travel/finishMobil")

@@ -700,8 +700,10 @@ public class HomeFragment extends Fragment implements
 
 
         if(currentTravel.getRoundTrip() != null) {
-            if (currentTravel.getRoundTrip()) {
-                HomeFragment.txtStatus.setText("Vuelta Activada!");
+            if(currentTravel.getRoundTrip()) {
+                if (currentTravel.getRoundTrip()) {
+                    HomeFragment.txtStatus.setText("Vuelta Activada!");
+                }
             }
         }
 

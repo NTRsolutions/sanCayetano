@@ -113,6 +113,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final int PROFILE_DRIVER_ACTIVITY = 2;
     public static final int CREDIT_CAR_ACTIVITY = 3;
 
+    ServicesLoguin apiService = null;
+
     public static  InfoTravelEntity currentTravel;
 
     public double km_total =  0.001;
@@ -175,7 +177,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
 
 
-
+        checkVersion();
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
         editor = pref.edit();
@@ -446,116 +448,139 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+        // WEB SOCKET //
+        ws = new WsTravel();
+        ws.connectWebSocket(gloval.getGv_user_id());
+
+
+
     }
 
 
     public  void changueStatusService(){
 
 
-        Call<Boolean> call = null;
-
-        if (this.daoDriver == null) { this.daoDriver = HttpConexion.getUri().create(ServicesDriver.class); }
-
-        try
-        {
-            if(gloval.getGv_srviceActive() == 1)
-                {
-                     call = this.daoDriver.inactive(gloval.getGv_id_driver());
-                    gloval.setGv_srviceActive(0);
-                }else
-                {
-                     call = this.daoDriver.active(gloval.getGv_id_driver());
-                    gloval.setGv_srviceActive(1);
-                }
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        builder.setMessage("Presione Ok  para confirmar el cambio de sstatus de su Usuario, si presiona ok No Recibira Viajes'!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
 
-            Log.d("Call request", call.request().toString());
-            Log.d("Call request header", call.request().headers().toString());
 
-            call.enqueue(new Callback<Boolean>() {
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            Call<Boolean> call;
 
-                    Log.d("Call request", call.request().toString());
-                    Log.d("Call request header", call.request().headers().toString());
-                    Log.d("Response raw header", response.headers().toString());
-                    Log.d("Response raw", String.valueOf(response.raw().body()));
-                    Log.d("Response code", String.valueOf(response.code()));
+                            if (daoDriver == null) { daoDriver = HttpConexion.getUri().create(ServicesDriver.class); }
 
-
-                    if (response.code() == 200) {
-
-                        //
-                        String str = "";
-                        if(gloval.getGv_srviceActive() == 1){
-                            str = "Servicio Activado!";
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause, HomeActivity.this.getApplication().getBaseContext().getTheme()));
-                            } else {
-                                fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause));
-                            }
-
-                            fab.setBackgroundTintList(ColorStateList.valueOf(Color
-                                    .parseColor("#26c281")));
-                        }else{
-                            str = "Servicio Inactivado! 'No Recibira Viajes'";
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play, HomeActivity.this.getApplication().getBaseContext().getTheme()));
-                            } else {
-                                fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play));
-                            }
-
-                            fab.setBackgroundTintList(ColorStateList.valueOf(Color
-                                    .parseColor("#e35b5a")));
-                        }
-
-                        Snackbar.make(parentLayout , str, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        //
-                    }
-                    else {
-                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                        alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
-                        alertDialog.setMessage(response.errorBody().source().toString());
-                        Log.w("***", response.errorBody().source().toString());
+                            try
+                            {
+                                if(gloval.getGv_srviceActive() == 1)
+                                    {
+                                         call = daoDriver.inactive(gloval.getGv_id_driver());
+                                        gloval.setGv_srviceActive(0);
+                                    }else
+                                    {
+                                         call = daoDriver.active(gloval.getGv_id_driver());
+                                        gloval.setGv_srviceActive(1);
+                                    }
 
 
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                Log.d("Call request", call.request().toString());
+                                Log.d("Call request header", call.request().headers().toString());
+
+                                call.enqueue(new Callback<Boolean>() {
+                                    @Override
+                                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                                        Log.d("Call request", call.request().toString());
+                                        Log.d("Call request header", call.request().headers().toString());
+                                        Log.d("Response raw header", response.headers().toString());
+                                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                                        Log.d("Response code", String.valueOf(response.code()));
+
+
+                                        if (response.code() == 200) {
+
+                                            //
+                                            String str = "";
+                                            if(gloval.getGv_srviceActive() == 1){
+                                                str = "Servicio Activado!";
+
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause, HomeActivity.this.getApplication().getBaseContext().getTheme()));
+                                                } else {
+                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause));
+                                                }
+
+                                                fab.setBackgroundTintList(ColorStateList.valueOf(Color
+                                                        .parseColor("#26c281")));
+                                            }else{
+                                                str = "Servicio Inactivado! 'No Recibira Viajes'";
+
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play, HomeActivity.this.getApplication().getBaseContext().getTheme()));
+                                                } else {
+                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play));
+                                                }
+
+                                                fab.setBackgroundTintList(ColorStateList.valueOf(Color
+                                                        .parseColor("#e35b5a")));
+                                            }
+
+                                            Snackbar.make(parentLayout , str, Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                            //
+                                        }
+                                        else {
+                                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                                            alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
+                                            alertDialog.setMessage(response.errorBody().source().toString());
+                                            Log.w("***", response.errorBody().source().toString());
+
+
+                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            alertDialog.show();
+                                        }
+
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Boolean> call, Throwable t) {
+                                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                                        alertDialog.setTitle("ERROR");
+                                        alertDialog.setMessage(t.getMessage());
+
+                                        Log.d("**", t.getMessage());
+
+                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                        alertDialog.show();
                                     }
                                 });
-                        alertDialog.show();
+
+                            } finally {
+                                daoDriver = null;
+                            }
+
                     }
-
-
-                }
-
-                @Override
-                public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-
-                    Log.d("**", t.getMessage());
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }
-            });
-
-        } finally {
-            this.daoDriver = null;
-        }
-
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
 
     }
@@ -730,11 +755,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         try {
             cliaerNotificationAndoid();
 
-            if (gloval.getGv_id_profile() == 3) {
 
                 currentTravel = gloval.getGv_travel_current();
 
                 if (currentTravel != null) {
+
+
+                    Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel.getIdSatatusTravel()));
 
 
 
@@ -778,6 +805,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         btPreFinishVisible(false);
                         textTiempo = (TextView) findViewById(R.id.textTiempo);
                         textTiempo.setVisibility(View.INVISIBLE);
+
+                    } else if (currentTravel.getIdSatatusTravel() == 0) {
+                        final int idTravel = currentTravel.getIdTravel();
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                        alertDialog.setTitle("Viaje Cancelado!");
+                        alertDialog.setMessage(currentTravel.getReason());
+                        alertDialog.setCancelable(false);
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        confirmCancelByDriver(idTravel);
+                                    }
+                                });
+                        alertDialog.show();
                     }
 
 
@@ -794,16 +837,56 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
 
-                // WEB SOCKET //
-                ws = new WsTravel();
-                ws.connectWebSocket(gloval.getGv_user_id());
-
-            } else {
-                ///WsTravel ws = new WsTravel();
-                // ws.connectWebSocket();
-            }
         }catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public  void  confirmCancelByDriver(int idTravel)
+    {
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+        try {
+            Call<Boolean> call = this.daoTravel.confirmCancelByDriver(idTravel);
+
+            Log.d("fatal", call.request().toString());
+            Log.d("fatal", call.request().headers().toString());
+
+            call.enqueue(new Callback<Boolean>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+
+                    currentTravel = null;
+                    setInfoTravel();
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setMessage(t.getMessage());
+
+
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+
+
+            });
+
+        } finally {
+            this.daoTravel = null;
         }
     }
 
@@ -903,7 +986,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 controlVieTravel();
             }
         }else {
-            searchTravelByIdDriver();
+            //searchTravelByIdDriver();
+            getCurrentTravelByIdDriver();
         }
 
        // _activeTimer();
@@ -920,7 +1004,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
            //ojoooo tolti modalll Toast.makeText(getApplicationContext(),  intent.getExtras().getBundle("message"), Toast.LENGTH_SHORT).show();
-            searchTravelByIdDriver();
+            //searchTravelByIdDriver();
+            getCurrentTravelByIdDriver();
+            Log.d("TRAVEL","LLEGO NOTIFICCION");
             //currentTravel = gloval.getGv_travel_current();
             //Log.d("BroadcastReceiver", String.valueOf(currentTravel));
            // setNotification(currentTravel);
@@ -957,7 +1043,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     /*METODO PARA NOTIFICACIONES CON MOBIL EN SEGUNDO PLANO*/
-    public  void searchTravelByIdDriver()
+  /*  public  void searchTravelByIdDriver()
     {
         if (this.daoTravel == null) {  this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);  }
 
@@ -1057,7 +1143,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
+*/
 
     public void showFinshTravel() throws IOException {
 
@@ -1878,23 +1964,74 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Call<Boolean> call = this.daoTravel.isWait(currentTravel.idTravel,value);
 
             Log.d("fatal", call.request().toString());
-            Log.d("fatal", call.request().headers().toString());
 
             call.enqueue(new Callback<Boolean>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
-                    isRoundTrip = true;
-
-                    if(currentTravel != null) {
-                        currentTravel.setRoundTrip(true);
-                    }
                     setInfoTravel();
 
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setMessage(t.getMessage());
+
+
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+
+
+            });
+
+        } finally {
+            this.daoTravel = null;
+        }
+    }
+
+
+    public  void  getCurrentTravelByIdDriver()
+    {
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+        try {
+            Call<InfoTravelEntity> call = this.daoTravel.getCurrentTravelByIdDriver(gloval.getGv_id_driver());
+
+            Log.d("fatal", call.request().toString());
+
+            call.enqueue(new Callback<InfoTravelEntity>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
+
+                    InfoTravelEntity TRAVEL = (InfoTravelEntity) response.body();
+
+                    gloval.setGv_travel_current(TRAVEL);
+                    currentTravel = gloval.getGv_travel_current();
+
+
+                    if(currentTravel != null){
+
+                            controlVieTravel();
+
+                    }
+
+
+                }
+
+                public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
                     AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
                     alertDialog.setTitle("ERROR");
                     alertDialog.setCanceledOnTouchOutside(false);
@@ -2424,6 +2561,104 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return  value;
+    }
+
+
+
+    public  void  checkVersion()
+    {
+
+        if (this.daoTravel == null) { this.apiService = HttpConexion.getUri().create(ServicesLoguin.class); }
+
+
+        try {
+
+            Call<Boolean> call = this.apiService.checkVersion(MainActivity.version);
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
+
+            call.enqueue(new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
+
+
+
+                    if (response.code() == 200) {
+                        boolean rs = (boolean) response.body();
+
+
+
+                        if (!rs) {
+                        } else {
+                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                            alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
+
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                            //       Uri.parse("http://as-nube.com/apk.apk"));
+                                            //startActivity(browserIntent);
+
+                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                                            try {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                            } catch (android.content.ActivityNotFoundException anfe) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                            }
+                                        }
+                                    });
+                            alertDialog.show();
+
+                            final Button btnLogin = (Button) findViewById(R.id.btn_login);
+                            btnLogin.setEnabled(false);
+
+                        }
+
+                    } else {
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                        alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
+                        alertDialog.setMessage(response.errorBody().source().toString());
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+
+                    }
+
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setMessage(t.getMessage());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            });
+
+        } finally {
+            this.apiService = null;
+
+        }
+
     }
 
 

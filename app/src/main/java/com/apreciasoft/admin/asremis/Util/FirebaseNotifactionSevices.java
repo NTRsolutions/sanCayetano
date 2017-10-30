@@ -64,7 +64,9 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 
-            if(gloval.getGv_id_profile() == 2)
+
+
+            if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {
                 mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
 

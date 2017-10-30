@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "1.8.75";
+    public static String version = "1.8.76";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(gloval.getGv_logeed() == true )
         {
-            if(gloval.getGv_id_profile() == 2)
+            if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {
                 // LAMAMOS A EL SEGUNDO ACTIVITY DE HOME CIENT//
                 Intent homeClient = new Intent(MainActivity.this, HomeClientActivity.class);
