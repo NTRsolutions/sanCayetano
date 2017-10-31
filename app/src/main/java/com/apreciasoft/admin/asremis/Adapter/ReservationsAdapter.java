@@ -2,6 +2,7 @@ package com.apreciasoft.admin.asremis.Adapter;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
@@ -42,6 +44,10 @@ public class ReservationsAdapter
         public TextView mtv_blah3;
         public ImageButton mImageButton;
         public MyViewHolder temObj = null;
+        public ImageView img_statsok;
+        public ImageView img_statsfail;
+
+
 
 
 
@@ -55,7 +61,11 @@ public class ReservationsAdapter
             mtv_blah = (TextView) v.findViewById(R.id.tv_blah);
             mtv_blah2 = (TextView) v.findViewById(R.id.tv_blah2);
             mtv_blah3 = (TextView) v.findViewById(R.id.tv_blah3);
+            img_statsfail = (ImageView) v.findViewById(R.id.img_statsfail);
+            img_statsok = (ImageView) v.findViewById(R.id.img_statsok);
             mImageButton= (ImageButton) v.findViewById(R.id.imageButton);
+
+
 
 
 
@@ -111,22 +121,26 @@ public class ReservationsAdapter
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        holder.mTextView.setText(mDataset.get(position).getMdate());
+        holder.mTextView.setText(mDataset.get(position).getCodTravel()+" - "+mDataset.get(position).getMdate());
         holder.mtv_blah.setText(mDataset.get(position).getNameOrigin());
         holder.mtv_blah2.setText(mDataset.get(position).getNameDestination());
         holder.mtv_blah3.setText(mDataset.get(position).getClient());
 
-       /* if(mDataset.get(position).getIsAceptReservationByDriver() == 1)
-        {
-           holder.mImageButton.setEnabled(false);
-        }*/
 
-       /* holder.mImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(holder.mImageButton,position);
-            }
-        });*/
+
+        if(mDataset.get(position).getIsAceptReservationByDriver() == 1)
+        {
+            holder.img_statsok.setVisibility(View.VISIBLE);
+            holder.img_statsfail.setVisibility(View.INVISIBLE);
+            holder.img_statsok.setBackgroundColor(Color.parseColor("#1e753c"));
+        }else {
+
+            holder.img_statsok.setVisibility(View.INVISIBLE);
+            holder.img_statsfail.setVisibility(View.VISIBLE);
+            holder.img_statsfail.setBackgroundColor(Color.parseColor("#e35b5a"));
+
+        }
+
 
         holder.bind(mDataset.get(position), listener);
 

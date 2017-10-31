@@ -452,7 +452,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ws = new WsTravel();
         ws.connectWebSocket(gloval.getGv_user_id());
 
-
+        btPreFinishVisible(false);
 
     }
 
@@ -772,8 +772,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         btPreFinishVisible(false);
                         btnFlotingVisible(false);
                         setInfoTravel();
-                        textTiempo = (TextView) findViewById(R.id.textTiempo);
-                        textTiempo.setVisibility(View.VISIBLE);
 
                         // EN CURSO //
                     } else if (currentTravel.getIdSatatusTravel() == 5) {
@@ -783,8 +781,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         btCancelVisible(false);
                         btnFlotingVisible(false);
                         setInfoTravel();
-                        textTiempo = (TextView) findViewById(R.id.textTiempo);
-                        textTiempo.setVisibility(View.VISIBLE);
 
                         // POR ACEPTAR//
                     } else if (currentTravel.getIdSatatusTravel() == 2) {
@@ -810,7 +806,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         final int idTravel = currentTravel.getIdTravel();
 
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                        alertDialog.setTitle("Viaje Cancelado!");
+                        alertDialog.setTitle("Viaje Cancelado! "+currentTravel.getCodTravel());
                         alertDialog.setMessage(currentTravel.getReason());
                         alertDialog.setCancelable(false);
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -821,6 +817,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     }
                                 });
                         alertDialog.show();
+
+                        btInitVisible(false);
+                        btCancelVisible(false);
+                        btPreFinishVisible(false);
                     }
 
 
@@ -1016,8 +1016,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setInfoTravel()
     {
-
-
 
         if(currentTravel != null)
         {
@@ -2598,7 +2596,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         } else {
                             AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
                             alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
-
+                            alertDialog.setCancelable(false);
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -2617,8 +2615,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     });
                             alertDialog.show();
 
-                            final Button btnLogin = (Button) findViewById(R.id.btn_login);
-                            btnLogin.setEnabled(false);
+
 
                         }
 

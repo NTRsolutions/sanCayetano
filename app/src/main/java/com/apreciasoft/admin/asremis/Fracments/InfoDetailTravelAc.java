@@ -237,6 +237,9 @@ public class InfoDetailTravelAc extends AppCompatActivity {
                     //the response-body is already parseable to your ResponseBody object
 
                     Toast.makeText(getApplicationContext(), "Reserva Confirmada!", Toast.LENGTH_SHORT).show();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result",ReservationsFrangment.class);
+                    setResult(ReservationsFrangment.RESULT_OK,returnIntent);
                     finish();
 
                 } else if (response.code() == 404) {

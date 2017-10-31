@@ -31,10 +31,11 @@ import retrofit2.Response;
  * Created by JORGE GUTTIERREZ on 25/4/2017.
  */
 
-public class ReservationsFrangment extends Fragment  implements RecyclerViewClickListener {
+public class ReservationsFrangment extends Fragment  {
 
 
     public static final int INFO_ACTIVITY = 1;
+    public static final int RESULT_OK = 2;
     ServicesTravel apiService = null;
     View myView;
     ReservationsAdapter adapter = null;
@@ -150,9 +151,9 @@ public class ReservationsFrangment extends Fragment  implements RecyclerViewClic
 
 
     @Override
-    public void recyclerViewListClicked(View v, int position) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
+               this.serviceAllNotification();
 
     }
 
