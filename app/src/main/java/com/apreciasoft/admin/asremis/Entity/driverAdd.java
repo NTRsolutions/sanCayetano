@@ -13,6 +13,8 @@ public class driverAdd {
     @SerializedName("fisrtNameDriver")
     public String fisrtNameDriver;
 
+
+
     @Expose
     @SerializedName("nrDriver")
     public String nrDriver;

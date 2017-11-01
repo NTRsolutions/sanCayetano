@@ -38,7 +38,7 @@ import java.util.List;
     private TravelLocationEntity locationDriverFromClient;
     private List<notification> gv_listNotifications;
     private List<InfoTravelEntity> gv_lisReservations;
-    private driver gv_driverinfo;
+    //private driver gv_driverinfo;
     private client gv_clientinfo;
     private List<VehicleType> gv_listvehicleType;
 
@@ -109,13 +109,13 @@ import java.util.List;
         this.gv_base_intance = gv_base_intance;
     }
 
-    public driver getGv_driverinfo() {
+   /* public driver getGv_driverinfo() {
         return gv_driverinfo;
     }
 
     public void setGv_driverinfo(driver gv_driverinfo) {
         this.gv_driverinfo = gv_driverinfo;
-    }
+    }*/
 
     public TravelLocationEntity getLocationDriverFromClient() {
         return locationDriverFromClient;

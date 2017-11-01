@@ -184,6 +184,9 @@ public class HomeClientActivity extends AppCompatActivity
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
 
+
+
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
         editor = pref.edit();
 
@@ -437,6 +440,12 @@ public class HomeClientActivity extends AppCompatActivity
             floatingActionButton2.setEnabled(false);
         }
 
+
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(), 0);
 
 
     }

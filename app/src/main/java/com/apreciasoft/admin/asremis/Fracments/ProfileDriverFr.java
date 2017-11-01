@@ -21,10 +21,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.apreciasoft.admin.asremis.Activity.HomeActivity;
+import com.apreciasoft.admin.asremis.Activity.MainActivity;
+import com.apreciasoft.admin.asremis.Entity.DriverFull;
 import com.apreciasoft.admin.asremis.Entity.driver;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesDriver;
+import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.RequestHandler;
 import com.google.gson.Gson;
@@ -55,7 +60,10 @@ public class ProfileDriverFr  extends Fragment {
     ServicesDriver daoDriver = null;
     public ProgressDialog loading;
     public boolean changePick = false;
-
+    public EditText title1;
+    public EditText title2;
+    public EditText title3;
+    public EditText title4;
 
     @Nullable
     @Override
@@ -63,14 +71,23 @@ public class ProfileDriverFr  extends Fragment {
         myView = inflater.inflate(R.layout.fragment_profile_driver, container, false);
 
         // BUSCAR FOTO EN GALERIA //
-        Button btnAction = (Button) myView.findViewById(R.id.btnPic);
+        /*Button btnAction = (Button) myView.findViewById(R.id.btnPic);
         btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startGallery();
 
             }
+        });*/
+
+
+        ImageView img = (ImageView) myView.findViewById(R.id.imgView);
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startGallery();
+            }
         });
+
 
         // ENVIAR FOTO A EL SERVIDOR //
         Button btnSafePick = (Button) myView.findViewById(R.id.btnSafePick);
@@ -96,9 +113,72 @@ public class ProfileDriverFr  extends Fragment {
         gloval = ((GlovalVar)getActivity().getApplicationContext());
 
 
+        title1 = (EditText) myView.findViewById(R.id.txt_name);
+        title2 = (EditText) myView.findViewById(R.id.txt_dni);
+        title3 = (EditText) myView.findViewById(R.id.txt_mail);
+        title4 = (EditText) myView.findViewById(R.id.txt_phone);
+
+
         getPick();
 
         return myView;
+    }
+
+
+    public  void    getInfoDriver()
+    {
+
+        if (this.daoDriver == null) { this.daoDriver = HttpConexion.getUri().create(ServicesDriver.class); }
+
+
+        try {
+
+            Call<DriverFull> call = this.daoDriver.find(gloval.getGv_id_driver());
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
+
+            call.enqueue(new Callback<DriverFull>() {
+                @Override
+                public void onResponse(Call<DriverFull> call, Response<DriverFull> response) {
+
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
+
+
+
+                    if (response.code() == 200) {
+                        DriverFull rs = (DriverFull) response.body();
+                        title1.setText(rs.getDriver().getFisrtNameDriver());
+                        title2.setText(rs.getDriver().getDniDriver());
+                        title3.setText(rs.getDriver().getEmailDriver());
+                        title4.setText(rs.getDriver().getPhoneNumberDriver());
+                    }
+
+
+                }
+
+                public void onFailure(Call<DriverFull> call, Throwable t) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setMessage(t.getMessage());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            });
+
+        } finally {
+            this.daoDriver = null;
+
+        }
+
     }
 
 
@@ -107,16 +187,6 @@ public class ProfileDriverFr  extends Fragment {
     {
 
         try {
-            final EditText title1 = (EditText) myView.findViewById(R.id.txt_name);
-            final EditText title2 = (EditText) myView.findViewById(R.id.txt_dni);
-            final EditText title3 = (EditText) myView.findViewById(R.id.txt_mail);
-            final EditText title4 = (EditText) myView.findViewById(R.id.txt_phone);
-
-            title1.setText(gloval.getGv_driverinfo().getFisrtNameDriver());
-            title2.setText(gloval.getGv_driverinfo().getDniDriver());
-            title3.setText(gloval.getGv_driverinfo().getEmailDriver());
-            title4.setText(gloval.getGv_driverinfo().getPhoneNumberDriver());
-
 
             DowloadImg dwImg = new DowloadImg();
             dwImg.execute(HttpConexion.BASE_URL + HttpConexion.base + "/Frond/img_users/" + gloval.getGv_user_id());
@@ -124,6 +194,8 @@ public class ProfileDriverFr  extends Fragment {
         {
             Log.d("ERROR", String.valueOf(E));
         }
+
+        getInfoDriver();
 
     }
 
@@ -141,13 +213,6 @@ public class ProfileDriverFr  extends Fragment {
     // METODO PARA EDITAR LA IFORMACION//
     public void safeInfo()
     {
-
-        final EditText title1 = (EditText) myView.findViewById(R.id.txt_name);
-        final EditText title2 = (EditText) myView.findViewById(R.id.txt_dni);
-        final EditText title3 = (EditText) myView.findViewById(R.id.txt_mail);
-        final EditText title4 = (EditText) myView.findViewById(R.id.txt_phone);
-
-
 
 
 
@@ -182,7 +247,11 @@ public class ProfileDriverFr  extends Fragment {
                         driver rs = response.body();
 
 
-                        gloval.setGv_driverinfo(rs);
+                        title1.setText(rs.getFisrtNameDriver());
+                        title2.setText(rs.getDniDriver());
+                        title3.setText(rs.getEmailDriver());
+                        title4.setText(rs.getPhoneNumberDriver());
+
                         Toast.makeText(getActivity(), "Datos Actualizados", Toast.LENGTH_SHORT).show();
 
 
@@ -300,6 +369,8 @@ public class ProfileDriverFr  extends Fragment {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
+
+                Log.d("error",s);
                 Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
             }
 

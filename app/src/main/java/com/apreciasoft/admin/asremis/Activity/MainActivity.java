@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "1.8.77";
+    public static String version = "1.8.80";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (pref.getBoolean("isLoged",false) == true){
 
-
-
-            Log.d("-******-", String.valueOf(pref.getBoolean("isLoged",false)));
             gloval.setGv_logeed(true);
             gloval.setGv_user_id(pref.getInt("user_id",0));
             gloval.setGv_idResourceSocket(pref.getInt("is_resourceSocket",0));
@@ -99,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
             TypeToken<List<paramEntity>> token = new TypeToken<List<paramEntity>>(){};
             List<paramEntity> param = gson.fromJson(pref.getString("param",""), token.getType());
             gloval.setGv_param(param);
-
-            Log.d("param", String.valueOf(pref.getString("param","")));
 
             TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>(){};
             List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle",""), token2.getType());
@@ -460,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
                             gloval.setGv_travel_current(userLogued.response.getCurrentTravel());
                             gloval.setGv_param(userLogued.response.getParam());
                             gloval.setGv_logeed(true);
-                            gloval.setGv_driverinfo(userLogued.response.getDriver());
+                            //gloval.setGv_driverinfo(userLogued.response.getDriver());
                             gloval.setGv_clientinfo(userLogued.response.getClient());
                             gloval.setGv_listvehicleType(userLogued.response.getListVehicleType());
 
