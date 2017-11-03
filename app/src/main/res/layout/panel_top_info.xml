@@ -434,7 +434,7 @@
                 android:layout_alignParentTop="true"
                 android:paddingTop="0dp"
                 android:background="@color/cast_expanded_controller_text_color"
-                android:text="0$"
+                android:text="$0"
                 android:textAlignment="center"
                 android:textColor="#4d6f3e"
                 android:textSize="40dp" />

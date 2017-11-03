@@ -716,22 +716,22 @@ public class HomeFragment extends Fragment implements
         {
             if(PARAM_26 == 1)
             {
-                HomeFragment.txt_amount_info.setText(currentTravel.getTotalAmount()+"$");
+                HomeFragment.txt_amount_info.setText("$"+currentTravel.getTotalAmount());
             }
             else
             {
-                HomeFragment.txt_amount_info.setText("0$");
+                HomeFragment.txt_amount_info.setText("$0");
             }
 
         }else
         {
             if(PARAM_26 == 1)
             {
-                HomeFragment.txt_amount_info.setText(currentTravel.getAmountCalculate()+"$");
+                HomeFragment.txt_amount_info.setText("$"+currentTravel.getAmountCalculate());
             }
             else
             {
-                HomeFragment.txt_amount_info.setText("0$");
+                HomeFragment.txt_amount_info.setText("$0");
             }
         }
 
@@ -745,7 +745,7 @@ public class HomeFragment extends Fragment implements
         HomeFragment.txt_destination_info.setText("No se cargo informacion");
         HomeFragment.txt_origin_info.setText("No se cargo informacion");
         HomeFragment.txt_km_info.setText("0Km");
-        HomeFragment.txt_amount_info.setText("0$");
+        HomeFragment.txt_amount_info.setText("$0");
         HomeFragment.txtStatus.setText("SERVICIO ACTIVO");
         HomeFragment.txt_pasajeros_info.setText("No se cargo informacion");
 

@@ -1,6 +1,4 @@
 package com.apreciasoft.admin.asremis.Activity;
-
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.NotificationManager;
@@ -14,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -184,7 +183,7 @@ public class HomeClientActivity extends AppCompatActivity
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
 
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
 
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
@@ -441,13 +440,61 @@ public class HomeClientActivity extends AppCompatActivity
         }
 
 
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) this.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                this.getCurrentFocus().getWindowToken(), 0);
 
 
+
+        checkPermision();
+
+
+    }
+
+
+    public void checkPermision()
+    {
+        LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        // Comprobamos si está disponible el proveedor GPS.
+        if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+            alertDialog.setTitle("GPS INACTIVO!");
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setMessage("Active el GPS para continuar!");
+
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }// end if.
+
+       /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+
+            Toast.makeText(this, "This version is not Android 6 or later " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+
+        } else {
+
+            int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.CAMERA);
+
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+
+                requestPermissions(new String[] {Manifest.permission.CAMERA},
+                        REQUEST_CODE_ASK_PERMISSIONS);
+
+                Toast.makeText(this, "Requesting permissions", Toast.LENGTH_LONG).show();
+
+            }else if (hasWriteContactsPermission == PackageManager.PERMISSION_GRANTED){
+
+                Toast.makeText(this, "The permissions are already granted ", Toast.LENGTH_LONG).show();
+                openCamera();
+
+            }
+
+        }
+
+        return;*/
     }
 
 
@@ -552,14 +599,12 @@ public class HomeClientActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onResume() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
         super.onResume();
-
 
 
         if(currentTravel !=  null) {
             currentTravel = gloval.getGv_travel_current();
-            controlViewTravel();
+           // controlViewTravel();
         }
     }
 
@@ -846,8 +891,8 @@ public class HomeClientActivity extends AppCompatActivity
             loading.setContentView(R.layout.custom_progressdialog);
 
 
-            TextView text = (TextView) loading.findViewById(R.id.smsDialog);
-            text.setText("Presiona para Cancelar!");
+            //TextView text = (TextView) loading.findViewById(R.id.smsDialog);
+            //text.setText("Presiona para Cancelar!");
 
 
             loading.setCancelable(false);
@@ -1379,8 +1424,7 @@ public class HomeClientActivity extends AppCompatActivity
                  call = this.daoTravel.getCurrentTravelByIdUserCompany(gloval.getGv_user_id());
             }
 
-            Log.d(TAG, call.request().toString());
-            Log.d(TAG, call.request().headers().toString());
+
 
             call.enqueue(new Callback<InfoTravelEntity>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -1559,44 +1603,33 @@ public class HomeClientActivity extends AppCompatActivity
             TravelEntity travel = new TravelEntity();
 
 
-
-
-            if(this.location != "" &&
+            if (this.location != "" &&
                     this.lat != "" &&
-                    this.lon != "")
-            {}else {
+                    this.lon != "") {
+            } else {
                 this.location = HomeClientFragment.nameLocation;
-                this.lat =   String.valueOf( HomeClientFragment.getmLastLocation().getLatitude());
-                this.lon =   String.valueOf(HomeClientFragment.getmLastLocation().getLongitude());
+                this.lat = String.valueOf(HomeClientFragment.getmLastLocation().getLatitude());
+                this.lon = String.valueOf(HomeClientFragment.getmLastLocation().getLongitude());
             }
 
 
-
-            if(!fromTimeEtxt.getText().toString().matches("")  &&  !fromDateEtxt.getText().toString().matches("") )
-            {
-                this.dateTravel =  fromDateEtxt.getText().toString()+" "+fromTimeEtxt.getText().toString();
-            }
-            else {
-                this.dateTravel =  currentDate;
+            if (!fromTimeEtxt.getText().toString().matches("") && !fromDateEtxt.getText().toString().matches("")) {
+                this.dateTravel = fromDateEtxt.getText().toString() + " " + fromTimeEtxt.getText().toString();
+            } else {
+                this.dateTravel = currentDate;
             }
 
 
             boolean isTravelComany = false;
-            if(gloval.getGv_id_profile() == 5)
-            {
+            if (gloval.getGv_id_profile() == 5) {
                 isTravelComany = true;
             }
 
-            if(HomeClientActivity.ReservationName != null)
-            {
-                if(HomeClientActivity.ReservationName.length() > 0)
-                {
-                    Log.d("ORIGEN -3",HomeClientActivity.location.toString());
+            if (HomeClientActivity.ReservationName != null) {
+                if (HomeClientActivity.ReservationName.length() > 0) {
                     this.location = HomeClientActivity.ReservationName.toString();
                 }
             }
-
-
 
 
             travel.setTravelBody(
@@ -1612,7 +1645,7 @@ public class HomeClientActivity extends AppCompatActivity
                                     this.lonDestination,
                                     this.destination
                             )
-                            ,this.dateTravel,idTypeVehicle,true,gloval.getGv_user_id()
+                            , this.dateTravel, idTypeVehicle, true, gloval.getGv_user_id()
                     )
             );
 
@@ -1621,13 +1654,31 @@ public class HomeClientActivity extends AppCompatActivity
             Gson gson = builder.create();
             System.out.println(gson.toJson(travel));
 
-            Call<resp> call = this.daoTravel.addTravel(travel);
 
-            Log.d("Call request",call.request().body().toString());
-            Log.d("Call request", call.request().toString());
-            Log.d("Call request header", call.request().headers().toString());
+            // VALIDAMOS RESERVA O VIAJE //
+            boolean validateRequired = true;
+            if (isReervation) {
+                if(travel.getTravelBody().getOrigin().getNameOrigin().length() > 0 &&
+                        travel.getTravelBody().getmDestination().getNameDestination().length() >0 &&
+                        fromTimeEtxt.getText().toString().matches("") &&
+                        fromDateEtxt.getText().toString().matches("")){
+                    validateRequired = true;
+                }else {
+                    validateRequired = false;
+                }
 
-            call.enqueue(new Callback<resp>() {
+            }
+
+
+            if (validateRequired) {
+
+                Call<resp> call = this.daoTravel.addTravel(travel);
+
+                Log.d("Call request", call.request().body().toString());
+                Log.d("Call request", call.request().toString());
+                Log.d("Call request header", call.request().headers().toString());
+
+                call.enqueue(new Callback<resp>() {
                 @Override
                 public void onResponse(Call<resp> call, Response<resp> response) {
 
@@ -1637,36 +1688,31 @@ public class HomeClientActivity extends AppCompatActivity
                     Log.d("Response code", String.valueOf(response.code()));
 
 
-                    if (response.code() == 200)
-                    {
+                    if (response.code() == 200) {
 
                         //the response-body is already parseable to your ResponseBody object
                         resp responseBody = (resp) response.body();
                         //you can do whatever with the response body now...
-                        String responseBodyString= responseBody.getResponse().toString();
+                        String responseBodyString = responseBody.getResponse().toString();
 
 
-
-                        if(isReervation)
-                        {
+                        if (isReervation) {
                             Toast.makeText(getApplicationContext(), "Reserva Solicitada!", Toast.LENGTH_SHORT).show();
-                            activeGif(false,"");
-                        }else
-                        {
+                            activeGif(false, "");
+                        } else {
                             Toast.makeText(getApplicationContext(), "Viaje Solicitado!", Toast.LENGTH_SHORT).show();
-                            activeGif(true,"Buscando Chofer...");
+                            activeGif(true, "Buscando Chofer...");
                         }
 
                         materialDesignFAM.close(true);
 
                         LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
                         contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
-                        isReervation =  false;
+                        isReervation = false;
                         contetRequestTravelVisible(false);
 
 
-                    }
-                    else {
+                    } else {
 
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
                         alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
@@ -1695,7 +1741,7 @@ public class HomeClientActivity extends AppCompatActivity
                     alertDialog.setTitle("ERROR");
                     alertDialog.setMessage(t.getMessage());
 
-                    Log.d("**",t.getMessage());
+                    Log.d("**", t.getMessage());
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
@@ -1709,9 +1755,12 @@ public class HomeClientActivity extends AppCompatActivity
                 }
             });
 
-        } finally {
-            this.daoTravel = null;
-        }
+             }
+
+            } finally{
+                this.daoTravel = null;
+            }
+
 
 
 

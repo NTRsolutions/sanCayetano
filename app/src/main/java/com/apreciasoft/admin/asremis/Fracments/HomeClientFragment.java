@@ -46,6 +46,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
         import com.google.android.gms.maps.model.Marker;
         import com.google.android.gms.maps.model.MarkerOptions;
         import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
@@ -148,7 +150,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
         HomeClientFragment.txt_date_info = (TextView) getActivity().findViewById(R.id.txt_date_info);
         HomeClientFragment.txtStatus = (TextView) getActivity().findViewById(R.id.txtStatus);
-      //  HomeClientFragment.txt_client_info = (TextView) getActivity().findViewById(R.id.txt_client_info);
+        HomeClientFragment.txt_client_info = (TextView) getActivity().findViewById(R.id.txt_client_info);
         HomeClientFragment.txt_destination_info = (TextView) getActivity().findViewById(R.id.txt_destination_info);
         HomeClientFragment.txt_origin_info = (TextView) getActivity().findViewById(R.id.txt_origin_info);
         HomeClientFragment.txt_km_info = (TextView) getActivity().findViewById(R.id.txt_km_info);
@@ -168,7 +170,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
 
     public static void clearInfo() {
-//        HomeClientFragment.txt_client_info.setText("No se cargo informacion");
+        HomeClientFragment.txt_client_info.setText("No se cargo informacion");
         HomeClientFragment.txt_calling_info.setText("No se cargo informacion");
         HomeClientFragment.txt_domain.setText("No se cargo informacion");
         HomeClientFragment.txt_destination_info.setText("No se cargo informacion");
@@ -188,15 +190,17 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
             if (view != null) {
 
-                Log.d("currentTravel", String.valueOf(currentTravel));
 
-                if(HomeClientFragment.txt_client_info != null)
-                {
-                    HomeClientFragment.txt_client_info.setText(currentTravel.getDriver());
-                }
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                Log.d("currentTravel",gson.toJson(currentTravel.getInfocar()));
 
-                HomeClientFragment.txt_calling_info.setText(currentTravel.getPhoneNumber());
-                HomeClientFragment.txt_domain.setText(currentTravel.getDomain());
+
+                HomeClientFragment.txt_client_info.setText(currentTravel.getDriver());
+
+
+                HomeClientFragment.txt_calling_info.setText(currentTravel.getPhoneNumberDriver());
+                HomeClientFragment.txt_domain.setText(currentTravel.getInfocar());
 
                 HomeClientFragment.txt_date_info.setText(currentTravel.getMdate().toString());
 

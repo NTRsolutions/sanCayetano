@@ -22,6 +22,11 @@ public  class InfoTravelEntity implements Serializable {
     public int idTravel;
 
 
+    @Expose
+    @SerializedName("idDriverOld")
+    public int idDriverOld;
+
+
 
     @Expose
     @SerializedName("MultiDestinationDesc")
@@ -39,6 +44,10 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("isProcesCurrentAcount")
     public int isProcesCurrentAcount;
 
+
+    @Expose
+    @SerializedName("phoneNumberDriver")
+    public String phoneNumberDriver;
 
 
 
@@ -74,6 +83,11 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("totalAmount")
     public String totalAmount;
+
+
+    @Expose
+    @SerializedName("infocar")
+    public String infocar;
 
 
     @Expose
@@ -193,6 +207,13 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("isTravelSendMovil")
     public Boolean isTravelSendMovil;
+
+
+    @Expose
+    @SerializedName("isResignet")
+    public int isResignet;
+
+
 
     @Expose
     @SerializedName("priceDitanceCompany")
@@ -833,5 +854,38 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setIdBenefitKmClientKf(int idBenefitKmClientKf) {
         this.idBenefitKmClientKf = idBenefitKmClientKf;
+    }
+
+    public int getIsResignet() {
+        return isResignet;
+    }
+
+    public void setIsResignet(int isResignet) {
+        this.isResignet = isResignet;
+    }
+
+    public int getIdDriverOld() {
+        return idDriverOld;
+    }
+
+    public void setIdDriverOld(int idDriverOld) {
+        this.idDriverOld = idDriverOld;
+    }
+
+
+    public String getPhoneNumberDriver() {
+        return phoneNumberDriver;
+    }
+
+    public void setPhoneNumberDriver(String phoneNumberDriver) {
+        this.phoneNumberDriver = phoneNumberDriver;
+    }
+
+    public String getInfocar() {
+        return infocar;
+    }
+
+    public void setInfocar(String infocar) {
+        this.infocar = infocar;
     }
 }

@@ -121,4 +121,45 @@ public class TravelBodyEntity {
         misTravelSendMovil = isTravelSendMovil;
         midUserCompanyKf = idUserCompanyKf;
     }
+
+
+    public int getmIdClientKf() {
+        return mIdClientKf;
+    }
+
+    public void setmIdClientKf(int mIdClientKf) {
+        this.mIdClientKf = mIdClientKf;
+    }
+
+    public boolean ismIsTravelComany() {
+        return mIsTravelComany;
+    }
+
+    public void setmIsTravelComany(boolean mIsTravelComany) {
+        this.mIsTravelComany = mIsTravelComany;
+    }
+
+    public OriginEntity getmOrigin() {
+        return mOrigin;
+    }
+
+    public void setmOrigin(OriginEntity mOrigin) {
+        this.mOrigin = mOrigin;
+    }
+
+    public DestinationEntity getmDestination() {
+        return mDestination;
+    }
+
+    public void setmDestination(DestinationEntity mDestination) {
+        this.mDestination = mDestination;
+    }
+
+    public String getmDateTravel() {
+        return mDateTravel;
+    }
+
+    public void setmDateTravel(String mDateTravel) {
+        this.mDateTravel = mDateTravel;
+    }
 }

@@ -52,6 +52,7 @@ import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
+import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.AcountDriver;
@@ -77,6 +78,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 
 import java.io.ByteArrayOutputStream;
@@ -176,6 +178,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
+
+
 
         checkVersion();
 
@@ -197,6 +202,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // variable global //
         gloval = ((GlovalVar)getApplicationContext());
+
+
+        Log.d("gloval param", String.valueOf(gloval.getGv_param()));
+
+        TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>(){};
+        Gson gson = new Gson();
+        List<paramEntity> listParam = gson.fromJson(pref.getString("param",""), token3.getType());
+
+        Log.d("gloval s param", String.valueOf(listParam));
+        Log.d("gloval", String.valueOf(gloval));
 
         param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
 
@@ -424,7 +439,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -437,7 +452,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
             }
-        });
+        });*/
 
 
         //LLAMAMOS A EL METODO PARA HABILITAR PERMISOS//
@@ -453,6 +468,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ws.connectWebSocket(gloval.getGv_user_id());
 
         btPreFinishVisible(false);
+        btInitVisible(false);
+        btCancelVisible(false);
 
     }
 
@@ -639,74 +656,78 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         try
         {
 
+            Log.d("currentTravel", String.valueOf(currentTravel.isResignet));
+            Log.d("currentTravel", String.valueOf(currentTravel.getIdSatatusTravel()));
+                if(currentTravel.getIdSatatusTravel() == 0)
+                {
 
-            if(currentTravel.getIdSatatusTravel() == 0)
-            {
+                    Toast.makeText(getApplicationContext(), "VIAJE Cancelado!", Toast.LENGTH_LONG).show();
+                    btPreFinishVisible(false);
+                    btnFlotingVisible(true);
 
-                Toast.makeText(getApplicationContext(), "VIAJE Cancelado!", Toast.LENGTH_LONG).show();
-                btPreFinishVisible(false);
-                btnFlotingVisible(true);
+                    btInitVisible(false);
+                    btCancelVisible(false);
 
-                btInitVisible(false);
-                btCancelVisible(false);
+                    viewAlert = false;
+                    currentTravel = null;
+                    HomeFragment.MarkerPoints = null;
+                    gloval.setGv_travel_current(null);
+                    setInfoTravel();
 
-                viewAlert = false;
-                currentTravel = null;
-                HomeFragment.MarkerPoints = null;
-                gloval.setGv_travel_current(null);
-                setInfoTravel();
+                    tiempoTxt = 0;
+                    textTiempo = (TextView) findViewById(R.id.textTiempo);
+                    textTiempo.setVisibility(View.INVISIBLE);
 
-                tiempoTxt = 0;
-                textTiempo = (TextView) findViewById(R.id.textTiempo);
-                textTiempo.setVisibility(View.INVISIBLE);
+                   // _activeTimer();
+                }
+                else  if(currentTravel.getIdSatatusTravel() == 8)
+                {
+                    Toast.makeText(getApplicationContext(), "VIAJE Cancelado por Cliente!", Toast.LENGTH_LONG).show();
+                    btPreFinishVisible(false);
+                    btnFlotingVisible(true);
 
-               // _activeTimer();
-            }
-            else  if(currentTravel.getIdSatatusTravel() == 8)
-            {
-                Toast.makeText(getApplicationContext(), "VIAJE Cancelado por Cliente!", Toast.LENGTH_LONG).show();
-                btPreFinishVisible(false);
-                btnFlotingVisible(true);
+                    btInitVisible(false);
+                    btCancelVisible(false);
 
-                btInitVisible(false);
-                btCancelVisible(false);
+                    viewAlert = false;
+                    currentTravel = null;
+                    HomeFragment.MarkerPoints = null;
+                    gloval.setGv_travel_current(null);
+                    setInfoTravel();
 
-                viewAlert = false;
-                currentTravel = null;
-                HomeFragment.MarkerPoints = null;
-                gloval.setGv_travel_current(null);
-                setInfoTravel();
+                    tiempoTxt = 0;
+                    textTiempo = (TextView) findViewById(R.id.textTiempo);
+                    textTiempo.setVisibility(View.INVISIBLE);
 
-                tiempoTxt = 0;
-                textTiempo = (TextView) findViewById(R.id.textTiempo);
-                textTiempo.setVisibility(View.INVISIBLE);
+                  //  _activeTimer();
+                }else  if(currentTravel.getIdSatatusTravel() == 6)
+                {
+                    Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
 
-              //  _activeTimer();
-            }else  if(currentTravel.getIdSatatusTravel() == 6)
-            {
-                Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
+                    btPreFinishVisible(false);
+                    btnFlotingVisible(true);
+                    viewAlert = false;
 
-                btPreFinishVisible(false);
-                btnFlotingVisible(true);
-                viewAlert = false;
+                    currentTravel = null;
+                    HomeFragment.MarkerPoints = null;
+                    gloval.setGv_travel_current(null);
+                    setInfoTravel();
 
-                currentTravel = null;
-                HomeFragment.MarkerPoints = null;
-                gloval.setGv_travel_current(null);
-                setInfoTravel();
+                    tiempoTxt = 0;
+                    textTiempo = (TextView) findViewById(R.id.textTiempo);
+                    textTiempo.setVisibility(View.INVISIBLE);
 
-                tiempoTxt = 0;
-                textTiempo = (TextView) findViewById(R.id.textTiempo);
-                textTiempo.setVisibility(View.INVISIBLE);
+                    //_activeTimer();
+                }
+                else
+                {
+                    viewAlert = true;
+                    FragmentManager fm = getFragmentManager();
+                    dialogTravel = new TravelDialog();
+                    dialogTravel.show(fm, "Sample Fragment");
+                    dialogTravel.setCancelable(false);
+                }
 
-                //_activeTimer();
-            }else
-            {
-               // viewAlert = false;
-                FragmentManager fm = getFragmentManager();
-                dialogTravel = new TravelDialog();
-                dialogTravel.show(fm, "Sample Fragment");
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -753,10 +774,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void controlVieTravel()
     {
         try {
+
+
+
             cliaerNotificationAndoid();
 
 
+
                 currentTravel = gloval.getGv_travel_current();
+
+            Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel));
+
 
                 if (currentTravel != null) {
 
@@ -765,72 +793,83 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-                    // CHOFER BUSQUEDA DE CLIENTE //
-                    if (currentTravel.getIdSatatusTravel() == 4) {
-                        btInitVisible(true);
-                        btCancelVisible(true);
-                        btPreFinishVisible(false);
-                        btnFlotingVisible(false);
-                        setInfoTravel();
+                        // CHOFER BUSQUEDA DE CLIENTE //
+                        if (currentTravel.getIdSatatusTravel() == 4) {
+                            btInitVisible(true);
+                            btCancelVisible(true);
+                            btPreFinishVisible(false);
+                            btnFlotingVisible(false);
+                            setInfoTravel();
 
-                        // EN CURSO //
-                    } else if (currentTravel.getIdSatatusTravel() == 5) {
-                        //activeTimerInit();
-                        btPreFinishVisible(true);
-                        btInitVisible(false);
-                        btCancelVisible(false);
-                        btnFlotingVisible(false);
-                        setInfoTravel();
 
-                        // POR ACEPTAR//
-                    } else if (currentTravel.getIdSatatusTravel() == 2) {
+                            Log.d("VIAJE ESTATUS ", "1");
 
-                        setNotification(currentTravel);
-                        btInitVisible(false);
-                        btCancelVisible(false);
-                        btnFlotingVisible(false);
-                        btPreFinishVisible(false);
-                        textTiempo = (TextView) findViewById(R.id.textTiempo);
-                        textTiempo.setVisibility(View.INVISIBLE);
-                        // POR RECHAZADO POR OTRO CHOFER//
-                    } else if (currentTravel.getIdSatatusTravel() == 7) {
-                        setNotification(currentTravel);
-                        btInitVisible(false);
-                        btCancelVisible(false);
-                        btnFlotingVisible(false);
-                        btPreFinishVisible(false);
-                        textTiempo = (TextView) findViewById(R.id.textTiempo);
-                        textTiempo.setVisibility(View.INVISIBLE);
 
-                    } else if (currentTravel.getIdSatatusTravel() == 0) {
-                        final int idTravel = currentTravel.getIdTravel();
+                            // EN CURSO //
+                        } else if (currentTravel.getIdSatatusTravel() == 5) {
+                            //activeTimerInit();
+                            btPreFinishVisible(true);
+                            btInitVisible(false);
+                            btCancelVisible(false);
+                            btnFlotingVisible(false);
+                            setInfoTravel();
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                        alertDialog.setTitle("Viaje Cancelado! "+currentTravel.getCodTravel());
-                        alertDialog.setMessage(currentTravel.getReason());
-                        alertDialog.setCancelable(false);
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        confirmCancelByDriver(idTravel);
-                                    }
-                                });
-                        alertDialog.show();
+                            // POR ACEPTAR//
+                        } else if (currentTravel.getIdSatatusTravel() == 2) {
 
-                        btInitVisible(false);
-                        btCancelVisible(false);
-                        btPreFinishVisible(false);
-                    }
+                            viewAlert = false;
+                            setNotification(currentTravel);
+                            btInitVisible(false);
+                            btCancelVisible(false);
+                            btnFlotingVisible(false);
+                            btPreFinishVisible(false);
+                            textTiempo = (TextView) findViewById(R.id.textTiempo);
+                            textTiempo.setVisibility(View.INVISIBLE);
+                            // POR RECHAZADO POR OTRO CHOFER//
+                        } else if (currentTravel.getIdSatatusTravel() == 7) {
+                            setNotification(currentTravel);
+                            btInitVisible(false);
+                            btCancelVisible(false);
+                            btnFlotingVisible(false);
+                            btPreFinishVisible(false);
+                            textTiempo = (TextView) findViewById(R.id.textTiempo);
+                            textTiempo.setVisibility(View.INVISIBLE);
+
+                        } else if (currentTravel.getIdSatatusTravel() == 0) {
+                            final int idTravel = currentTravel.getIdTravel();
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                            alertDialog.setTitle("Viaje Cancelado! " + currentTravel.getCodTravel());
+                            alertDialog.setMessage(currentTravel.getReason());
+                            alertDialog.setCancelable(false);
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            confirmCancelByDriver(idTravel);
+                                        }
+                                    });
+                            alertDialog.show();
+
+                            btInitVisible(false);
+                            btCancelVisible(false);
+                            btPreFinishVisible(false);
+                        }
+
 
 
                 } else {
 
 
+                    Toast.makeText(getApplicationContext(), "Sin Viajes Asignados!", Toast.LENGTH_LONG).show();
 
+                if(dialogTravel != null){
+                    dialogTravel.dismiss();
+                }
                     btInitVisible(false);
                     btCancelVisible(false);
                     btPreFinishVisible(false);
+                    btnFlotingVisible(true);
                     textTiempo = (TextView) findViewById(R.id.textTiempo);
                     textTiempo.setVisibility(View.INVISIBLE);
                    // _activeTimer();
@@ -977,9 +1016,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onResume() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
-        super.onResume();
 
+        Log.d("noti", "1");
+
+        super.onResume();
 
         if(currentTravel !=  null) {
             if (currentTravel.getIdSatatusTravel() == 2) {
@@ -987,7 +1027,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }else {
             //searchTravelByIdDriver();
-            getCurrentTravelByIdDriver();
+               getCurrentTravelByIdDriver();
         }
 
        // _activeTimer();
@@ -1003,13 +1043,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onReceive(Context context, Intent intent) {
-           //ojoooo tolti modalll Toast.makeText(getApplicationContext(),  intent.getExtras().getBundle("message"), Toast.LENGTH_SHORT).show();
-            //searchTravelByIdDriver();
+
             getCurrentTravelByIdDriver();
             Log.d("TRAVEL","LLEGO NOTIFICCION");
-            //currentTravel = gloval.getGv_travel_current();
-            //Log.d("BroadcastReceiver", String.valueOf(currentTravel));
-           // setNotification(currentTravel);
         }
     };
 
@@ -1024,6 +1060,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         else
         {
             HomeFragment.clearInfo();
+            viewAlert = false;
+            if(dialogTravel != null) {
+                dialogTravel.dismiss();
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -1350,14 +1390,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if(param25 == 1) {
-            txtTimeslep.setText(tiempoTxt + " Seg - " + Double.toString(round(extraTime, 2)) + "$");
+            txtTimeslep.setText(tiempoTxt + " Seg - $" + Double.toString(round(extraTime, 2)));
         }else {
             txtTimeslep.setText(tiempoTxt + " Seg");
         }
 
 
         if(param25 == 1) {
-            distance_txt.setText(df.format(kilometros_total) + " Km - "+Double.toString(round(amounCalculateGps,2))+"$");
+            distance_txt.setText(df.format(kilometros_total) + " Km - $"+Double.toString(round(amounCalculateGps,2)));
 
         }else {
             distance_txt.setText(df.format(kilometros_total) + " Km ");
@@ -1390,7 +1430,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         if(param25 == 1){
-            txtMount.setText(Double.toString(round(totalFinal,2))+"$");
+            txtMount.setText("$"+Double.toString(round(totalFinal,2)));
         }
         else {
             txtMount.setText("---");
@@ -1826,6 +1866,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     gloval.setGv_travel_current(null);
                     currentTravel = null;
                     btCancelVisible(false);
+                    btnFlotingVisible(true);
                     btInitVisible(false);
                     HomeFragment.clearInfo();
                     viewAlert = false;
@@ -2018,15 +2059,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     gloval.setGv_travel_current(TRAVEL);
                     currentTravel = gloval.getGv_travel_current();
-
-
-                    if(currentTravel != null){
-
-                            controlVieTravel();
-
-                    }
-
-
+                    controlVieTravel();
                 }
 
                 public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
@@ -2074,6 +2107,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
+
+
                 Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
               //  Log.d("fatal",response.body().toString());
 
@@ -2082,7 +2117,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 btInitVisible(true);
                 btCancelVisible(true);
                 cliaerNotificationAndoid();
-                viewAlert = false;
+                viewAlert = true;
                 dialogTravel.dismiss();
 
                 currentTravel = response.body();
@@ -2297,6 +2332,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             HomeFragment.options = null;
                             gloval.setGv_travel_current(null);
                             setInfoTravel();
+                            viewAlert = false;
 
 
 
@@ -2443,7 +2479,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     // CONONTRO BOTON FLOTANTE //
     public  void  btnFlotingVisible(boolean isVisible)
     {
-        FloatingActionButton btnService = (FloatingActionButton) findViewById(R.id.fab);
+      /*  FloatingActionButton btnService = (FloatingActionButton) findViewById(R.id.fab);
 
         if(!isVisible)
         {
@@ -2451,7 +2487,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else
         {
             btnService.setVisibility(View.VISIBLE);
-        }
+        }*/
 
     }
 

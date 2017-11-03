@@ -8,334 +8,346 @@
 
     android:weightSum="1">
 
+        <ScrollView
+            android:layout_width="fill_parent"
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_weight="0.00"
-            android:baselineAligned="false"
-            android:background="#129565"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
 
-                <RelativeLayout
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_weight="0.00"
+                    android:baselineAligned="false"
+                    android:background="#129565"
+                    android:orientation="horizontal">
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                                <TextView
+
+                                    android:id="@+id/txt_name"
+                                    android:textSize="30dp"
+                                    android:paddingTop="8dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:text="Confirma Tu Viaje!"
+                                    android:textStyle="bold"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/blanco" />
+                        </RelativeLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                        <TextView
-
-                            android:id="@+id/txt_name"
-                            android:textSize="30dp"
-                            android:paddingTop="8dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:text="Confirma Tu Viaje!"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:textColor="@color/blanco" />
-                </RelativeLayout>
-        </LinearLayout>
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                        <RelativeLayout
+                            android:layout_width="70dp"
+                            android:layout_height="93dp"
+                            android:layout_weight="1">
 
+                                <TextView
+                                    android:id="@+id/txt_mount"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="#129565"
+                                    android:paddingTop="1dp"
+                                    android:text="$0"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/blanco"
+                                    android:textSize="80dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_centerHorizontal="true" />
+                        </RelativeLayout>
+                </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="70dp"
-                    android:layout_height="93dp"
-                    android:layout_weight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/txt_mount"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#129565"
-                            android:paddingTop="1dp"
-                            android:text="0$"
-                            android:textAlignment="center"
-                            android:textColor="@color/blanco"
-                            android:textSize="80dp"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true" />
-                </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="0dp"
-                            android:tint="@color/mpsdk_argencard"
-                            app:srcCompat="@drawable/ic_directions_black_24dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_weight="0">
 
-                </RelativeLayout>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="0dp"
+                                    android:tint="@color/mpsdk_argencard"
+                                    app:srcCompat="@drawable/ic_directions_black_24dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
 
-                <RelativeLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/distance_txt"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:ems="25"
-                            android:paddingTop="10dp"
-                            android:hint=""
-                            android:text=""
-                            android:background="@drawable/rounded_border_textview"
-                            android:inputType="numberDecimal"
-                            android:minHeight="50dp"
-                            android:textAlignment="center"
-                            android:textColor="@color/mpsdk_review_description_text"
-                            android:textSize="30dp" />
+                            android:layout_weight="1">
 
-                </RelativeLayout>
-        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/distance_txt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentTop="true"
+                                    android:ems="25"
+                                    android:paddingTop="10dp"
+                                    android:hint=""
+                                    android:text=""
+                                    android:background="@drawable/rounded_border_textview"
+                                    android:inputType="numberDecimal"
+                                    android:minHeight="50dp"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/mpsdk_review_description_text"
+                                    android:textSize="30dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                        </RelativeLayout>
+                </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="0dp"
-                            android:tint="@color/mpsdk_argencard"
-                            app:srcCompat="@drawable/ic_access_time_black_40dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_weight="0">
 
-                </RelativeLayout>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="0dp"
+                                    android:tint="@color/mpsdk_argencard"
+                                    app:srcCompat="@drawable/ic_access_time_black_40dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
 
-                <RelativeLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/txtTimeslep"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
+                            android:layout_weight="1">
+
+                                <TextView
+                                    android:id="@+id/txtTimeslep"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
 
 
-                            android:ems="20"
-                            android:hint=""
-                            android:inputType="numberDecimal"
-                            android:minHeight="50dp"
-                            android:background="@drawable/rounded_border_textview"
-                            android:textAlignment="center"
-                            android:paddingTop="10dp"
-                            android:textColor="@color/mpsdk_review_description_text"
-                            android:textSize="30dp" />
+                                    android:ems="20"
+                                    android:hint=""
+                                    android:inputType="numberDecimal"
+                                    android:minHeight="50dp"
+                                    android:background="@drawable/rounded_border_textview"
+                                    android:textAlignment="center"
+                                    android:paddingTop="10dp"
+                                    android:textColor="@color/mpsdk_review_description_text"
+                                    android:textSize="30dp" />
 
-                </RelativeLayout>
-        </LinearLayout>
+                        </RelativeLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="0dp"
-                            android:tint="@color/mpsdk_argencard"
-                            app:srcCompat="@drawable/ic_local_parking_black_40dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_weight="0">
 
-                </RelativeLayout>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="0dp"
+                                    android:tint="@color/mpsdk_argencard"
+                                    app:srcCompat="@drawable/ic_local_parking_black_40dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
 
-                <RelativeLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                        </RelativeLayout>
 
-                        <EditText
-                            android:id="@+id/peajes_txt"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:ems="20"
-                            android:hint=" Peaje"
-                            android:inputType="numberDecimal"
-                            android:minHeight="50dp"
-                            android:background="@drawable/rounded_border_textview"
-                            android:textAlignment="center"
-                            android:paddingTop="0dp"
-                            android:textColor="@color/mpsdk_review_description_text"
-                            android:textSize="30dp" />
+                            android:layout_weight="1">
 
-                </RelativeLayout>
-        </LinearLayout>
+                                <EditText
+                                    android:id="@+id/peajes_txt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentTop="true"
+                                    android:ems="20"
+                                    android:hint=" Peaje"
+                                    android:inputType="numberDecimal"
+                                    android:minHeight="50dp"
+                                    android:background="@drawable/rounded_border_textview"
+                                    android:textAlignment="center"
+                                    android:paddingTop="0dp"
+                                    android:textColor="@color/mpsdk_review_description_text"
+                                    android:textSize="30dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                        </RelativeLayout>
+                </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="0dp"
-                            android:tint="@color/mpsdk_argencard"
-                            app:srcCompat="@drawable/ic_directions_car_black_40dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_weight="0">
 
-                </RelativeLayout>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:padding="0dp"
+                                    android:tint="@color/mpsdk_argencard"
+                                    app:srcCompat="@drawable/ic_directions_car_black_40dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
 
-                <RelativeLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                        </RelativeLayout>
 
-                        <EditText
-                            android:id="@+id/parkin_txt"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:ems="20"
-                            android:hint=" Estacionamiento"
-                            android:inputType="numberDecimal"
-                            android:background="@drawable/rounded_border_textview"
-                            android:textAlignment="center"
-                            android:paddingTop="0dp"
-                            android:textColor="@color/mpsdk_review_description_text"
-                            android:textSize="30dp"
-                            android:layout_alignParentTop="true" />
+                            android:layout_weight="1">
 
-                </RelativeLayout>
-        </LinearLayout>
+                                <EditText
+                                    android:id="@+id/parkin_txt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:ems="20"
+                                    android:hint=" Estacionamiento"
+                                    android:inputType="numberDecimal"
+                                    android:background="@drawable/rounded_border_textview"
+                                    android:textAlignment="center"
+                                    android:paddingTop="0dp"
+                                    android:textColor="@color/mpsdk_review_description_text"
+                                    android:textSize="30dp"
+                                    android:layout_alignParentTop="true" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="101dp"
-            android:layout_gravity="bottom"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                        <Button
-                            android:id="@+id/bnt_pay_car"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_gravity="top|center"
-                            android:background="@drawable/round_shape"
-                            android:drawableTop="@drawable/ic_credit_card_black_24dp"
-                            android:paddingTop="20dp"
-                            android:text="Tarjeta"
-                            android:textColor="#fff"
-                            android:tint="@color/mpsdk_argencard"
-                            app:layout_anchorGravity="bottom|left" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                        <Button
-                            android:id="@+id/btn_firm_voucher"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_gravity="top|center"
-                            android:background="@drawable/round_shape"
-                            android:drawableTop="@drawable/ic_touch_app_black_40dp"
-                            android:paddingTop="20dp"
-                            android:text="Firmar"
-                            android:textColor="#fff"
-                            app:layout_anchorGravity="bottom|left" />
+                        </RelativeLayout>
+                </LinearLayout>
 
 
-                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="101dp"
+                    android:layout_gravity="bottom"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
 
-                        <Button
-                            android:id="@+id/btn_pay_cash"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_gravity="top|center"
-                            android:background="@drawable/round_shape"
-                            android:drawableTop="@drawable/ic_attach_money_black_24dp"                            android:paddingTop="20dp"
-                            android:text="Efectivo"
-                            android:textColor="#fff"
-                            app:layout_anchorGravity="bottom|left" />
-                </RelativeLayout>
-        </LinearLayout>
+                                <Button
+                                    android:id="@+id/bnt_pay_car"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="top|center"
+                                    android:background="@drawable/round_shape"
+                                    android:drawableTop="@drawable/ic_credit_card_black_24dp"
+                                    android:paddingTop="20dp"
+                                    android:text="Tarjeta"
+                                    android:textColor="#fff"
+                                    android:tint="@color/mpsdk_argencard"
+                                    app:layout_anchorGravity="bottom|left" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                                <Button
+                                    android:id="@+id/btn_firm_voucher"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="top|center"
+                                    android:background="@drawable/round_shape"
+                                    android:drawableTop="@drawable/ic_touch_app_black_40dp"
+                                    android:paddingTop="20dp"
+                                    android:text="Firmar"
+                                    android:textColor="#fff"
+                                    app:layout_anchorGravity="bottom|left" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                                <Button
+                                    android:id="@+id/btn_pay_cash"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="top|center"
+                                    android:background="@drawable/round_shape"
+                                    android:drawableTop="@drawable/ic_attach_money_black_24dp"                            android:paddingTop="20dp"
+                                    android:text="Efectivo"
+                                    android:textColor="#fff"
+                                    app:layout_anchorGravity="bottom|left" />
+                        </RelativeLayout>
+                </LinearLayout>
+
+                </LinearLayout>
+        </ScrollView>
 </LinearLayout>

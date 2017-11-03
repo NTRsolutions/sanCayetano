@@ -86,8 +86,18 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
         Context context = this;
 
-        //Intent intent = new Intent(this, cls);
-        Intent intent = new Intent(context, HomeActivity.class);
+        Intent intent;
+
+        if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
+        {
+             intent = new Intent(context, HomeClientActivity.class);
+        }else
+        {
+             intent = new Intent(context, HomeActivity.class);
+        }
+
+
+
         //intent.putExtra(".HomeActivity");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
        // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

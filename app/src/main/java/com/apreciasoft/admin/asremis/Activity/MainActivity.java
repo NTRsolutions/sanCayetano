@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "1.8.80";
+    public static String version = "1.9.0";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -88,18 +88,19 @@ public class MainActivity extends AppCompatActivity {
             gloval.setGv_user_mail(pref.getString("user_mail",""));
             gloval.setGv_user_name(pref.getString("user_name",""));
             gloval.setGv_base_intance(pref.getString("instance",""));
-            HttpConexion.setBase(pref.getString("instance",""));
 
             Gson gson = new Gson();
 
-
-            TypeToken<List<paramEntity>> token = new TypeToken<List<paramEntity>>(){};
-            List<paramEntity> param = gson.fromJson(pref.getString("param",""), token.getType());
-            gloval.setGv_param(param);
+            TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>(){};
+            List<paramEntity> listParam = gson.fromJson(pref.getString("param",""), token3.getType());
+            gloval.setGv_param(listParam);
 
             TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>(){};
             List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle",""), token2.getType());
             gloval.setGv_listvehicleType(vehicleTypenew);
+
+
+            HttpConexion.setBase(pref.getString("instance",""));
 
 
 
