@@ -1658,10 +1658,12 @@ public class HomeClientActivity extends AppCompatActivity
             // VALIDAMOS RESERVA O VIAJE //
             boolean validateRequired = true;
             if (isReervation) {
+
+
                 if(travel.getTravelBody().getOrigin().getNameOrigin().length() > 0 &&
                         travel.getTravelBody().getmDestination().getNameDestination().length() >0 &&
-                        fromTimeEtxt.getText().toString().matches("") &&
-                        fromDateEtxt.getText().toString().matches("")){
+                        !fromTimeEtxt.getText().toString().matches("") &&
+                        !fromDateEtxt.getText().toString().matches("")){
                     validateRequired = true;
                 }else {
                     validateRequired = false;
