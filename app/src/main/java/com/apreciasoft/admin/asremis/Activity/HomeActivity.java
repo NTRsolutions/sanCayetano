@@ -1022,9 +1022,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
 
         if(currentTravel !=  null) {
-            if (currentTravel.getIdSatatusTravel() == 2) {
+            //if (currentTravel.getIdSatatusTravel() == 2) {
                 controlVieTravel();
-            }
+            //}
         }else {
             //searchTravelByIdDriver();
                getCurrentTravelByIdDriver();
@@ -1924,6 +1924,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public  void btPreFinishVisible(boolean b)
     {
+
+        Log.d("Pre final", String.valueOf(b));
         final Button btnLogin = (Button) findViewById(R.id.btn_pre_finish);
         final Button btnInitSplep = (Button) findViewById(R.id.btn_iniTimeSlep);
         final Button btn_return = (Button) findViewById(R.id.btn_return);
@@ -2319,12 +2321,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             }
 
 
+                            btInitVisible(false);
+                            btCancelVisible(false);
                             btPreFinishVisible(false);
                             btnFlotingVisible(true);
 
 
-                            final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
-                            lg.setVisibility(View.INVISIBLE);
+
 
 
                             currentTravel = null;
@@ -2339,6 +2342,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             tiempoTxt = 0;
                             textTiempo = (TextView) findViewById(R.id.textTiempo);
                             textTiempo.setVisibility(View.INVISIBLE);
+
+
+                            final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
+                            lg.setVisibility(View.INVISIBLE);
 
                         }
 
