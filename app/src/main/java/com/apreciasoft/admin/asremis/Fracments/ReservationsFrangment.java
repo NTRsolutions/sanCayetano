@@ -12,14 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.apreciasoft.admin.asremis.Adapter.ReservationsAdapter;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesTravel;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
-import com.apreciasoft.admin.asremis.Util.RecyclerViewClickListener;
 
 import java.util.List;
 

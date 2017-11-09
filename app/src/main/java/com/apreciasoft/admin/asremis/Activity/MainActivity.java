@@ -77,33 +77,40 @@ public class MainActivity extends AppCompatActivity {
         this.gloval = ((GlovalVar) getApplicationContext());
         pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
 
-        if (pref.getBoolean("isLoged",false) == true){
 
-            gloval.setGv_logeed(true);
-            gloval.setGv_user_id(pref.getInt("user_id",0));
-            gloval.setGv_idResourceSocket(pref.getInt("is_resourceSocket",0));
-            gloval.setGv_id_cliet(pref.getInt("client_id",0));
-            gloval.setGv_id_profile(pref.getInt("profile_id",0));
-            gloval.setGv_id_driver(pref.getInt("driver_id",0));
-            gloval.setGv_user_mail(pref.getString("user_mail",""));
-            gloval.setGv_user_name(pref.getString("user_name",""));
-            gloval.setGv_base_intance(pref.getString("instance",""));
+        Log.d("checkAndRequestPermissions()", String.valueOf(checkAndRequestPermissions()));
+        if( checkAndRequestPermissions() == true) {
 
-            Gson gson = new Gson();
-
-            TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>(){};
-            List<paramEntity> listParam = gson.fromJson(pref.getString("param",""), token3.getType());
-            gloval.setGv_param(listParam);
-
-            TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>(){};
-            List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle",""), token2.getType());
-            gloval.setGv_listvehicleType(vehicleTypenew);
+            if (pref.getBoolean("isLoged", false) == true) {
 
 
-            HttpConexion.setBase(pref.getString("instance",""));
+                gloval.setGv_logeed(true);
+                gloval.setGv_user_id(pref.getInt("user_id", 0));
+                gloval.setGv_idResourceSocket(pref.getInt("is_resourceSocket", 0));
+                gloval.setGv_id_cliet(pref.getInt("client_id", 0));
+                gloval.setGv_id_profile(pref.getInt("profile_id", 0));
+                gloval.setGv_id_driver(pref.getInt("driver_id", 0));
+                gloval.setGv_user_mail(pref.getString("user_mail", ""));
+                gloval.setGv_user_name(pref.getString("user_name", ""));
+                gloval.setGv_base_intance(pref.getString("instance", ""));
+
+                Gson gson = new Gson();
+
+                TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>() {
+                };
+                List<paramEntity> listParam = gson.fromJson(pref.getString("param", ""), token3.getType());
+                gloval.setGv_param(listParam);
+
+                TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>() {
+                };
+                List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle", ""), token2.getType());
+                gloval.setGv_listvehicleType(vehicleTypenew);
 
 
+                HttpConexion.setBase(pref.getString("instance", ""));
 
+
+            }
         }
 
         if(gloval.getGv_logeed() == true )
@@ -194,18 +201,22 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> listPermissionsNeeded = new ArrayList<>();
 
-        if (camerapermission != PackageManager.PERMISSION_GRANTED) {
+        /*if (camerapermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }
+            Log.d("P-)","01");
+        }*/
         if (writepermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            Log.d("P-)","02");
         }
         if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            Log.d("P-)","03");
         }
-        if (permissionRecordAudio != PackageManager.PERMISSION_GRANTED) {
+      /* if (permissionRecordAudio != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
-        }
+            Log.d("P-)","04");
+        }*/
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;

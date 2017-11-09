@@ -9,7 +9,6 @@ import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.VehicleType;
 import com.apreciasoft.admin.asremis.Entity.client;
-import com.apreciasoft.admin.asremis.Entity.driver;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;

@@ -21,15 +21,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.apreciasoft.admin.asremis.Activity.HomeActivity;
-import com.apreciasoft.admin.asremis.Activity.MainActivity;
 import com.apreciasoft.admin.asremis.Entity.DriverFull;
 import com.apreciasoft.admin.asremis.Entity.driver;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesDriver;
-import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.RequestHandler;
 import com.google.gson.Gson;
