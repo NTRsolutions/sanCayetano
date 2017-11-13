@@ -90,20 +90,8 @@
         android:textColor="@android:color/white"
         android:gravity="center" />
 
-<!--
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/cast_ic_expanded_controller_pause"
-        app:backgroundTint="@color/succes"/>-->
 
-    <include
-        android:id="@+id/payment"
-        layout="@layout/payment_layout" />
+
 
 
     <LinearLayout
@@ -176,5 +164,8 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <include
+        android:id="@+id/payment"
+        layout="@layout/payment_layout" />
 
 </android.support.design.widget.CoordinatorLayout>

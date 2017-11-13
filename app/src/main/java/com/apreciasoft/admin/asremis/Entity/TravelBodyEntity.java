@@ -28,6 +28,24 @@ public class TravelBodyEntity {
     public int mIdTypeVehicle;
 
 
+    @Expose
+    @SerializedName("hoursAribo")
+    public String mhoursAribo;
+
+
+    @Expose
+    @SerializedName("terminal")
+    public String mterminal;
+
+    @Expose
+    @SerializedName("airlineCompany")
+    public String mairlineCompany;
+
+    @Expose
+    @SerializedName("flyNumber")
+    public String mflyNumber;
+
+
 
     @Expose
     @SerializedName("origin")
@@ -111,7 +129,10 @@ public class TravelBodyEntity {
 
     public TravelBodyEntity(int idClientKf, boolean isTravelComany, OriginEntity origin,
                             DestinationEntity dstination, String dateTravel,int idTypeVehicle, boolean isTravelSendMovil,
-                            int idUserCompanyKf) {
+                            int idUserCompanyKf, String hoursAribo,
+                                    String   terminal,
+                                    String  airlineCompany,
+                                    String flyNumber) {
         mIdClientKf = idClientKf;
         mIsTravelComany = isTravelComany;
         mOrigin = origin;
@@ -120,6 +141,10 @@ public class TravelBodyEntity {
         mIdTypeVehicle = idTypeVehicle;
         misTravelSendMovil = isTravelSendMovil;
         midUserCompanyKf = idUserCompanyKf;
+        mhoursAribo = hoursAribo;
+        mterminal = terminal;
+        mairlineCompany = airlineCompany;
+        mflyNumber = flyNumber;
     }
 
 
@@ -161,5 +186,38 @@ public class TravelBodyEntity {
 
     public void setmDateTravel(String mDateTravel) {
         this.mDateTravel = mDateTravel;
+    }
+
+
+    public String getMhoursAribo() {
+        return mhoursAribo;
+    }
+
+    public void setMhoursAribo(String mhoursAribo) {
+        this.mhoursAribo = mhoursAribo;
+    }
+
+    public String getMterminal() {
+        return mterminal;
+    }
+
+    public void setMterminal(String mterminal) {
+        this.mterminal = mterminal;
+    }
+
+    public String getMairlineCompany() {
+        return mairlineCompany;
+    }
+
+    public void setMairlineCompany(String mairlineCompany) {
+        this.mairlineCompany = mairlineCompany;
+    }
+
+    public String getMflyNumber() {
+        return mflyNumber;
+    }
+
+    public void setMflyNumber(String mflyNumber) {
+        this.mflyNumber = mflyNumber;
     }
 }

@@ -14,7 +14,7 @@ public class client {
     public int idClient;
 
     @Expose
-    @SerializedName("ClientEntityAdd")
+    @SerializedName("firtNameClient")
     public String firtNameClient;
 
     @Expose

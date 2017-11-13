@@ -89,6 +89,7 @@ public class HomeFragment extends Fragment implements
         public static GlovalVar gloval;
         public static TextView txtStatus = null;
         public static TextView txt_client_info = null;
+        public static TextView txt_observationFlight = null;
         public static TextView txt_date_info = null;
         public static TextView txt_destination_info = null;
         public static TextView txt_origin_info = null;
@@ -171,6 +172,8 @@ public class HomeFragment extends Fragment implements
         HomeFragment.txt_amount_info = (TextView) getActivity().findViewById(R.id.txt_amount_info);
         HomeFragment.txt_calling_info = (TextView) getActivity().findViewById(R.id.txt_calling_info);
         HomeFragment.txt_observationFromDriver = (TextView) getActivity().findViewById(R.id.txt_observationFromDriver);
+        HomeFragment.txt_observationFlight = (TextView) getActivity().findViewById(R.id.txt_observationFlight);
+
         HomeFragment.txt_pasajeros_info = (TextView) getActivity().findViewById(R.id.txt_pasajeros_info);
 
 
@@ -693,6 +696,8 @@ public class HomeFragment extends Fragment implements
         HomeFragment.txt_client_info.setText(currentTravel.getClient());
         HomeFragment.txt_calling_info.setText("No se cargo informacion");
         HomeFragment.txt_observationFromDriver.setText(currentTravel.getObservationFromDriver());
+
+        HomeFragment.txt_observationFlight.setText(currentTravel.getObsertavtionFlight());
 
         HomeFragment.txt_pasajeros_info.setText(currentTravel.getPasajero());
 

@@ -1,4 +1,5 @@
 package com.apreciasoft.admin.asremis.Activity;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.NotificationManager;
@@ -39,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -137,6 +139,8 @@ public class HomeClientActivity extends AppCompatActivity
     public static String location = "";
     public String lat = "";
     public String lon = "";
+    public Button btnrequertReser;
+    public Button btnrequetTravelNow;
 
     public static String destination = "";
     public static String latDestination = "";
@@ -172,6 +176,11 @@ public class HomeClientActivity extends AppCompatActivity
     public    SharedPreferences.Editor editor;
 
 
+    private EditText hoursAribo;
+    private EditText terminal;
+    private EditText airlineCompany;
+    private EditText flyNumber;
+    private CheckBox isFly;
 
     public ProgressDialog loading;
     private Integer idTypeVehicle;
@@ -217,7 +226,7 @@ public class HomeClientActivity extends AppCompatActivity
         enviarTokenAlServidor(token,gloval.getGv_user_id());
 
 
-        Button btnrequertReser = (Button) findViewById(R.id.btnrequertReser);
+        btnrequertReser = (Button) findViewById(R.id.btnrequertReser);
         btnrequertReser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,7 +245,7 @@ public class HomeClientActivity extends AppCompatActivity
 
         });
 
-        Button btnrequetTravelNow = (Button) findViewById(R.id.btn_requetTravelNow);
+        btnrequetTravelNow = (Button) findViewById(R.id.btn_requetTravelNow);
         btnrequetTravelNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -445,6 +454,12 @@ public class HomeClientActivity extends AppCompatActivity
 
         checkPermision();
 
+        isFly = (CheckBox) findViewById(R.id.isFly);
+        hoursAribo = (EditText) findViewById(R.id.txt_hoursAribo);
+        terminal = (EditText) findViewById(R.id.txt_terminalnew);
+        airlineCompany = (EditText) findViewById(R.id.txt_airlineCompany);
+        flyNumber = (EditText) findViewById(R.id.txt_flyNumber);
+
 
     }
 
@@ -495,6 +510,30 @@ public class HomeClientActivity extends AppCompatActivity
         }
 
         return;*/
+    }
+
+
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.isFly:
+                if (checked){
+                    LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
+                    btnTravelNew.setVisibility(View.VISIBLE);
+                }
+                // Put some meat on the sandwich
+                else{
+                    LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
+                    btnTravelNew.setVisibility(View.GONE);
+                }
+                // Remove the meat
+                break;
+
+        }
     }
 
 
@@ -1632,6 +1671,21 @@ public class HomeClientActivity extends AppCompatActivity
             }
 
 
+
+            // INFORMACION DEL VUELO ///
+            String _hoursAribo = "";
+            String _terminal = "";
+            String _airlineCompany = "";
+            String _flyNumber = "";
+
+            if(isFly.isChecked()){
+                _hoursAribo = hoursAribo.getText().toString();
+                _terminal = terminal.getText().toString();
+                _airlineCompany = airlineCompany.getText().toString();
+                _flyNumber = flyNumber.getText().toString();
+            }
+            //--------------------//
+
             travel.setTravelBody(
                     new TravelBodyEntity(
                             gloval.getGv_id_cliet(),
@@ -1645,7 +1699,8 @@ public class HomeClientActivity extends AppCompatActivity
                                     this.lonDestination,
                                     this.destination
                             )
-                            , this.dateTravel, idTypeVehicle, true, gloval.getGv_user_id()
+                            , this.dateTravel, idTypeVehicle, true, gloval.getGv_user_id(),
+                            _hoursAribo,_terminal,_airlineCompany,_flyNumber
                     )
             );
 
@@ -1673,6 +1728,8 @@ public class HomeClientActivity extends AppCompatActivity
 
 
             if (validateRequired) {
+                btnrequertReser.setEnabled(false);
+                btnrequetTravelNow.setEnabled(false);
 
                 Call<resp> call = this.daoTravel.addTravel(travel);
 
@@ -1712,13 +1769,16 @@ public class HomeClientActivity extends AppCompatActivity
                         contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
                         isReervation = false;
                         contetRequestTravelVisible(false);
-
+                        btnrequertReser.setEnabled(true);
+                        btnrequetTravelNow.setEnabled(true);
 
                     } else {
 
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
                         alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
                         alertDialog.setMessage(response.errorBody().source().toString());
+                        btnrequertReser.setEnabled(true);
+                        btnrequetTravelNow.setEnabled(true);
 
 
                         Log.w("***", response.errorBody().source().toString());
@@ -1752,6 +1812,8 @@ public class HomeClientActivity extends AppCompatActivity
                                 }
                             });
                     alertDialog.show();
+                    btnrequertReser.setEnabled(true);
+                    btnrequetTravelNow.setEnabled(true);
 
 
                 }
@@ -1773,12 +1835,12 @@ public class HomeClientActivity extends AppCompatActivity
     {
         if(visible)
         {
-            RelativeLayout btnTravelNew = (RelativeLayout) findViewById(R.id.contetRequestTravel);
+            CardView btnTravelNew = (CardView) findViewById(R.id.contetRequestTravel);
             btnTravelNew.setVisibility(View.VISIBLE);
         }
         else
         {
-            RelativeLayout btnTravelNew = (RelativeLayout) findViewById(R.id.contetRequestTravel);
+            CardView btnTravelNew = (CardView) findViewById(R.id.contetRequestTravel);
             btnTravelNew.setVisibility(View.INVISIBLE);
         }
 
@@ -2056,15 +2118,8 @@ public class HomeClientActivity extends AppCompatActivity
         fm.beginTransaction().replace(R.id.content_frame_client,new ReservationsFrangment()).commit();
     }
 
-    // radio buton list
-
-    private void showRadioButtonDialog() {
-
-        // custom dialog
 
 
 
-
-    }
 
 }

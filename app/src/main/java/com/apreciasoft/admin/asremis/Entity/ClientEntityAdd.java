@@ -9,6 +9,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class ClientEntityAdd {
 
+
+    @Expose
+    @SerializedName("dniClient")
+    public String dniClient;
+
+    @Expose
+    @SerializedName("phoneClient")
+    public String phoneClient;
+
     @Expose
     @SerializedName("firtNameClient")
     public String firtNameClient;
@@ -133,5 +142,21 @@ public class ClientEntityAdd {
         this.phone = phone;
         this.idCostCenter = idCostCenter;
         this.idCompanyKf = idCompanyKf;
+    }
+
+    public String getDniClient() {
+        return dniClient;
+    }
+
+    public void setDniClient(String dniClient) {
+        this.dniClient = dniClient;
+    }
+
+    public String getPhoneClient() {
+        return phoneClient;
+    }
+
+    public void setPhoneClient(String phoneClient) {
+        this.phoneClient = phoneClient;
     }
 }

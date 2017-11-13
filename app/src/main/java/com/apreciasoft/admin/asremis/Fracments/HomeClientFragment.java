@@ -3,6 +3,7 @@ package com.apreciasoft.admin.asremis.Fracments;
 import android.Manifest;
         import android.app.Activity;
         import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,9 +23,12 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
@@ -161,6 +165,8 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
 
        txtStatus.setText("SERVICIO ACTIVO");
+
+
 
 
        // panelTopIsVisible(false);

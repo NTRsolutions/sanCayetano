@@ -324,6 +324,18 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("reason")
     public String reason;
 
+    @Expose
+    @SerializedName("obsertavtionFlight")
+    public String obsertavtionFlight;
+
+
+    public String getObsertavtionFlight() {
+        return obsertavtionFlight;
+    }
+
+    public void setObsertavtionFlight(String obsertavtionFlight) {
+        this.obsertavtionFlight = obsertavtionFlight;
+    }
 
     public List<BeneficioEntity> getListBeneficio() {
         return listBeneficio;

@@ -34,10 +34,6 @@ import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
         import com.google.gson.reflect.TypeToken;
-
-        import org.json.JSONArray;
-
-        import java.lang.reflect.Type;
         import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,12 +63,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
-        editor = pref.edit();
-
-        editor.clear();
-        editor.commit(); // commit changes
-*/
 
         this.gloval = ((GlovalVar) getApplicationContext());
         pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
@@ -451,7 +441,11 @@ public class MainActivity extends AppCompatActivity {
 
                         userFull userLogued = response.body();
 
-                        if(!userLogued.response.isDriverInactive()) {
+                        if(userLogued.response.getUser().getIdProfileUser() == 2 ||
+                                userLogued.response.getUser().getIdProfileUser() == 5 ||
+                                userLogued.response.getUser().getIdProfileUser() == 3){
+
+                        if (!userLogued.response.isDriverInactive()) {
 
 
                             gloval.setGv_user_id(userLogued.response.getUser().getIdUser());
@@ -510,19 +504,34 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString("user_mail", gloval.getGv_user_mail());
                             editor.putString("user_name", gloval.getGv_user_name());
                             editor.putString("instance", gloval.getGv_base_intance());
-                            editor.putString("param",gson.toJson(gloval.getGv_param()));
-                            editor.putString("list_vehichle",gson.toJson(gloval.getGv_listvehicleType()));
+                            editor.putString("param", gson.toJson(gloval.getGv_param()));
+                            editor.putString("list_vehichle", gson.toJson(gloval.getGv_listvehicleType()));
                             editor.commit(); // commit changes
                             /************************/
 
                             loading.dismiss();
 
-                        }
-                        else{
+                        } else {
                             loading.dismiss();
                             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                             alertDialog.setTitle("Informacion");
                             alertDialog.setMessage("Usuario/Inactivo");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                            HttpConexion.setBase(HttpConexion.instance);
+
+                        }
+
+                    }else {
+                            loading.dismiss();
+                            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                            alertDialog.setTitle("Informacion");
+                            alertDialog.setMessage("Usuario/contraseña Invalida");
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {

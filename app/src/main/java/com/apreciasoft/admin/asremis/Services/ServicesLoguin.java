@@ -1,5 +1,7 @@
 package com.apreciasoft.admin.asremis.Services;
 
+import com.apreciasoft.admin.asremis.Entity.DriverFull;
+import com.apreciasoft.admin.asremis.Entity.RequetClient;
 import com.apreciasoft.admin.asremis.Entity.client;
 import com.apreciasoft.admin.asremis.Entity.login;
 import com.apreciasoft.admin.asremis.Entity.reporte;
@@ -34,6 +36,10 @@ public interface ServicesLoguin {
     @Headers("Content-Type: application/json")
     @POST("auth/updateClientLiteMobil")
     Call<client> updateClientLiteMobil(@Body client cl);
+
+    @Headers("Content-Type: application/json")
+    @GET("client/find/{id}")
+    Call<RequetClient> find(@Path("id") int id);
 
     @Headers("Content-Type: application/json")
     @GET("auth/checkVersion/{ver}")

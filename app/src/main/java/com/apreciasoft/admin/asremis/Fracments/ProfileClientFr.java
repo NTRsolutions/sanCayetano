@@ -22,9 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.apreciasoft.admin.asremis.Entity.DriverFull;
+import com.apreciasoft.admin.asremis.Entity.RequetClient;
 import com.apreciasoft.admin.asremis.Entity.client;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
+import com.apreciasoft.admin.asremis.Services.ServicesDriver;
 import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.RequestHandler;
@@ -55,6 +58,11 @@ public class ProfileClientFr extends Fragment {
     public static final String UPLOAD_KEY = "image";
     ServicesLoguin daoAuth = null;
     public ProgressDialog loading;
+    public EditText title1;
+    public EditText title2;
+    public EditText title3;
+    public EditText title4;
+    public EditText title1_1;
     public boolean changePick = false;
 
 
@@ -63,15 +71,7 @@ public class ProfileClientFr extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.fragment_profile_company, container, false);
 
-        // BUSCAR FOTO EN GALERIA //
-        Button btnAction = (Button) myView.findViewById(R.id.btnPic);
-        btnAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startGallery();
 
-            }
-        });
 
         // ENVIAR FOTO A EL SERVIDOR //
         Button btnSafePick = (Button) myView.findViewById(R.id.btnSafePick);
@@ -97,6 +97,20 @@ public class ProfileClientFr extends Fragment {
         gloval = ((GlovalVar)getActivity().getApplicationContext());
 
 
+        title1 = (EditText) myView.findViewById(R.id.txt_name);
+        title2 = (EditText) myView.findViewById(R.id.txt_dni);
+        title3 = (EditText) myView.findViewById(R.id.txt_mail);
+        title4 = (EditText) myView.findViewById(R.id.txt_phone);
+        title1_1 = (EditText) myView.findViewById(R.id.txt_last_name);
+
+
+        ImageView img = (ImageView) myView.findViewById(R.id.imgView);
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startGallery();
+            }
+        });
+
         getPick();
 
         return myView;
@@ -106,21 +120,78 @@ public class ProfileClientFr extends Fragment {
     // METODO OBTENER FOTO DE CLIENTE //
     public void getPick()
     {
-        final EditText title1 = (EditText) myView.findViewById(R.id.txt_name);
-        final EditText title2 = (EditText) myView.findViewById(R.id.txt_dni);
-        final EditText title3 = (EditText) myView.findViewById(R.id.txt_mail);
-        final EditText title4 = (EditText) myView.findViewById(R.id.txt_phone);
-        final EditText title1_1 = (EditText) myView.findViewById(R.id.txt_last_name);
 
-        title1.setText(gloval.getGv_clientinfo().getFirtNameClient());
-        title2.setText(gloval.getGv_clientinfo().getDniClient());
-        title3.setText(gloval.getGv_clientinfo().getMailClient());
-        title4.setText(gloval.getGv_clientinfo().getPhoneClient());
-        title1_1.setText(gloval.getGv_clientinfo().getLastNameClient());
+        try {
+            ProfileClientFr.DowloadImg dwImg = new ProfileClientFr.DowloadImg();
+            dwImg.execute(HttpConexion.BASE_URL+HttpConexion.base+"/Frond/img_users/"+gloval.getGv_user_id());
+        }catch (Exception E)
+        {
+            Log.d("ERROR", String.valueOf(E));
+        }
+
+        getInfoClient();
+    }
 
 
-        ProfileClientFr.DowloadImg dwImg = new ProfileClientFr.DowloadImg();
-        dwImg.execute(HttpConexion.BASE_URL+HttpConexion.base+"/Frond/img_users/"+gloval.getGv_user_id());
+    public  void    getInfoClient()
+    {
+
+        if (this.daoAuth == null) { this.daoAuth = HttpConexion.getUri().create(ServicesLoguin.class); }
+
+
+        try {
+
+            Call<RequetClient> call = this.daoAuth.find(gloval.getGv_id_cliet());
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
+
+            call.enqueue(new Callback<RequetClient>() {
+                @Override
+                public void onResponse(Call<RequetClient> call, Response<RequetClient> response) {
+
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
+
+
+
+                    if (response.code() == 200) {
+                        RequetClient rs = (RequetClient) response.body();
+
+                        title1.setText(rs.getClient().getFirtNameClient());
+                        title2.setText(rs.getClient().getDniClient());
+                        title3.setText(rs.getClient().getMailClient());
+                        title4.setText(rs.getClient().getPhoneClient());
+                        title1_1.setText(rs.getClient().getLastNameClient());
+
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.create();
+                        System.out.println(gson.toJson(rs));
+                    }
+
+
+                }
+
+                public void onFailure(Call<RequetClient> call, Throwable t) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setMessage(t.getMessage());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            });
+
+        } finally {
+            this.daoAuth = null;
+
+        }
 
     }
 
@@ -138,11 +209,6 @@ public class ProfileClientFr extends Fragment {
     // METODO PARA EDITAR LA IFORMACION//
     public void safeInfo()
     {
-        final EditText title1 = (EditText) myView.findViewById(R.id.txt_name);
-        final EditText title1_1 = (EditText) myView.findViewById(R.id.txt_last_name);
-        final EditText title2 = (EditText) myView.findViewById(R.id.txt_dni);
-        final EditText title3 = (EditText) myView.findViewById(R.id.txt_mail);
-        final EditText title4 = (EditText) myView.findViewById(R.id.txt_phone);
 
 
 
@@ -179,7 +245,11 @@ public class ProfileClientFr extends Fragment {
 
                         gloval.setGv_clientinfo(rs);
                         Toast.makeText(getActivity(), "Datos Actualizados", Toast.LENGTH_SHORT).show();
-
+                        title1.setText(rs.getFirtNameClient());
+                        title2.setText(rs.getDniClient());
+                        title3.setText(rs.getMailClient());
+                        title4.setText(rs.getPhoneClient());
+                        title1_1.setText(rs.getLastNameClient());
 
                         loading.dismiss();
                     }

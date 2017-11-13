@@ -421,6 +421,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //btFinishVisible(false);
 
+
+
+
        // Llamamos que control si tenemos un viaje //
         controlVieTravel();
 
@@ -470,6 +473,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         btPreFinishVisible(false);
         btInitVisible(false);
         btCancelVisible(false);
+
+
 
     }
 
@@ -1018,6 +1023,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
 
         Log.d("noti", "1");
+
+        if(dialogTravel != null){
+            dialogTravel.dismiss();
+        }
 
         super.onResume();
 
