@@ -1441,6 +1441,8 @@ public class HomeClientActivity extends AppCompatActivity
 
             currentTravel = gloval.getGv_travel_current();
             getCurrentTravelByIdClient();
+            Log.d("TRAVEL","LLEGO NOTIFICCION");
+
 
         }
     };
@@ -1513,6 +1515,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
             cliaerNotificationAndoid();
+            currentTravel = gloval.getGv_travel_current();
 
             if (currentTravel != null) {
                 activeGif(false, "");

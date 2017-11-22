@@ -84,6 +84,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -171,6 +172,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  Button btnFinishVo;
     public  Button btnFinishCash;
     public    SharedPreferences.Editor editor;
+
+
+
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -477,6 +483,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+
+
+
 
 
     public  void changueStatusService(){

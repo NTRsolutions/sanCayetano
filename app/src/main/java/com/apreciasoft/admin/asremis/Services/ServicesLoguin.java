@@ -34,6 +34,10 @@ public interface ServicesLoguin {
     Call<Boolean> token(@Body token token);
 
     @Headers("Content-Type: application/json")
+    @POST("auth/updateSocketWeb")
+    Call<Boolean> updateSocketWeb(@Body token token);
+
+    @Headers("Content-Type: application/json")
     @POST("auth/updateClientLiteMobil")
     Call<client> updateClientLiteMobil(@Body client cl);
 

@@ -1,6 +1,7 @@
 package com.apreciasoft.admin.asremis.Fracments;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
@@ -28,9 +29,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
+import com.apreciasoft.admin.asremis.Activity.MainActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+import com.apreciasoft.admin.asremis.Entity.token;
+import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
+import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.DataParser;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.google.android.gms.common.ConnectionResult;
@@ -48,7 +53,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -57,10 +66,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.socket.client.Ack;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Admin on 04/01/2017.
@@ -72,7 +90,17 @@ public class HomeFragment extends Fragment implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+
+
+
+        /* SOCKET MAPA */
+        public Socket SPCKETMAP;
+        public static String URL_SOCKET_MAP =  "http://"+HttpConexion.ip+":8085/";
+        public static String MY_EVENT_MAP = "init";
+        /*++++++++++++*/
+
         private static View view;
+        public ServicesLoguin daoLoguin = null;
         public String TAG = "HomeFragment";
         public List<LatLng> listPosition = new ArrayList<>();
         static GoogleMap mGoogleMap;
@@ -130,6 +158,7 @@ public class HomeFragment extends Fragment implements
         /* map is already there, just return view as it is */
         }
 
+        conexionSocketMap();
 
         return view;
     }
@@ -382,10 +411,17 @@ public class HomeFragment extends Fragment implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        try{
+            if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+            }
+
+        }catch (Exception E)
+        {
 
         }
 
@@ -399,9 +435,128 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {}
 
+
+    public void conexionSocketMap() {
+        try{
+        /* Instance object socket */
+            SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+
+            Log.d("SOCK MAP","va a conectar");
+
+            SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
+                @Override
+                public void call(Object... args) {
+                /* Our code */
+                    Log.d("SOCK MAP","CONECT");
+
+                    sendSocketId();
+
+                }
+            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener(){
+                @Override
+                public void call(Object... args) {
+                /* Our code */
+                    Log.d("SOCK MAP","DISCONESCT");
+                }
+            });
+
+            SPCKETMAP.connect();
+        }catch (URISyntaxException e){
+            Log.d("SOCK MAP",e.getMessage());
+        }
+    }
+
+
+
+    public void sendSocketId()
+    {
+        if (this.daoLoguin == null) {
+            this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
+        }
+
+        try {
+            token T = new token();
+            T.setToken(new tokenFull( gloval.getGv_user_id(),SPCKETMAP.id().toString()));
+
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            Log.d("Response JSON", gson.toJson(T));
+
+            Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
+
+            call.enqueue(new Callback<Boolean>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+
+
+                    Log.d("ERROR", t.getMessage());
+                }
+            });
+
+        } finally {
+            this.daoLoguin = null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onLocationChanged(Location location)
     {
+
+        /*
+        * SOCKET MAPA
+        * NODE JS
+        * */
+        JSONObject obj = new JSONObject();
+
+        double[] latLong = new double[2];
+        latLong[0] = location.getLatitude();
+        latLong[1] = location.getLongitude();
+
+        JSONArray jsonAraay = null;
+
+        try {
+            jsonAraay = new JSONArray(latLong);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        Log.d("SOCK", String.valueOf(jsonAraay));
+
+        try {
+            obj.put("isDriver", "true");
+            obj.put("latLong", jsonAraay);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        SPCKETMAP.emit("locChanged", obj, new Ack() {
+
+
+
+            @Override
+            public void call(Object... args) {
+             /* Our code */
+
+                Log.d("SOCK","S3");
+            }
+        });
+
+
+        /*-----------*/
 
         Log.d("onLocationChanged","onLocationChanged");
 
@@ -497,7 +652,7 @@ public class HomeFragment extends Fragment implements
 
 
 
-
+/*
 
                    Log.d(TAG, "T-8");
 

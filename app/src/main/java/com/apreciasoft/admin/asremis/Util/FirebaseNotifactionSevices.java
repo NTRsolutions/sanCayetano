@@ -64,7 +64,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 
-
+            Log.d("PERFIL", String.valueOf(gloval.getGv_id_profile()));
 
             if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {

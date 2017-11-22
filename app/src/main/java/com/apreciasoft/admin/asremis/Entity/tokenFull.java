@@ -25,12 +25,29 @@ public class tokenFull {
     @SerializedName("latVersionApp")
     public String latVersionApp;
 
+    @Expose
+    @SerializedName("idSocketMap")
+    public String idSocketMap;
+
+    public tokenFull(int idUser, String idSocketMap) {
+        this.idUser = idUser;
+        this.idSocketMap = idSocketMap;
+    }
 
     public tokenFull(String tokenFB, int idUser, int idDriver, String latVersionApp) {
         this.tokenFB = tokenFB;
         this.idUser = idUser;
         this.idDriver = idDriver;
         this.latVersionApp = latVersionApp;
+    }
+
+
+    public String getIdSocketMap() {
+        return idSocketMap;
+    }
+
+    public void setIdSocketMap(String idSocketMap) {
+        this.idSocketMap = idSocketMap;
     }
 
     public String getLatVersionApp() {
