@@ -1180,7 +1180,7 @@ public class HomeClientActivity extends AppCompatActivity
         try {
 
             motivo = motivo - 1;
-            Call<Boolean> call = this.daoTravel.cancelByClient(gloval.getGv_id_cliet(), motivo);
+            Call<Boolean> call = this.daoTravel.cancelByClient(gloval.getGv_user_id(), motivo);
 
             Log.d(TAG, call.request().toString());
             Log.d(TAG, call.request().headers().toString());
@@ -1195,6 +1195,8 @@ public class HomeClientActivity extends AppCompatActivity
                     // cerramo el dialog //
                     activeGifMotivos(false,"");
 
+
+                    materialDesignFAM.setVisibility(View.VISIBLE);
                     materialDesignFAM.close(true);
 
                     LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
@@ -1514,6 +1516,8 @@ public class HomeClientActivity extends AppCompatActivity
         try {
 
 
+            Log.d("VIAJE PASO","VIAJE PASO");
+
             cliaerNotificationAndoid();
             currentTravel = gloval.getGv_travel_current();
 
@@ -1612,15 +1616,37 @@ public class HomeClientActivity extends AppCompatActivity
 
 
                     currentTravel = null;
-                    materialDesignFAM.setVisibility(View.VISIBLE);
+                    materialDesignFAM.setVisibility(View.INVISIBLE);
                     gloval.setGv_travel_current(null);
                     HomeClientFragment.clearInfo();
 
 
                 }
+                else if (currentTravel.getIdSatatusTravel() == 2) {
+                    activeGif(false, "");
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                    alertDialog.setTitle("USTED POSEE UN VIAJE SOLICITADO!");
+                    alertDialog.setMessage("El Viaje  (" + currentTravel.getCodTravel() + ") esta en espera de Aceptacion de la Agencia..!");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ESPERAR",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCELAR VIAJE",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    activeGifMotivos(true,"");
+                                }
+                            });
+
+                    alertDialog.show();
+
+                }
 
             } else {
-
                 materialDesignFAM.setVisibility(View.VISIBLE);
                 // setInfoTravel();
             }
