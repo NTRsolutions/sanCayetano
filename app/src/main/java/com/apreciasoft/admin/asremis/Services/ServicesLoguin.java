@@ -3,6 +3,7 @@ package com.apreciasoft.admin.asremis.Services;
 import com.apreciasoft.admin.asremis.Entity.DriverFull;
 import com.apreciasoft.admin.asremis.Entity.RequetClient;
 import com.apreciasoft.admin.asremis.Entity.client;
+import com.apreciasoft.admin.asremis.Entity.clienteFull;
 import com.apreciasoft.admin.asremis.Entity.login;
 import com.apreciasoft.admin.asremis.Entity.reporte;
 import com.apreciasoft.admin.asremis.Entity.token;
@@ -39,7 +40,7 @@ public interface ServicesLoguin {
 
     @Headers("Content-Type: application/json")
     @POST("auth/updateClientLiteMobil")
-    Call<client> updateClientLiteMobil(@Body client cl);
+    Call<client> updateClientLiteMobil(@Body clienteFull cl);
 
     @Headers("Content-Type: application/json")
     @GET("client/find/{id}")

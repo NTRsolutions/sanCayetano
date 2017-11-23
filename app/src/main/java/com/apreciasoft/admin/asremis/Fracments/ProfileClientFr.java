@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.apreciasoft.admin.asremis.Entity.DriverFull;
 import com.apreciasoft.admin.asremis.Entity.RequetClient;
 import com.apreciasoft.admin.asremis.Entity.client;
+import com.apreciasoft.admin.asremis.Entity.clienteFull;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesDriver;
@@ -223,14 +224,17 @@ public class ProfileClientFr extends Fragment {
 
         try {
 
-            Call<client> call = this.daoAuth.updateClientLiteMobil(cr);
+            clienteFull cliente =  new clienteFull();
+            cliente.setClient(cr);
+
+            Call<client> call = this.daoAuth.updateClientLiteMobil(cliente);
             Log.d("Call request", call.request().toString());
             Log.d("Call request header", call.request().headers().toString());
 
 
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            System.out.println(gson.toJson(cr));
+            System.out.println(gson.toJson(cliente));
 
             call.enqueue(new Callback<client>() {
                 @Override
