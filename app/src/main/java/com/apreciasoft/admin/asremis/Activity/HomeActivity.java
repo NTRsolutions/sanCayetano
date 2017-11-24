@@ -794,8 +794,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             cliaerNotificationAndoid();
 
 
-
+            if(currentTravel == null){
                 currentTravel = gloval.getGv_travel_current();
+            }
 
             Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel));
 
@@ -1039,16 +1040,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         super.onResume();
 
+
         if(currentTravel !=  null) {
-            //if (currentTravel.getIdSatatusTravel() == 2) {
-                controlVieTravel();
-            //}
+            Log.d("currentTravel", String.valueOf(currentTravel.getIdSatatusTravel()));
+
+            controlVieTravel();
+
         }else {
-            //searchTravelByIdDriver();
+
                getCurrentTravelByIdDriver();
         }
-
-       // _activeTimer();
     }
 
     @Override

@@ -1467,7 +1467,7 @@ public class HomeClientActivity extends AppCompatActivity
                  call = this.daoTravel.getCurrentTravelByIdUserCompany(gloval.getGv_user_id());
             }
 
-
+         
 
             call.enqueue(new Callback<InfoTravelEntity>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -2047,7 +2047,6 @@ public class HomeClientActivity extends AppCompatActivity
         notifManager.cancelAll();
     }
 
-    //Leandro funcion para traer data de motivos
 
     public void serviceAllTravel() {
 
