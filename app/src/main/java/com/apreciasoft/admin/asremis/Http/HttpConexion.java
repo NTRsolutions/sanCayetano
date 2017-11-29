@@ -15,7 +15,7 @@ public class HttpConexion {
     //public static String ip = "192.168.0.3";
     public  static String instance = "developer";
      public static String ip = "54.245.175.10";
-
+    public static String portWsWeb = "8085";
 
 
     public static final String BASE_URL = "http://"+ip+"/";

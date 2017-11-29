@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
-import com.apreciasoft.admin.asremis.Activity.MainActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
@@ -95,7 +94,7 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public Socket SPCKETMAP;
-        public static String URL_SOCKET_MAP =  "http://"+HttpConexion.ip+":8085/";
+        public static String URL_SOCKET_MAP =  "http://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"/";
         public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
