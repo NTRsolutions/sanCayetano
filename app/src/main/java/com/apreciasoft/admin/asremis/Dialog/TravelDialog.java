@@ -111,6 +111,11 @@ public class TravelDialog extends DialogFragment {
             }
         });
 
+        if(HomeActivity.PARAM_66 == 1){
+            btnRefut.setEnabled(true);
+        }else {
+            btnRefut.setEnabled(false);
+        }
 
 
         final Button btnAcep = (Button) rootView.findViewById(R.id.btn_acept);

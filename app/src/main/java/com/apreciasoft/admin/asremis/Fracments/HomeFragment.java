@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public Socket SPCKETMAP;
-        public static String URL_SOCKET_MAP =  "http://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"/";
+        public static String URL_SOCKET_MAP =  "https://as-nube.com:"+HttpConexion.portWsWeb+"/";
         public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
@@ -440,7 +440,7 @@ public class HomeFragment extends Fragment implements
         /* Instance object socket */
             SPCKETMAP = IO.socket(URL_SOCKET_MAP);
 
-            Log.d("SOCK MAP","va a conectar");
+            Log.d("SOCK MAP","va a conectar"+URL_SOCKET_MAP);
 
             SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
                 @Override

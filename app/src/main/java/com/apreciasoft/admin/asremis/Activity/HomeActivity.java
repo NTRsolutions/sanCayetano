@@ -157,7 +157,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public View parentLayout =  null;
 
     int PARAM_20  = 0;
-    int PARAM_39  = 0; // ACTIVAR BOTON DE VUELTA
+    public static  int PARAM_39,PARAM_66  = 0; // ACTIVAR BOTON DE VUELTA
     public static  int param25 = 0;
 
     /*DIALOG*/
@@ -219,6 +219,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Log.d("gloval", String.valueOf(gloval));
 
         param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
+
+        PARAM_66 = Integer.parseInt(gloval.getGv_param().get(65).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
 
 
         PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
@@ -1232,6 +1234,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 btnFinishCash.setEnabled(true);
             }
+        }else {
+            btnFinishCash.setEnabled(true);
         }
         /* */
 
@@ -1923,6 +1927,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(b)
         {
             btn.setVisibility(View.VISIBLE);
+            if(PARAM_66 == 1){
+                btn.setEnabled(true);
+            }else {
+                btn.setEnabled(false);
+            }
+
         }else {
             btn.setVisibility(View.INVISIBLE);
         }
