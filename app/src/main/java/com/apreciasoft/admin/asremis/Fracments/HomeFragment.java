@@ -67,9 +67,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.socket.client.Ack;
 import io.socket.client.IO;
@@ -93,8 +105,8 @@ public class HomeFragment extends Fragment implements
 
 
         /* SOCKET MAPA */
-        public Socket SPCKETMAP;
-        public static String URL_SOCKET_MAP =  "https://as-nube.com:"+HttpConexion.portWsWeb+"/";
+        public static Socket SPCKETMAP;
+        public static String URL_SOCKET_MAP =  "https://as-nube.com:"+HttpConexion.portWsWeb+"";
         public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
@@ -157,7 +169,7 @@ public class HomeFragment extends Fragment implements
         /* map is already there, just return view as it is */
         }
 
-        conexionSocketMap();
+
 
         return view;
     }
@@ -416,7 +428,7 @@ public class HomeFragment extends Fragment implements
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
+                conexionSocketMap();
             }
 
         }catch (Exception E)
@@ -435,12 +447,26 @@ public class HomeFragment extends Fragment implements
     public void onConnectionFailed(ConnectionResult connectionResult) {}
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void conexionSocketMap() {
         try{
         /* Instance object socket */
-            SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+           // SPCKETMAP = IO.socket(URL_SOCKET_MAP);
 
-            Log.d("SOCK MAP","va a conectar"+URL_SOCKET_MAP);
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            IO.setDefaultSSLContext(sc);
+            HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
+
+
+            IO.Options options = new IO.Options();
+            options.sslContext = sc;
+            options.secure = true;
+            options.port = 8085;
+
+            SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
+
+            Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
 
             SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
                 @Override
@@ -459,9 +485,73 @@ public class HomeFragment extends Fragment implements
                 }
             });
 
+
+            JSONObject obj = new JSONObject();
+
+            double[] latLong = new double[2];
+            latLong[0] = HomeFragment.getmLastLocation().getLatitude();
+            latLong[1] = HomeFragment.getmLastLocation().getLongitude();
+
+            JSONArray jsonAraay = null;
+
+            try {
+                jsonAraay = new JSONArray(latLong);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            Log.d("SOCK", String.valueOf(jsonAraay));
+
+            try {
+                obj.put("isDriver", "true");
+                obj.put("latLong", jsonAraay);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+            SPCKETMAP.emit(HomeFragment.MY_EVENT_MAP, obj, new Ack() {
+
+
+
+                @Override
+                public void call(Object... args) {
+             /* Our code */
+
+                    Log.d("SOCK","S3");
+                }
+            });
+
             SPCKETMAP.connect();
         }catch (URISyntaxException e){
             Log.d("SOCK MAP",e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[] {};
+        }
+
+        public void checkClientTrusted(X509Certificate[] chain,
+                                       String authType) throws CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain,
+                                       String authType) throws CertificateException {
+        }
+    } };
+
+    public static class RelaxedHostNameVerifier implements HostnameVerifier {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
         }
     }
 

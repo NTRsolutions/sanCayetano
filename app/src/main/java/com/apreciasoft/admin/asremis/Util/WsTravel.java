@@ -31,7 +31,7 @@ public class WsTravel extends Activity {
     public  void connectWebSocket(int idUser) {
         URI uri;
         try {
-            uri = new URI("ws://"+HttpConexion.ip+":3389?idUser="+idUser+"&uri="+ HttpConexion.base);
+            uri = new URI("wss://"+HttpConexion.ip+":3389?idUser="+idUser+"&uri="+ HttpConexion.base);
 
             Log.d("Websocket", String.valueOf(uri));
         } catch (URISyntaxException e) {

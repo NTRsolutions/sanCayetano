@@ -773,6 +773,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             timer.cancel();
         }
 
+        HomeFragment.SPCKETMAP.disconnect();
 
         editor.clear();
         editor.commit(); // commit changes
