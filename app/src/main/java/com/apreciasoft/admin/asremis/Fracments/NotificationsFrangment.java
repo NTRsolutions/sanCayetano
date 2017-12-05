@@ -19,7 +19,6 @@ import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesNotification;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
-import com.apreciasoft.admin.asremis.Util.RecyclerViewClickListener;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ import retrofit2.Response;
 
 
 
-public class NotificationsFrangment extends Fragment  implements RecyclerViewClickListener {
+public class NotificationsFrangment extends Fragment  {
 
     public static final int INFO_ACTIVITY = 1;
     ServicesNotification apiService = null;
@@ -231,8 +230,8 @@ public class NotificationsFrangment extends Fragment  implements RecyclerViewCli
 
 
 
-    @Override
+    /*@Override
     public void recyclerViewListClicked(View v, int position) {
 
-    }
+    }*/
 }

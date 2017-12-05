@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.R;
-import com.apreciasoft.admin.asremis.Util.RecyclerViewClickListener;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class NorificationAdapter
 
     private List<notification> mDataset;
     private Context context;
-    private static RecyclerViewClickListener itemListener;
+   // private static RecyclerViewClickListener itemListener;
     private Fragment fragment;
     private final OnItemClickListener listener;
 

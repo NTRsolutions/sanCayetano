@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.R;
-import com.apreciasoft.admin.asremis.Util.RecyclerViewClickListener;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class ReservationsAdapter
     private final OnItemClickListener listener;
     private List<InfoTravelEntity> mDataset;
     private Context context;
-    private static RecyclerViewClickListener itemListener;
+    //private static RecyclerViewClickListener itemListener;
     private Fragment fragment;
 
     // Provide a reference to the views for each data item

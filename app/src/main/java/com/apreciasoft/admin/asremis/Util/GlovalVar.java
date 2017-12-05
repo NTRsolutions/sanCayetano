@@ -41,7 +41,7 @@ import java.util.List;
     private client gv_clientinfo;
     private List<VehicleType> gv_listvehicleType;
 
-    private  int gv_idResourceSocket;
+    private  String gv_idResourceSocket;
 
     @Override
     public void onCreate() {
@@ -75,12 +75,11 @@ import java.util.List;
         this.gv_listvehicleType = null;
     }
 
-
-    public int getGv_idResourceSocket() {
+    public String getGv_idResourceSocket() {
         return gv_idResourceSocket;
     }
 
-    public void setGv_idResourceSocket(int gv_idResourceSocket) {
+    public void setGv_idResourceSocket(String gv_idResourceSocket) {
         this.gv_idResourceSocket = gv_idResourceSocket;
     }
 

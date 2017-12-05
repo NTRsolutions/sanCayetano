@@ -68,16 +68,15 @@ public class user {
 
     @Expose
     @SerializedName("idResourceSocket")
-    int idResourceSocket;
+    String idResourceSocket;
 
-    public int getIdResourceSocket() {
+    public String getIdResourceSocket() {
         return idResourceSocket;
     }
 
-    public void setIdResourceSocket(int idResourceSocket) {
+    public void setIdResourceSocket(String idResourceSocket) {
         this.idResourceSocket = idResourceSocket;
     }
-
 
     public int getIdTypeAuth() {
         return idTypeAuth;

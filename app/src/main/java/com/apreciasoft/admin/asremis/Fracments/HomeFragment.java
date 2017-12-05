@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public static Socket SPCKETMAP;
-        public static String URL_SOCKET_MAP =  "https://as-nube.com:"+HttpConexion.portWsWeb+"";
+        public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
         public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
@@ -462,7 +462,7 @@ public class HomeFragment extends Fragment implements
             IO.Options options = new IO.Options();
             options.sslContext = sc;
             options.secure = true;
-            options.port = 8085;
+            options.port = HttpConexion.portWsWeb;
 
             SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
 

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "1.9.9";
+    public static String version = "2.0.0";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                 gloval.setGv_logeed(true);
                 gloval.setGv_user_id(pref.getInt("user_id", 0));
-                gloval.setGv_idResourceSocket(pref.getInt("is_resourceSocket", 0));
+                gloval.setGv_idResourceSocket(pref.getString("is_resourceSocket", ""));
                 gloval.setGv_id_cliet(pref.getInt("client_id", 0));
                 gloval.setGv_id_profile(pref.getInt("profile_id", 0));
                 gloval.setGv_id_driver(pref.getInt("driver_id", 0));
@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity {
 
                             editor.putBoolean("isLoged", true);
                             editor.putInt("user_id", gloval.getGv_user_id());
-                            editor.putInt("is_resourceSocket", gloval.getGv_idResourceSocket());
+                            editor.putString("is_resourceSocket", gloval.getGv_idResourceSocket());
                             editor.putInt("client_id", gloval.getGv_id_cliet());
                             editor.putInt("profile_id", gloval.getGv_id_profile());
                             editor.putInt("driver_id", gloval.getGv_id_driver());
