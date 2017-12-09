@@ -1347,7 +1347,7 @@ public class HomeClientActivity extends AppCompatActivity
                 public void onFailure(Call<Boolean> call, Throwable t) {
 
 
-                    Log.d(TAG,t.getMessage());
+                    //Log.d(TAG,t.getMessage());
                 }
             });
 
@@ -1832,7 +1832,7 @@ public class HomeClientActivity extends AppCompatActivity
                     alertDialog.setTitle("ERROR");
                     alertDialog.setMessage(t.getMessage());
 
-                    Log.d("**", t.getMessage());
+                  //  Log.d("**", t.getMessage());
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {

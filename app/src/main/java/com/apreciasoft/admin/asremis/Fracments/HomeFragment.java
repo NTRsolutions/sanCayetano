@@ -106,8 +106,10 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public static Socket SPCKETMAP;
-        public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
-        public static String MY_EVENT_MAP = "init";
+      //  public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
+      public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"";
+
+    public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
         private static View view;
@@ -453,6 +455,9 @@ public class HomeFragment extends Fragment implements
         /* Instance object socket */
            // SPCKETMAP = IO.socket(URL_SOCKET_MAP);
 
+
+            if(HttpConexion.PROTOCOL == "https")
+            {
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             IO.setDefaultSSLContext(sc);
@@ -464,7 +469,12 @@ public class HomeFragment extends Fragment implements
             options.secure = true;
             options.port = HttpConexion.portWsWeb;
 
-            SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
+                SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
+            }
+            else
+            {
+                SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+            }
 
             Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
 
@@ -526,11 +536,11 @@ public class HomeFragment extends Fragment implements
 
             SPCKETMAP.connect();
         }catch (URISyntaxException e){
-            Log.d("SOCK MAP",e.getMessage());
+            Log.d("SOCK ",e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.d("SOCK ",e.getMessage());
         } catch (KeyManagementException e) {
-            e.printStackTrace();
+            Log.d("SOCK ",e.getMessage());
         }
     }
 
@@ -621,7 +631,7 @@ public class HomeFragment extends Fragment implements
         }
 
 
-        Log.d("SOCK", String.valueOf(jsonAraay));
+       // Log.d("SOCK", String.valueOf(jsonAraay));
 
         try {
             obj.put("isDriver", "true");

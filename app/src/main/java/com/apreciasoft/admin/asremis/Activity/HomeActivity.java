@@ -963,7 +963,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                Log.d("Response JSON", gson.toJson(T));
+                Log.d("JSON TOKEN ", gson.toJson(T));
 
                 Call<Boolean> call = this.daoLoguin.token(T);
 
