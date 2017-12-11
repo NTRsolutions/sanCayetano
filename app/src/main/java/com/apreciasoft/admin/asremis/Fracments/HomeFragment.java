@@ -955,7 +955,13 @@ public class HomeFragment extends Fragment implements
 
         HomeFragment.txt_pasajeros_info.setText(currentTravel.getPasajero());
 
-        HomeFragment.txt_destination_info.setText(currentTravel.getNameDestination());
+
+
+        if(currentTravel.getMultiDestination() != null){
+            HomeFragment.txt_destination_info.setText(currentTravel.getMultiDestination());
+        }else {
+            HomeFragment.txt_destination_info.setText(currentTravel.getNameDestination());
+        }
         HomeFragment.txt_origin_info.setText(currentTravel.getNameOrigin());
         HomeFragment.txt_km_info.setText(currentTravel.getDistanceLabel());
         HomeFragment.txtStatus.setText(currentTravel.getNameStatusTravel());

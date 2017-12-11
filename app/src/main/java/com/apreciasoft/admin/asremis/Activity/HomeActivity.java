@@ -411,9 +411,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         android.app.FragmentManager fr =  getFragmentManager();
         fr.beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
 
-       // ETOOO RECIEN COMENTADO 24/05/2017 OJOOOOOO
-      //  android.app.FragmentManager fr =  getFragmentManager();
-       // fr.beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
 
 
         final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
@@ -448,21 +445,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         textTiempo.setVisibility(View.INVISIBLE);
 
 
-
-        /*fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                try {
-                    changueStatusService();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });*/
 
 
         //LLAMAMOS A EL METODO PARA HABILITAR PERMISOS//
@@ -2141,7 +2123,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
                 Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-              //  Log.d("fatal",response.body().toString());
+                Log.d("fatal",response.body().toString());
 
 
                 btnFlotingVisible(false);
