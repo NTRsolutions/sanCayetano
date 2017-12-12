@@ -87,7 +87,7 @@ public class TravelDialog extends DialogFragment {
                        " 1) "+currentTravel.getOriginMultipleDesc1()+" - "+
                        " 2) "+currentTravel.getOriginMultipleDesc2()+" - "+
                        " 3) "+currentTravel.getOriginMultipleDesc3()+" - "+
-                       " 4) "+ currentTravel.getOriginMultipleDesc3());
+                       " 4) "+ currentTravel.getOriginMultipleDesc4());
 
        // txt_mutiOrignes.setMovementMethod(new ScrollingMovementMethod());
 
