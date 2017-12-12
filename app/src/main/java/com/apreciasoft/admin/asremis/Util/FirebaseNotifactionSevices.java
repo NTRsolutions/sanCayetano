@@ -13,7 +13,6 @@ import android.util.Log;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
-import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

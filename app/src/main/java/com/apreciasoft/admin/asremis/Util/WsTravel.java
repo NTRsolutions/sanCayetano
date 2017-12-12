@@ -64,7 +64,7 @@ public class WsTravel extends Activity {
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             IO.setDefaultSSLContext(sc);
-            HttpsURLConnection.setDefaultHostnameVerifier(new HomeFragment.RelaxedHostNameVerifier());
+            //HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
 
             IO.Options options = new IO.Options();
@@ -198,11 +198,11 @@ public class WsTravel extends Activity {
         }
     } };
 
-    public static class RelaxedHostNameVerifier implements HostnameVerifier {
+    /*public static class RelaxedHostNameVerifier implements HostnameVerifier {
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
-    }
+    }*/
 
 
     public void coseWebSocket() {

@@ -461,7 +461,7 @@ public class HomeFragment extends Fragment implements
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             IO.setDefaultSSLContext(sc);
-            HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
+           // HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
 
             IO.Options options = new IO.Options();
@@ -559,11 +559,11 @@ public class HomeFragment extends Fragment implements
         }
     } };
 
-    public static class RelaxedHostNameVerifier implements HostnameVerifier {
+   /* public static class RelaxedHostNameVerifier implements HostnameVerifier {
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
-    }
+    }*/
 
 
 
