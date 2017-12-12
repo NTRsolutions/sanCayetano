@@ -113,6 +113,7 @@ public class HomeFragment extends Fragment implements
         /*++++++++++++*/
 
         private static View view;
+        int _COUNT_CHANGUE = 0;
         public ServicesLoguin daoLoguin = null;
         public String TAG = "HomeFragment";
         public List<LatLng> listPosition = new ArrayList<>();
@@ -243,9 +244,29 @@ public class HomeFragment extends Fragment implements
         googleMap.addMarker(new MarkerOptions().title("Usted esta Aqui").position(point));*/
    //}
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            //stop location updates when Activity is no longer active
+            if (mGoogleApiClient != null) {
+                Log.d("YA","6");
+                HomeFragment.SPCKETMAP.disconnect();
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+
+            }
+            Log.d("YA","7");
+
+        }catch (Exception e) {
+            Log.d("ERROR", e.getMessage());
+        }
+    }
+
     @Override
     public void onPause() {
         super.onPause();
+
 
 /*
         try {
@@ -430,7 +451,7 @@ public class HomeFragment extends Fragment implements
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                conexionSocketMap();
+              //  conexionSocketMap();
             }
 
         }catch (Exception E)
@@ -451,96 +472,110 @@ public class HomeFragment extends Fragment implements
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void conexionSocketMap() {
+
+
+
         try{
         /* Instance object socket */
            // SPCKETMAP = IO.socket(URL_SOCKET_MAP);
 
 
-            if(HttpConexion.PROTOCOL == "https")
-            {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new SecureRandom());
-            IO.setDefaultSSLContext(sc);
-            HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
 
-            IO.Options options = new IO.Options();
-            options.sslContext = sc;
-            options.secure = true;
-            options.port = HttpConexion.portWsWeb;
+                    if(HttpConexion.PROTOCOL == "https")
+                    {
+                    SSLContext sc = SSLContext.getInstance("TLS");
+                    sc.init(null, trustAllCerts, new SecureRandom());
+                    IO.setDefaultSSLContext(sc);
+                    HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
-                SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
-            }
-            else
-            {
-                SPCKETMAP = IO.socket(URL_SOCKET_MAP);
-            }
 
-            Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
+                    IO.Options options = new IO.Options();
+                    options.sslContext = sc;
+                    options.secure = true;
+                    options.port = HttpConexion.portWsWeb;
 
-            SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
-                @Override
-                public void call(Object... args) {
-                /* Our code */
-                    Log.d("SOCK MAP","CONECT");
+                        SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
+                    }
+                    else
+                    {
+                        SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+                    }
 
-                    sendSocketId();
+                    Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
 
+                    SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
+                        @Override
+                        public void call(Object... args) {
+                        /* Our code */
+                            Log.d("SOCK MAP","CONECT");
+                            _COUNT_CHANGUE = 1;
+                            sendSocketId();
+
+                        }
+                    }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener(){
+                        @Override
+                        public void call(Object... args) {
+                        /* Our code */
+                            Log.d("SOCK MAP","DISCONESCT");
+                            _COUNT_CHANGUE = 0;
+                        }
+                    });
+
+
+
+                JSONObject obj = new JSONObject();
+
+                double[] latLong = new double[2];
+                //latLong[0] = mLastLocation.getLatitude();
+               // latLong[1] = mLastLocation.getLongitude();
+
+                JSONArray jsonAraay = null;
+
+                try {
+                    jsonAraay = new JSONArray(latLong);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener(){
-                @Override
-                public void call(Object... args) {
-                /* Our code */
-                    Log.d("SOCK MAP","DISCONESCT");
+
+
+                Log.d("SOCK", String.valueOf(jsonAraay));
+
+                try {
+                    obj.put("isDriver", "true");
+                    obj.put("latLong", jsonAraay);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-
-
-            JSONObject obj = new JSONObject();
-
-            double[] latLong = new double[2];
-            latLong[0] = HomeFragment.getmLastLocation().getLatitude();
-            latLong[1] = HomeFragment.getmLastLocation().getLongitude();
-
-            JSONArray jsonAraay = null;
-
-            try {
-                jsonAraay = new JSONArray(latLong);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            Log.d("SOCK", String.valueOf(jsonAraay));
-
-            try {
-                obj.put("isDriver", "true");
-                obj.put("latLong", jsonAraay);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
 
 
-            SPCKETMAP.emit(HomeFragment.MY_EVENT_MAP, obj, new Ack() {
+                SPCKETMAP.emit(HomeFragment.MY_EVENT_MAP, obj, new Ack() {
 
 
 
-                @Override
-                public void call(Object... args) {
+                    @Override
+                    public void call(Object... args) {
              /* Our code */
 
-                    Log.d("SOCK","S3");
-                }
-            });
+                        Log.d("SOCK","S3");
+                    }
+                });
 
-            SPCKETMAP.connect();
+                SPCKETMAP.connect();
+
+
+
+
         }catch (URISyntaxException e){
             Log.d("SOCK ",e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             Log.d("SOCK ",e.getMessage());
         } catch (KeyManagementException e) {
             Log.d("SOCK ",e.getMessage());
+        }catch (Exception e) {
+            Log.d("SOCK ERROR",e.getMessage());
+
         }
     }
 
@@ -642,17 +677,24 @@ public class HomeFragment extends Fragment implements
 
 
 
-        SPCKETMAP.emit("locChanged", obj, new Ack() {
+        if(_COUNT_CHANGUE == 0){
+            this.conexionSocketMap();
+        }
 
 
 
-            @Override
-            public void call(Object... args) {
-             /* Our code */
+        if(SPCKETMAP != null) {
+            SPCKETMAP.emit("locChanged", obj, new Ack() {
 
-                Log.d("SOCK","S3");
-            }
-        });
+
+                @Override
+                public void call(Object... args) {
+                     /* Our code */
+
+                    Log.d("SOCK", "S3");
+                }
+            });
+        }
 
 
         /*-----------*/
