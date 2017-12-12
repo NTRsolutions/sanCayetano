@@ -1004,7 +1004,41 @@ public class HomeFragment extends Fragment implements
         }else {
             HomeFragment.txt_destination_info.setText(currentTravel.getNameDestination());
         }
-        HomeFragment.txt_origin_info.setText(currentTravel.getNameOrigin());
+
+
+        int numOrigin = 0;
+        String multiOrigen =
+                " 1) "+currentTravel.getOriginMultipleDesc1()+" - "+
+                        " 2) "+currentTravel.getOriginMultipleDesc2()+" - "+
+                        " 3) "+currentTravel.getOriginMultipleDesc3()+" - "+
+                        " 4) "+ currentTravel.getOriginMultipleDesc4();
+
+        if(currentTravel.getOriginMultipleDesc1() != null){
+            numOrigin = 1;
+        }
+
+        if(currentTravel.getOriginMultipleDesc2() != null){
+            numOrigin = 1;
+        }
+
+        if(currentTravel.getOriginMultipleDesc3() != null){
+            numOrigin = 1;
+        }
+
+        if(currentTravel.getOriginMultipleDesc4() != null){
+            numOrigin = 1;
+        }
+
+        Log.d("numOrigin", String.valueOf(numOrigin));
+
+        if(numOrigin > 0){
+            HomeFragment.txt_origin_info.setText(multiOrigen);
+        }else {
+            HomeFragment.txt_origin_info.setText(currentTravel.getNameOrigin());
+        }
+
+
+
         HomeFragment.txt_km_info.setText(currentTravel.getDistanceLabel());
         HomeFragment.txtStatus.setText(currentTravel.getNameStatusTravel());
 
