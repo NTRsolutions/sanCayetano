@@ -73,8 +73,6 @@ import com.apreciasoft.admin.asremis.Util.Signature;
 import com.apreciasoft.admin.asremis.Util.Tiempo;
 import com.apreciasoft.admin.asremis.Util.Utils;
 import com.apreciasoft.admin.asremis.Util.WsTravel;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
