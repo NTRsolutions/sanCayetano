@@ -105,7 +105,7 @@ public class NotificationsFrangment extends Fragment  {
                     list = (List<notification>) response.body();
                     gloval.setGv_listNotifications(list);
 
-                    Toast.makeText(getActivity().getApplicationContext(), "Notificacion Confirmada!", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getActivity().getApplicationContext(), "Notificacion Confirmada!", Toast.LENGTH_SHORT).show();
                     refreshContent();
 
                     //
@@ -116,7 +116,7 @@ public class NotificationsFrangment extends Fragment  {
                     alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
                     alertDialog.setMessage(response.errorBody().source().toString());
 
-                    Toast.makeText(getActivity().getApplicationContext(), "Sin Notificaciones!", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getActivity().getApplicationContext(), "Sin Notificaciones!", Toast.LENGTH_SHORT).show();
 
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {

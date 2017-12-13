@@ -609,6 +609,7 @@ public class HomeFragment extends Fragment implements
         }
 
         try {
+            Log.d("SPCKETMAP",SPCKETMAP.id().toString());
             token T = new token();
             T.setToken(new tokenFull( gloval.getGv_user_id(),SPCKETMAP.id().toString()));
 
