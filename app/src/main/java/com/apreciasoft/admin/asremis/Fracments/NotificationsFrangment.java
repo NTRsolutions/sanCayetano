@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -132,19 +133,8 @@ public class NotificationsFrangment extends Fragment  {
 
             @Override
             public void onFailure(Call<List<notification>> call, Throwable t) {
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setTitle("ERROR");
-                alertDialog.setMessage(t.getMessage());
-
-                Log.d("**", t.getMessage());
-
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
             }
         });
 

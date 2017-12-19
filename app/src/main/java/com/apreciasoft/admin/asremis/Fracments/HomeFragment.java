@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
@@ -37,6 +38,7 @@ import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Util.DataParser;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
+import com.apreciasoft.admin.asremis.Util.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -114,6 +116,7 @@ public class HomeFragment extends Fragment implements
 
         private static View view;
         int _COUNT_CHANGUE = 0;
+        public  boolean CONEXION_MAP_ERROR = false;
         public ServicesLoguin daoLoguin = null;
         public String TAG = "HomeFragment";
         public List<LatLng> listPosition = new ArrayList<>();
@@ -484,16 +487,16 @@ public class HomeFragment extends Fragment implements
 
                     if(HttpConexion.PROTOCOL == "https")
                     {
-                    SSLContext sc = SSLContext.getInstance("TLS");
-                    sc.init(null, trustAllCerts, new SecureRandom());
-                    IO.setDefaultSSLContext(sc);
-                  //  HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
+                        SSLContext sc = SSLContext.getInstance("TLS");
+                        sc.init(null, trustAllCerts, new SecureRandom());
+                        IO.setDefaultSSLContext(sc);
+                       //  HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
 
-                    IO.Options options = new IO.Options();
-                    options.sslContext = sc;
-                    options.secure = true;
-                    options.port = HttpConexion.portWsWeb;
+                        IO.Options options = new IO.Options();
+                        options.sslContext = sc;
+                        options.secure = true;
+                        options.port = HttpConexion.portWsWeb;
 
                         SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
                     }
@@ -511,6 +514,8 @@ public class HomeFragment extends Fragment implements
                             Log.d("SOCK MAP","CONECT");
                             _COUNT_CHANGUE = 1;
                             sendSocketId();
+                            CONEXION_MAP_ERROR = false;
+
 
                         }
                     }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener(){
@@ -519,8 +524,21 @@ public class HomeFragment extends Fragment implements
                         /* Our code */
                             Log.d("SOCK MAP","DISCONESCT");
                             _COUNT_CHANGUE = 0;
+                            CONEXION_MAP_ERROR = false;
+
+                        }
+                    })
+                    .on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener(){
+                        @Override
+                        public void call(Object... args) {
+                        /* Our code */
+                            Log.d("SOCK MAP","EVENT_RECONNECT_ERROR");
+                            _COUNT_CHANGUE = 0;
+                            SPCKETMAP.disconnect();
+                            CONEXION_MAP_ERROR = true;
                         }
                     });
+
 
 
 
@@ -609,34 +627,40 @@ public class HomeFragment extends Fragment implements
         }
 
         try {
-            Log.d("SPCKETMAP",SPCKETMAP.id().toString());
-            token T = new token();
-            T.setToken(new tokenFull( gloval.getGv_user_id(),SPCKETMAP.id().toString()));
-
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            Log.d("Response JSON", gson.toJson(T));
-
-            Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
-
-            call.enqueue(new Callback<Boolean>() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    Log.d("Response request", call.request().toString());
-                    Log.d("Response request header", call.request().headers().toString());
-                    Log.d("Response raw header", response.headers().toString());
-                    Log.d("Response raw", String.valueOf(response.raw().body()));
-                    Log.d("Response code", String.valueOf(response.code()));
-
-                }
-
-                public void onFailure(Call<Boolean> call, Throwable t) {
 
 
-                    Log.d("ERROR", t.getMessage());
-                }
-            });
+            if(SPCKETMAP.id() != null) {
+
+
+                Log.d("SPCKETMAP", SPCKETMAP.id().toString());
+                token T = new token();
+                T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
+
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                Log.d("Response JSON", gson.toJson(T));
+
+                Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
+
+                call.enqueue(new Callback<Boolean>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        Log.d("Response request", call.request().toString());
+                        Log.d("Response request header", call.request().headers().toString());
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                        Log.d("Response code", String.valueOf(response.code()));
+
+                    }
+
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+
+
+                        Log.d("ERROR", t.getMessage());
+                    }
+                });
+            }
 
         } finally {
             this.daoLoguin = null;
@@ -677,9 +701,24 @@ public class HomeFragment extends Fragment implements
         }
 
 
+        if(this.getActivity().getApplicationContext() != null){
+            if( Utils.verificaConexion(this.getActivity().getApplicationContext()) == false){
+                if(SPCKETMAP != null){
+                    SPCKETMAP.disconnect();
+                    _COUNT_CHANGUE = 0;
 
-        if(_COUNT_CHANGUE == 0){
-            this.conexionSocketMap();
+                }
+            }
+
+        }
+
+
+        if(this.getActivity().getApplicationContext() != null) {
+
+            if (_COUNT_CHANGUE == 0 &&
+                    Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
+                this.conexionSocketMap();
+            }
         }
 
 
@@ -822,7 +861,7 @@ public class HomeFragment extends Fragment implements
                    }
 
                    Log.d(TAG, "T-11");
-           /* }*/
+
 
 
                    // SI POSEE UN VIAJE DIBUAMOS LA RUTA QUE ESTA RECORRINEDO EL CHOFER //

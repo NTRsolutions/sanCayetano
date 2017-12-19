@@ -110,6 +110,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public ServicesLoguin daoLoguin = null;
     public ServicesDriver daoDriver = null;
 
+    public ProgressDialog loading;
+
 
     public Timer timer;
     public ProgressDialog loadingCronometro;
@@ -568,19 +570,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                                     @Override
                                     public void onFailure(Call<Boolean> call, Throwable t) {
-                                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                                        alertDialog.setTitle("ERROR");
-                                        alertDialog.setMessage(t.getMessage());
-
-                                        Log.d("**", t.getMessage());
-
-                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                        alertDialog.show();
+                                        Snackbar.make(findViewById(android.R.id.content),
+                                                "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                                     }
                                 });
 
@@ -758,7 +749,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        HomeFragment.SPCKETMAP.disconnect();
+        if(HomeFragment.SPCKETMAP != null){
+            HomeFragment.SPCKETMAP.disconnect();
+
+        }
 
 
         editor.clear();
@@ -908,20 +902,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setMessage(t.getMessage());
-
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
 
 
@@ -1848,6 +1830,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         try {
 
+            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+
 
 
             Call<InfoTravelEntity> call = this.daoTravel.refuse(idTravel);
@@ -1884,25 +1868,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setMessage(t.getMessage());
+                    loading.dismiss();
 
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
 
 
             });
 
         } finally {
+            loading.dismiss();
             this.daoTravel = null;
         }
     }
@@ -1985,20 +1961,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setMessage(t.getMessage());
-
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
 
 
@@ -2031,20 +1995,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setMessage(t.getMessage());
-
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
 
 
@@ -2080,20 +2032,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setMessage(t.getMessage());
-
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
 
 
@@ -2114,6 +2054,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         try {
+            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+
             Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
 
             Log.d("fatal", call.request().toString());
@@ -2143,26 +2085,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
 
             public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                alertDialog.setTitle("ERROR");
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.setMessage(t.getMessage());
+                loading.dismiss();
 
-
-
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                Snackbar.make(findViewById(android.R.id.content),
+                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
             }
 
 
         });
 
         } finally {
+            loading.dismiss();
+
             this.daoTravel = null;
         }
     }
@@ -2172,7 +2106,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
         try {
-                Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
+            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+
+            Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
 
                 call.enqueue(new Callback<InfoTravelEntity>() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -2192,21 +2128,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                        alertDialog.setTitle("ERROR");
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setMessage(t.getMessage());
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
+                        loading.dismiss();
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                     }
                 });
 
         } finally {
+            loading.dismiss();
             this.daoTravel = null;
         }
     }
@@ -2365,20 +2294,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                            alertDialog.setTitle("ERROR");
-                            alertDialog.setMessage(t.getMessage());
-                            alertDialog.setCanceledOnTouchOutside(false);
-
-
-
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                         }
                     });
 
@@ -2696,16 +2613,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
             });
 
