@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.R;
-
 import java.util.List;
 
 /**

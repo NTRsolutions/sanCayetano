@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.R;
-
 import java.util.List;
 
 /**

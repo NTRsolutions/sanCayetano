@@ -2,39 +2,17 @@ package com.apreciasoft.admin.asremis.Util;
 
 
 import android.app.Activity;
-import android.os.Build;
 import android.util.Log;
-
-import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
-import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
-import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_17;
-import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Calendar;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
 import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
