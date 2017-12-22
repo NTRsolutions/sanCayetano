@@ -40,6 +40,8 @@ import java.util.List;
     //private driver gv_driverinfo;
     private client gv_clientinfo;
     private List<VehicleType> gv_listvehicleType;
+    private String gv_nr_driver = "";
+
 
     private  String gv_idResourceSocket;
 
@@ -73,6 +75,7 @@ import java.util.List;
         this.gv_param = null;
         this.gv_logeed = false;
         this.gv_listvehicleType = null;
+        this.gv_nr_driver = "";
     }
 
     public String getGv_idResourceSocket() {
@@ -235,5 +238,13 @@ import java.util.List;
 
     public void setGv_srviceActive(int gv_srviceActive) {
         this.gv_srviceActive = gv_srviceActive;
+    }
+
+    public String getGv_nr_driver() {
+        return gv_nr_driver;
+    }
+
+    public void setGv_nr_driver(String gv_nr_driver) {
+        this.gv_nr_driver = gv_nr_driver;
     }
 }

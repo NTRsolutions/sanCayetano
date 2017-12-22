@@ -63,14 +63,17 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 
-            Log.d("PERFIL", String.valueOf(gloval.getGv_id_profile()));
 
             if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {
+                Log.d("NOTIFICA", String.valueOf("YESS"));
+
                 mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
 
             }else
             {
+                Log.d("NOTIFICA", String.valueOf("YESS"));
+
                 mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeActivity.class);
 
             }
@@ -109,6 +112,10 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         if(gloval.getGv_travel_current() != null)
         {
             if(gloval.getGv_travel_current().getNameOrigin() != null) {
+
+                Log.d("NOTIFICA", String.valueOf("YESS"));
+
+
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                         .setContentTitle(title)
                         .setSmallIcon(R.mipmap.ic_launcher)

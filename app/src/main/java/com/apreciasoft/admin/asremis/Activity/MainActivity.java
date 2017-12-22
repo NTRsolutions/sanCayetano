@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "2.0.4";
+    public static String version = "2.0.5";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 gloval.setGv_user_mail(pref.getString("user_mail", ""));
                 gloval.setGv_user_name(pref.getString("user_name", ""));
                 gloval.setGv_base_intance(pref.getString("instance", ""));
-
+                gloval.setGv_nr_driver(pref.getString("nrDriver", ""));
                 Gson gson = new Gson();
 
                 TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>() {
@@ -473,6 +473,8 @@ public class MainActivity extends AppCompatActivity {
                             } else {
 
                                 gloval.setGv_srviceActive(userLogued.response.getDriver().getIdStatusDriverTravelKf());
+                                gloval.setGv_nr_driver(userLogued.response.getDriver().getNrDriver());
+
 
                                 if (userLogued.response.getCurrentTravel() != null) {
                                     gloval.setGv_travel_current(userLogued.response.getCurrentTravel());
@@ -500,6 +502,7 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString("instance", gloval.getGv_base_intance());
                             editor.putString("param", gson.toJson(gloval.getGv_param()));
                             editor.putString("list_vehichle", gson.toJson(gloval.getGv_listvehicleType()));
+                            editor.putString("nrDriver", gloval.getGv_nr_driver());
                             editor.commit(); // commit changes
                             /************************/
 
