@@ -1149,6 +1149,7 @@ public class HomeClientActivity extends AppCompatActivity
                 }
 
                 public void onFailure(Call<reporte> call, Throwable t) {
+                    loading.dismiss();
                     Snackbar.make(findViewById(android.R.id.content),
                             "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
@@ -1844,6 +1845,11 @@ public class HomeClientActivity extends AppCompatActivity
             fn_gotoreservation();
             return true;
         }
+        else if (id == R.id.action_refhesh) {
+
+            fn_refhesh();
+            return true;
+        }
         else if (id == R.id.action_profile) {
             fn_gotoprofile();
 
@@ -1851,6 +1857,10 @@ public class HomeClientActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void fn_refhesh() {
+
     }
 
     public  void  fn_gotoprofile()

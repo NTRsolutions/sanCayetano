@@ -51,6 +51,7 @@ import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
+import com.apreciasoft.admin.asremis.Entity.modelEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.token;
@@ -58,7 +59,9 @@ import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.AcountDriver;
 import com.apreciasoft.admin.asremis.Fracments.HistoryTravelDriver;
 import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
+import com.apreciasoft.admin.asremis.Fracments.NewFormDriver;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
+import com.apreciasoft.admin.asremis.Fracments.PaymentCreditCar;
 import com.apreciasoft.admin.asremis.Fracments.ProfileClientFr;
 import com.apreciasoft.admin.asremis.Fracments.ProfileDriverFr;
 import com.apreciasoft.admin.asremis.Fracments.ReservationsFrangment;
@@ -73,6 +76,8 @@ import com.apreciasoft.admin.asremis.Util.Signature;
 import com.apreciasoft.admin.asremis.Util.Tiempo;
 import com.apreciasoft.admin.asremis.Util.Utils;
 import com.apreciasoft.admin.asremis.Util.WsTravel;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -109,6 +114,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public ServicesDriver daoDriver = null;
 
     public ProgressDialog loading;
+    public static double totalFinal = 0;
 
 
     public Timer timer;
@@ -134,6 +140,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public double kilometros_ida = m_vuelta*km_vuelta;
 
 
+    /*
+    PAGOS DE TARJETA
+     */
+    public static String mp_jsonPaymentCard = "";
+    public static String mp_paymentMethodId = "";
+    public static String mp_paymentTypeId = "";
+    public static String mp_paymentstatus = "";
 
     public DecimalFormat df = new DecimalFormat("####0.00");
     public double amounCalculateGps;
@@ -161,6 +174,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     int PARAM_20  = 0;
     public static  int PARAM_39,PARAM_66  = 0; // ACTIVAR BOTON DE VUELTA
     public static  int param25 = 0;
+    public static  int PARAM_68 = 0; // ACTIVAR PAGO CON TARJETA
+    public static  String PARAM_69 = ""; // ACTIVAR PAGO CON TARJETA
+
 
     /*DIALOG*/
     public TravelDialog dialogTravel = null;
@@ -187,9 +203,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
 
-
-
-        checkVersion();
+        checkVersion(); // VERIFICAMOS LA VERSION
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
         editor = pref.edit();
@@ -220,12 +234,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Log.d("gloval s param", String.valueOf(listParam));
         Log.d("gloval", String.valueOf(gloval));
 
-        param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
-
-        PARAM_66 = Integer.parseInt(gloval.getGv_param().get(65).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
-
-
-        PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
+       setParamLocal();
 
         // BOTON PARA PRE FINALIZAR UN VIAJE //
         btnPreFinish = (Button) findViewById(R.id.btn_pre_finish);
@@ -243,7 +252,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // BOTON PARA PONER RETORNO DE  UN VIAJE //
         btnReturn = (Button) findViewById(R.id.btn_return);
 
-        PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
         if(PARAM_39 == 1)
         {
             btnReturn.setOnClickListener(new View.OnClickListener() {
@@ -279,13 +287,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // BOTON PARA FINALIZAR UN VIAJE TARJETA //
         btnFinishCar = (Button) findViewById(R.id.bnt_pay_car);
-        btnFinishCar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                idPaymentFormKf = 3;
-                finishTravelCreditCar();
-            }
-        });
+
 
         // BOTON PARA FINALIZAR UN VIAJE VOUCHER //
         btnFinishVo = (Button) findViewById(R.id.btn_firm_voucher);
@@ -465,127 +467,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         btInitVisible(false);
         btCancelVisible(false);
 
+        refreshButomPermision();
 
+        setTitle("CHOFER "+gloval.getGv_id_driver()+"");
 
     }
 
-
-
-
-
-    public  void changueStatusService(){
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-        builder.setMessage("Presione Ok  para confirmar el cambio de sstatus de su Usuario, si presiona ok No Recibira Viajes'!")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-
-
-                            Call<Boolean> call;
-
-                            if (daoDriver == null) { daoDriver = HttpConexion.getUri().create(ServicesDriver.class); }
-
-                            try
-                            {
-                                if(gloval.getGv_srviceActive() == 1)
-                                    {
-                                         call = daoDriver.inactive(gloval.getGv_id_driver());
-                                        gloval.setGv_srviceActive(0);
-                                    }else
-                                    {
-                                         call = daoDriver.active(gloval.getGv_id_driver());
-                                        gloval.setGv_srviceActive(1);
-                                    }
-
-
-                                Log.d("Call request", call.request().toString());
-                                Log.d("Call request header", call.request().headers().toString());
-
-                                call.enqueue(new Callback<Boolean>() {
-                                    @Override
-                                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-
-                                        Log.d("Call request", call.request().toString());
-                                        Log.d("Call request header", call.request().headers().toString());
-                                        Log.d("Response raw header", response.headers().toString());
-                                        Log.d("Response raw", String.valueOf(response.raw().body()));
-                                        Log.d("Response code", String.valueOf(response.code()));
-
-
-                                        if (response.code() == 200) {
-
-                                            //
-                                            String str = "";
-                                            if(gloval.getGv_srviceActive() == 1){
-                                                str = "Servicio Activado!";
-
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause, HomeActivity.this.getApplication().getBaseContext().getTheme()));
-                                                } else {
-                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_pause));
-                                                }
-
-                                                fab.setBackgroundTintList(ColorStateList.valueOf(Color
-                                                        .parseColor("#26c281")));
-                                            }else{
-                                                str = "Servicio Inactivado! 'No Recibira Viajes'";
-
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play, HomeActivity.this.getApplication().getBaseContext().getTheme()));
-                                                } else {
-                                                    fab.setImageDrawable(getResources().getDrawable(R.drawable.cast_ic_expanded_controller_play));
-                                                }
-
-                                                fab.setBackgroundTintList(ColorStateList.valueOf(Color
-                                                        .parseColor("#e35b5a")));
-                                            }
-
-                                            Snackbar.make(parentLayout , str, Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                            //
-                                        }
-                                        else {
-                                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                                            alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
-                                            alertDialog.setMessage(response.errorBody().source().toString());
-                                            Log.w("***", response.errorBody().source().toString());
-
-
-                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                                    new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
-                                                        }
-                                                    });
-                                            alertDialog.show();
-                                        }
-
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Boolean> call, Throwable t) {
-                                        Snackbar.make(findViewById(android.R.id.content),
-                                                "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            } finally {
-                                daoDriver = null;
-                            }
-
-                    }
-                })
-                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+    private void setParamLocal() {
+        param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
+        PARAM_66 = Integer.parseInt(gloval.getGv_param().get(65).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
+        PARAM_68 = Integer.parseInt(gloval.getGv_param().get(67).getValue());// SE PAGAR CON TARJETA
+        PARAM_69 = gloval.getGv_param().get(68).getValue();//
+        PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
+        PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
 
 
     }
@@ -1395,7 +1289,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        double totalFinal = 0;
 
         double myDouble;
         String myString = ((EditText) findViewById(R.id.peajes_txt)).getText().toString();
@@ -1517,6 +1410,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             fn_gotoreservation();
             return true;
         }
+        else if (id == R.id.action_refhesh) {
+
+            fn_refhesh();
+            return true;
+        }
         else if (id == R.id.action_profile) {
 
             fn_gotoprofile();
@@ -1526,6 +1424,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void fn_refhesh() {
+            getParam();
+            getCurrentTravelByIdDriver();
     }
 
     public  void  fn_gotoprofile()
@@ -1571,9 +1475,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fm = getFragmentManager();
 
 
+
         if (id == R.id.nav_camera) {
             fm.beginTransaction().replace(R.id.content_frame,new HomeFragment()).commit();
-
 
         } else if (id == R.id.nav_gallery) {
             btnFlotingVisible(false);
@@ -1828,7 +1732,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         try {
 
-            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
 
 
@@ -1842,6 +1746,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
+                    loading.dismiss();
                     Toast.makeText(getApplicationContext(), "VIAJE RECHAZADO!", Toast.LENGTH_LONG).show();
                     Log.d("fatal",response.body().toString());
 
@@ -1876,7 +1781,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             });
 
         } finally {
-            loading.dismiss();
             this.daoTravel = null;
         }
     }
@@ -2052,7 +1956,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         try {
-            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
             Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
 
@@ -2063,8 +1967,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
-
-
+                loading.dismiss();
 
                 Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
                 Log.d("fatal",response.body().toString());
@@ -2093,7 +1996,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
         } finally {
-            loading.dismiss();
 
             this.daoTravel = null;
         }
@@ -2104,7 +2006,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
         try {
-            loading = ProgressDialog.show(HomeActivity.this, "Envaindo", "Espere unos Segundos...", true, false);
+            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
             Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
 
@@ -2113,6 +2015,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
+                        loading.dismiss();
                         btInitVisible(false);
                         btCancelVisible(false);
                         btPreFinishVisible(true);
@@ -2133,7 +2036,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 });
 
         } finally {
-            loading.dismiss();
             this.daoTravel = null;
         }
     }
@@ -2152,10 +2054,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
 
         idPaymentFormKf = 3;
-        finishTravel();
+        //finishTravel();
 
-        //Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
-        //startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+        Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
+        intent.putExtra("TotalAmount",this.totalFinal);
+
+        startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+
+
+
     }
 
 
@@ -2168,8 +2075,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
         try {
+            loading = ProgressDialog.show(HomeActivity.this, "Finalizando Viaje", "Espere unos Segundos...", true, false);
 
-                String lat = "";
+
+            String lat = "";
                 String lon = "";
                 String add = "";
 
@@ -2221,7 +2130,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                             parkin,
                                             extraTime,
                                             tiempoTxt+" Segundos",
-                                            idPaymentFormKf
+                                            idPaymentFormKf,
+                                            mp_jsonPaymentCard,
+                                            mp_paymentMethodId,
+                                            mp_paymentTypeId,
+                                            mp_paymentstatus
 
                                     )
                             );
@@ -2248,7 +2161,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
-
+                            loading.dismiss();
                             Log.d("Response request", call.request().toString());
                             Log.d("Response request header", call.request().headers().toString());
                             Log.d("Response raw header", response.headers().toString());
@@ -2292,6 +2205,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                           loading.dismiss();
                             Snackbar.make(findViewById(android.R.id.content),
                                     "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                         }
@@ -2311,6 +2225,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     // FIRMAAAA //
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
         switch(requestCode) {
             case SIGNATURE_ACTIVITY:
                 if (resultCode == RESULT_OK) {
@@ -2338,6 +2253,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case PROFILE_DRIVER_ACTIVITY:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
+            case CREDIT_CAR_ACTIVITY:
+                super.onActivityResult(requestCode, resultCode, data);
+                finishTravel();
+                break;
+
         }
 
 
@@ -2450,10 +2370,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected Bitmap doInBackground(String... params) {
             // TODO Auto-generated method stub
-            Log.i("doInBackground" , "Entra en doInBackground");
-            String url = params[0]+".JPEG";
-            Bitmap imagen = descargarImagen(url);
-            return imagen;
+
+            Bitmap imagen = null;
+            try{
+
+
+                Log.i("doInBackground" , "Entra en doInBackground");
+                String url = params[0]+".JPEG";
+                 imagen = descargarImagen(url);
+                return imagen;
+
+            }catch (Exception e){
+                Log.d("ERROR",e.getMessage());
+                return imagen;
+            }
+
+
         }
 
         @Override
@@ -2622,6 +2554,89 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
+
+    public void getParam(){
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+
+        try {
+
+        Call<List<paramEntity>> call = this.daoTravel.getparam();
+
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
+
+
+            call.enqueue(new Callback<List<paramEntity>>() {
+            @Override
+            public void onResponse(Call<List<paramEntity>> call, Response<List<paramEntity>> response) {
+
+
+                Log.d("Response request", call.request().toString());
+                Log.d("Response request header", call.request().headers().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", String.valueOf(response.raw().body()));
+                Log.d("Response code", String.valueOf(response.code()));
+
+
+
+
+
+                if (response.code() == 200) {
+
+                    //the response-body is already parseable to your ResponseBody object
+                    List<paramEntity> listParam = (List<paramEntity>) response.body();
+                    gloval.setGv_param(listParam);
+                    setParamLocal();
+
+                    refreshButomPermision();
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<paramEntity>> call, Throwable t) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+    } finally {
+        this.daoTravel = null;
+
+    }
+    }
+
+
+    public void  refreshButomPermision(){
+        Log.d("PARAM_69",PARAM_69);
+
+        if(PARAM_69.length() < 1){
+            Snackbar.make(findViewById(android.R.id.content),
+                    "MERCADO PAGO NO CONFIGURADO, NOTIFIQUE A SU AGENCIA QUE CONFIGURE EL MOTOR DE MERCADO PAGO!",
+                    Snackbar.LENGTH_LONG)
+                    .setDuration(9000).show();
+        }
+
+        if(PARAM_68 == 1 && PARAM_69.length() > 0){
+            btnFinishCar.setEnabled(true);
+            btnFinishCar.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
+                    idPaymentFormKf = 3;
+                    finishTravelCreditCar();
+                }
+            });
+        }else {
+            btnFinishCar.setEnabled(false);
+        }
+    }
+
 
 
 
