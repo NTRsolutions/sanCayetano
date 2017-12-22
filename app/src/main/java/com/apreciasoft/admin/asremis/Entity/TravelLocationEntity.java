@@ -88,6 +88,23 @@ public class TravelLocationEntity {
     public int idPaymentFormKf;
 
 
+    @Expose
+    @SerializedName("mp_jsonPaymentCard")
+    public String mp_jsonPaymentCard;
+
+    @Expose
+    @SerializedName("mp_paymentMethodId")
+    public String mp_paymentMethodId;
+
+    @Expose
+    @SerializedName("mp_paymentTypeId")
+    public String mp_paymentTypeId;
+
+    @Expose
+    @SerializedName("mp_paymentstatus")
+    public String mp_paymentstatus;
+
+
 
     public TravelLocationEntity(int idUser,int idTravelKf, String location, String longLocation,
                                 String latLocation,int idDriverKf,int idVeichleAsigned,int idClientKf,double distanceSave
@@ -166,7 +183,8 @@ public class TravelLocationEntity {
     // FINALIZAR VIAJE //
     public TravelLocationEntity(int idTravelKf, Double totalAmount, Double distanceGps, String distanceGpsLabel,
                                 String location, String longLocation, String latLocation,
-                                double amounttoll,double amountParking,double amountTiemeSlepp,String timeSleppGps,int idPaymentFormKf) {
+                                double amounttoll,double amountParking,double amountTiemeSlepp,String timeSleppGps,int idPaymentFormKf,
+                                String mp_jsonPaymentCard,String mp_paymentMethodId,String mp_paymentTypeId,String mp_paymentstatus) {
         this.idTravelKf = idTravelKf;
         this.totalAmount = totalAmount;
         this.distanceGps = distanceGps;
@@ -180,6 +198,16 @@ public class TravelLocationEntity {
         this.amountTiemeSlepp = amountTiemeSlepp;
         this.timeSleppGps = timeSleppGps;
         this.idPaymentFormKf = idPaymentFormKf;
+
+
+        this.mp_jsonPaymentCard = mp_jsonPaymentCard;
+        this.mp_paymentMethodId = mp_paymentMethodId;
+        this.mp_paymentTypeId = mp_paymentTypeId;
+        this.mp_paymentstatus = mp_paymentstatus;
+
+
+
+
     }
 
     public int getIdTravelKf() {
@@ -248,5 +276,53 @@ public class TravelLocationEntity {
 
     public void setIdClientKf(int idClientKf) {
         this.idClientKf = idClientKf;
+    }
+
+    public Double getDistanceSave() {
+        return distanceSave;
+    }
+
+    public void setDistanceSave(Double distanceSave) {
+        this.distanceSave = distanceSave;
+    }
+
+    public int getIdPaymentFormKf() {
+        return idPaymentFormKf;
+    }
+
+    public void setIdPaymentFormKf(int idPaymentFormKf) {
+        this.idPaymentFormKf = idPaymentFormKf;
+    }
+
+    public String getMp_jsonPaymentCard() {
+        return mp_jsonPaymentCard;
+    }
+
+    public void setMp_jsonPaymentCard(String mp_jsonPaymentCard) {
+        this.mp_jsonPaymentCard = mp_jsonPaymentCard;
+    }
+
+    public String getMp_paymentMethodId() {
+        return mp_paymentMethodId;
+    }
+
+    public void setMp_paymentMethodId(String mp_paymentMethodId) {
+        this.mp_paymentMethodId = mp_paymentMethodId;
+    }
+
+    public String getMp_paymentTypeId() {
+        return mp_paymentTypeId;
+    }
+
+    public void setMp_paymentTypeId(String mp_paymentTypeId) {
+        this.mp_paymentTypeId = mp_paymentTypeId;
+    }
+
+    public String getMp_paymentstatus() {
+        return mp_paymentstatus;
+    }
+
+    public void setMp_paymentstatus(String mp_paymentstatus) {
+        this.mp_paymentstatus = mp_paymentstatus;
     }
 }

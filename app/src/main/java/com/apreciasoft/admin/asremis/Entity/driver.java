@@ -34,6 +34,10 @@ public class driver {
     public String emailDriver;
 
     @Expose
+    @SerializedName("nrDriver")
+    public String nrDriver;
+
+    @Expose
     @SerializedName("idUser")
     public int idUser;
 
@@ -117,5 +121,13 @@ public class driver {
 
     public void setIdStatusDriverTravelKf(int idStatusDriverTravelKf) {
         this.idStatusDriverTravelKf = idStatusDriverTravelKf;
+    }
+
+    public String getNrDriver() {
+        return nrDriver;
+    }
+
+    public void setNrDriver(String nrDriver) {
+        this.nrDriver = nrDriver;
     }
 }

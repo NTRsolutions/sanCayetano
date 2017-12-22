@@ -4,6 +4,7 @@ import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelEntity;
+import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.reason;
 import com.apreciasoft.admin.asremis.Entity.resp;
 
@@ -102,5 +103,9 @@ public interface ServicesTravel {
 
     @Headers("Content-Type: application/json")
     @GET("travel/reason")
-    Call<List<reason>> obtIdMotivo( );
+    Call<List<reason>> obtIdMotivo();
+
+    @Headers("Content-Type: application/json")
+    @GET("config/param")
+    Call<List<paramEntity>> getparam();
 }

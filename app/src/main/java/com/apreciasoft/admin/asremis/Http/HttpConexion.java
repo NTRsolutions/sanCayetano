@@ -12,14 +12,14 @@ public class HttpConexion {
 
 
     public static String base;
-    public static String ip = "192.168.0.5";/*public static String ip = "as-nube.com";*/
-    public  static String instance = "as_remis_web";
+    /*public static String ip = "192.168.0.5";*/public static String ip = "as-nube.com";
+    public  static String instance = "developer";
     public static int portWsWeb = 8085;
     public static int portWsCliente = 3000;
-    public  static  String PROTOCOL = "http";
+    public  static  String PROTOCOL = "https";
 
 
-    public static final String BASE_URL = "http://"+ip+"/";
+    public static final String BASE_URL = PROTOCOL+"://"+ip+"/";
 
         public static Retrofit retrofit = null;
 
