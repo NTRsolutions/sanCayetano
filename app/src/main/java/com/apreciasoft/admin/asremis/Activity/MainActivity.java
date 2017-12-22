@@ -10,7 +10,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.app.ActivityCompat;
+        import android.support.design.widget.Snackbar;
+        import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "2.0.2";
+    public static String version = "2.0.4";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -389,17 +390,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    loading.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+
+                    loading.dismiss();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
             });
 
@@ -608,20 +602,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<userFull> call, Throwable t) {
                     loading.dismiss();
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-
-                    Log.d("ERRO", String.valueOf(t));
-                    Log.d("ERRO", String.valueOf(t.getLocalizedMessage()));
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                     HttpConexion.setBase(HttpConexion.instance);
 
 

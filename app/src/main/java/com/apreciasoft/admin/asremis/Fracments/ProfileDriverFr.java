@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
@@ -157,16 +158,8 @@ public class ProfileDriverFr  extends Fragment {
                 }
 
                 public void onFailure(Call<DriverFull> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
             });
 
@@ -286,20 +279,8 @@ public class ProfileDriverFr  extends Fragment {
                 @Override
                 public void onFailure(Call<driver> call, Throwable t) {
                     loading.dismiss();
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-
-                    Log.d("ERRO", String.valueOf(t));
-                    Log.d("ERRO", String.valueOf(t.getLocalizedMessage()));
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
 
 
                 }

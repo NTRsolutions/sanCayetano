@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -277,19 +278,8 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
 
             @Override
             public void onFailure(Call<List<costCenterCompany>> call, Throwable t) {
-                AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
-                alertDialog.setTitle("ERROR");
-                alertDialog.setMessage(t.getMessage());
-
-                Log.d("**", t.getMessage());
-
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                Snackbar.make(findViewById(android.R.id.content),
+                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -351,19 +341,8 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
 
             @Override
             public void onFailure(Call<List<acountCompany>> call, Throwable t) {
-                AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
-                alertDialog.setTitle("ERROR");
-                alertDialog.setMessage(t.getMessage());
-
-                Log.d("**", t.getMessage());
-
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                Snackbar.make(findViewById(android.R.id.content),
+                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -580,9 +559,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        Log.d("form", "onitemselected");
 
-        Log.d("form", String.valueOf(parent.getId()));
         switch (parent.getId()) {
 
 
@@ -665,7 +642,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
 
                         finish();
 
-                    }  else if (response.code() == 201) {
+                    }  else if (response.code() == 404) {
 
 
                         AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
@@ -686,17 +663,8 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
 
 
                 public void onFailure(Call<resp> call, Throwable t) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(NewFormClient.this).create();
-                    alertDialog.setTitle("ERROR");
-                    alertDialog.setMessage(t.getMessage());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    loading.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                     loading.dismiss();
                 }
             });
