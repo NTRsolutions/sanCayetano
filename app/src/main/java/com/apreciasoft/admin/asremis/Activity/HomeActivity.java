@@ -1,5 +1,6 @@
 package com.apreciasoft.admin.asremis.Activity;
 
+import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -469,7 +470,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         refreshButomPermision();
 
-        setTitle("CHOFER "+gloval.getGv_id_driver()+"");
+        setTitle("C:("+gloval.getGv_id_driver()+")");
+
+
+
+
 
     }
 
@@ -477,7 +482,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
         PARAM_66 = Integer.parseInt(gloval.getGv_param().get(65).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
         PARAM_68 = Integer.parseInt(gloval.getGv_param().get(67).getValue());// SE PAGAR CON TARJETA
-        PARAM_69 = gloval.getGv_param().get(68).getValue();//
+
+        try {
+            PARAM_69 = gloval.getGv_param().get(68).getValue();//
+
+        } catch ( IndexOutOfBoundsException e ) {
+            PARAM_69 = "";
+        }
         PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
         PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
 
@@ -643,6 +654,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if(HomeFragment.SPCKETMAP != null){
             HomeFragment.SPCKETMAP.disconnect();
+            HomeFragment.SPCKETMAP.close();
+            HomeFragment.SPCKETMAP = null;
 
         }
 
@@ -2618,7 +2631,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if(PARAM_69.length() < 1){
             Snackbar.make(findViewById(android.R.id.content),
-                    "MERCADO PAGO NO CONFIGURADO, NOTIFIQUE A SU AGENCIA QUE CONFIGURE EL MOTOR DE MERCADO PAGO!",
+                    "MERCADO PAGO NO CONFIGURADO, LA AGENCIA DEBE CONFIGURAR EL MOTOR DE PAGO!",
                     Snackbar.LENGTH_LONG)
                     .setDuration(9000).show();
         }

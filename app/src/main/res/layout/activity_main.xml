@@ -34,7 +34,7 @@
             android:id="@+id/img_face_client"
             android:layout_width="130dp"
             android:layout_gravity="center"
-            android:layout_margin="35dp"
+            android:layout_margin="30dp"
             android:layout_height="130dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
@@ -43,7 +43,6 @@
             android:src="@drawable/logo"
             app:civ_fill_color="@color/blanco"
             app:civ_border_color="@color/colorPrimaryDark"
-
             app:civ_border_width="2dp" />
 
 

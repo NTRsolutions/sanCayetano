@@ -108,10 +108,10 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public static Socket SPCKETMAP;
-      //  public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
-      public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"";
+        //  public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
+        public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"";
 
-    public static String MY_EVENT_MAP = "init";
+        public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
         private static View view;
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment implements
         public static   PolylineOptions options;
         public static   PolylineOptions optionReturnActive;
         Marker mCurrLocationMarker;
-        public boolean isFistLocation = true;
+        //public boolean isFistLocation = true;
         public boolean isReadyDrawingRouting = false;
         public static ArrayList<LatLng> MarkerPoints;
         public static GlovalVar gloval;
@@ -201,12 +201,17 @@ public class HomeFragment extends Fragment implements
             mMap = ((MapFragment) this.getFragmentManager().findFragmentById(R.id.gmap));
             mMap.getMapAsync(this);
             Log.d("YA","4");
+
+
         }
         else
         {
             fr.getMapAsync(this);
           //  Log.d("YA","5");
         }
+
+
+
 
 
         HomeFragment.txt_date_info = (TextView) getActivity().findViewById(R.id.txt_date_info);
@@ -225,6 +230,8 @@ public class HomeFragment extends Fragment implements
 
 
         txtStatus.setText("SERVICIO ACTIVO");
+
+
 
 
         /*final ScrollView scrollview = ((ScrollView)  getActivity().findViewById(R.id.scrollview));
@@ -300,6 +307,7 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
+
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -351,6 +359,9 @@ public class HomeFragment extends Fragment implements
 
 
     }
+
+
+
 
 
     /*SETEAR LA DIRECION DE EL VIAJE */
@@ -474,7 +485,7 @@ public class HomeFragment extends Fragment implements
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void conexionSocketMap() {
+    public void conexionSocketMap(double la ,double lo) {
 
 
 
@@ -545,8 +556,8 @@ public class HomeFragment extends Fragment implements
                 JSONObject obj = new JSONObject();
 
                 double[] latLong = new double[2];
-                //latLong[0] = mLastLocation.getLatitude();
-               // latLong[1] = mLastLocation.getLongitude();
+                latLong[0] = la;
+                latLong[1] = lo;
 
                 JSONArray jsonAraay = null;
 
@@ -557,7 +568,7 @@ public class HomeFragment extends Fragment implements
                 }
 
 
-                Log.d("SOCK", String.valueOf(jsonAraay));
+                Log.d("SOCK MAP", String.valueOf(jsonAraay));
 
                 try {
                     obj.put("isDriver", "true");
@@ -576,7 +587,7 @@ public class HomeFragment extends Fragment implements
                     public void call(Object... args) {
              /* Our code */
 
-                        Log.d("SOCK","S3");
+                        Log.d("SOCK MAP","EMITIO EVENTO");
                     }
                 });
 
@@ -672,72 +683,6 @@ public class HomeFragment extends Fragment implements
     public void onLocationChanged(Location location)
     {
 
-        /*
-        * SOCKET MAPA
-        * NODE JS
-        * */
-        JSONObject obj = new JSONObject();
-
-        double[] latLong = new double[2];
-        latLong[0] = location.getLatitude();
-        latLong[1] = location.getLongitude();
-
-        JSONArray jsonAraay = null;
-
-        try {
-            jsonAraay = new JSONArray(latLong);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-       // Log.d("SOCK", String.valueOf(jsonAraay));
-
-        try {
-            obj.put("isDriver", "true");
-            obj.put("latLong", jsonAraay);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        if(this.getActivity().getApplicationContext() != null){
-            if( Utils.verificaConexion(this.getActivity().getApplicationContext()) == false){
-                if(SPCKETMAP != null){
-                    SPCKETMAP.disconnect();
-                    _COUNT_CHANGUE = 0;
-
-                }
-            }
-
-        }
-
-
-        if(this.getActivity().getApplicationContext() != null) {
-
-            if (_COUNT_CHANGUE == 0 &&
-                    Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
-                this.conexionSocketMap();
-            }
-        }
-
-
-
-        if(SPCKETMAP != null) {
-            SPCKETMAP.emit("locChanged", obj, new Ack() {
-
-
-                @Override
-                public void call(Object... args) {
-                     /* Our code */
-
-                    Log.d("SOCK", "S3");
-                }
-            });
-        }
-
-
-        /*-----------*/
 
         Log.d("onLocationChanged","onLocationChanged");
 
@@ -751,9 +696,83 @@ public class HomeFragment extends Fragment implements
             try {
                 addresses = gCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-                Log.d("onLocationChanged", String.valueOf(addresses));
 
-               if(addresses.size() > 0) {
+
+                 /*
+                * SOCKET MAPA
+                * NODE JS
+                * */
+
+
+
+                if(this.getActivity().getApplicationContext() != null){
+                    if( Utils.verificaConexion(this.getActivity().getApplicationContext()) == false){
+                        if(SPCKETMAP != null){
+                            SPCKETMAP.disconnect();
+                            _COUNT_CHANGUE = 0;
+
+                        }
+                    }
+
+                }
+
+
+                if(this.getActivity().getApplicationContext() != null) {
+
+                    if (_COUNT_CHANGUE == 0 &&
+                            Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
+                        if(SPCKETMAP == null){
+                            conexionSocketMap(addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
+
+                        }
+                    }
+                }
+
+
+
+                if(SPCKETMAP != null) {
+
+                    JSONObject obj = new JSONObject();
+
+                    double[] latLong = new double[2];
+                    latLong[0] = addresses.get(0).getLatitude();
+                    latLong[1] = addresses.get(0).getLongitude();
+
+                    JSONArray jsonAraay = null;
+
+                    try {
+                        jsonAraay = new JSONArray(latLong);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    Log.d("SOCK MAP", String.valueOf(jsonAraay));
+
+                    try {
+                        obj.put("isDriver", "true");
+                        obj.put("latLong", jsonAraay);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    SPCKETMAP.emit("locChanged", obj, new Ack() {
+
+
+                        @Override
+                        public void call(Object... args) {
+                     /* Our code */
+
+                            Log.d("SOCK MAP", "S3");
+                        }
+                    });
+                }
+
+
+                 /*-----------*/
+
+
+                if(addresses.size() > 0) {
 
 
 
@@ -849,13 +868,13 @@ public class HomeFragment extends Fragment implements
                                ) {
                            //move map camera
                            Log.d(TAG, "T-9");
-                           isFistLocation = false;
+                          // isFistLocation = false;
                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                        }
                    } else {
                        Log.d(TAG, "T-10");
-                       isFistLocation = false;
+                      // isFistLocation = false;
                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                    }
@@ -868,6 +887,7 @@ public class HomeFragment extends Fragment implements
                    if (HomeActivity.currentTravel != null) {
 
                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                       mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
 
                        listPosition.add(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
                        options = new
