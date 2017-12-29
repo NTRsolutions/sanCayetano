@@ -8,10 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.R;
-import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mercadopago.constants.Sites;
