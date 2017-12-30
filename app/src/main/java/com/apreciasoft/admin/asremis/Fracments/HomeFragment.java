@@ -636,50 +636,52 @@ public class HomeFragment extends Fragment implements
 
     public void sendSocketId()
     {
-        if (this.daoLoguin == null) {
-            this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
-        }
 
-        try {
-
-            Log.d("SOCK MAP", SPCKETMAP.id().toString());
-
-
-            if(SPCKETMAP.id() != null) {
-
-
-
-                token T = new token();
-                T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
-
-                GsonBuilder builder = new GsonBuilder();
-                Gson gson = builder.create();
-                Log.d("Response JSON", gson.toJson(T));
-
-                Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
-
-                call.enqueue(new Callback<Boolean>() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        Log.d("Response request", call.request().toString());
-                        Log.d("Response request header", call.request().headers().toString());
-                        Log.d("Response raw header", response.headers().toString());
-                        Log.d("Response raw", String.valueOf(response.raw().body()));
-                        Log.d("Response code", String.valueOf(response.code()));
-
-                    }
-
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-
-
-                        Log.d("ERROR", t.getMessage());
-                    }
-                });
+        if(SPCKETMAP.id() != null) {
+            if (this.daoLoguin == null) {
+                this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
             }
 
-        } finally {
-            this.daoLoguin = null;
+            try {
+
+                Log.d("SOCK MAP", SPCKETMAP.id().toString());
+
+
+                if (SPCKETMAP.id() != null) {
+
+
+                    token T = new token();
+                    T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
+
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    Log.d("Response JSON", gson.toJson(T));
+
+                    Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
+
+                    call.enqueue(new Callback<Boolean>() {
+                        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            Log.d("Response request", call.request().toString());
+                            Log.d("Response request header", call.request().headers().toString());
+                            Log.d("Response raw header", response.headers().toString());
+                            Log.d("Response raw", String.valueOf(response.raw().body()));
+                            Log.d("Response code", String.valueOf(response.code()));
+
+                        }
+
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+
+
+                            Log.d("ERROR", t.getMessage());
+                        }
+                    });
+                }
+
+            } finally {
+                this.daoLoguin = null;
+            }
         }
     }
 
