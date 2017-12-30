@@ -328,6 +328,18 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("obsertavtionFlight")
     public String obsertavtionFlight;
 
+    @Expose
+    @SerializedName("sound")
+    public String sound;
+
+
+    public String getSound() {
+        return sound;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
 
     public String getObsertavtionFlight() {
         return obsertavtionFlight;

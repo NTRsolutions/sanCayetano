@@ -524,6 +524,7 @@ public class HomeFragment extends Fragment implements
                         /* Our code */
                             Log.d("SOCK MAP","CONECT");
                             _COUNT_CHANGUE = 1;
+
                             sendSocketId();
                             CONEXION_MAP_ERROR = false;
 
@@ -535,7 +536,8 @@ public class HomeFragment extends Fragment implements
                         /* Our code */
                             Log.d("SOCK MAP","DISCONESCT");
                             _COUNT_CHANGUE = 0;
-                            CONEXION_MAP_ERROR = false;
+                            CONEXION_MAP_ERROR = true;
+                            SPCKETMAP = null;
 
                         }
                     })
@@ -545,8 +547,9 @@ public class HomeFragment extends Fragment implements
                         /* Our code */
                             Log.d("SOCK MAP","EVENT_RECONNECT_ERROR");
                             _COUNT_CHANGUE = 0;
-                            SPCKETMAP.disconnect();
                             CONEXION_MAP_ERROR = true;
+                            SPCKETMAP = null;
+
                         }
                     });
 
@@ -597,13 +600,13 @@ public class HomeFragment extends Fragment implements
 
 
         }catch (URISyntaxException e){
-            Log.d("SOCK ",e.getMessage());
+            Log.d("SOCK MAP ",e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-            Log.d("SOCK ",e.getMessage());
+            Log.d("SOCK MAP ",e.getMessage());
         } catch (KeyManagementException e) {
-            Log.d("SOCK ",e.getMessage());
+            Log.d("SOCK MAP ",e.getMessage());
         }catch (Exception e) {
-            Log.d("SOCK ERROR",e.getMessage());
+            Log.d("SOCK MAP ERROR",e.getMessage());
 
         }
     }
@@ -639,11 +642,13 @@ public class HomeFragment extends Fragment implements
 
         try {
 
+            Log.d("SOCK MAP", SPCKETMAP.id().toString());
+
 
             if(SPCKETMAP.id() != null) {
 
 
-                Log.d("SPCKETMAP", SPCKETMAP.id().toString());
+
                 token T = new token();
                 T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
 
@@ -763,7 +768,7 @@ public class HomeFragment extends Fragment implements
                         public void call(Object... args) {
                      /* Our code */
 
-                            Log.d("SOCK MAP", "S3");
+                            Log.d("SOCK MAP", "locChanged ACTIVE");
                         }
                     });
                 }
@@ -908,7 +913,7 @@ public class HomeFragment extends Fragment implements
                                        .geodesic(true);
                                optionReturnActive.add(point);
                            }
-                           options.add(point);
+                           //options.add(point);
                        }
 
                        Log.d("CODUCE", "CINDUCEEEE");
@@ -1073,19 +1078,19 @@ public class HomeFragment extends Fragment implements
                         " 3) "+currentTravel.getOriginMultipleDesc3()+" - "+
                         " 4) "+ currentTravel.getOriginMultipleDesc4();
 
-        if(currentTravel.getOriginMultipleDesc1() != null){
+        if(currentTravel.getOriginMultipleDesc1() != null && currentTravel.getOriginMultipleDesc1() != ""){
             numOrigin = 1;
         }
 
-        if(currentTravel.getOriginMultipleDesc2() != null){
+        if(currentTravel.getOriginMultipleDesc2() != null && currentTravel.getOriginMultipleDesc1() != ""){
             numOrigin = 1;
         }
 
-        if(currentTravel.getOriginMultipleDesc3() != null){
+        if(currentTravel.getOriginMultipleDesc3() != null && currentTravel.getOriginMultipleDesc1() != ""){
             numOrigin = 1;
         }
 
-        if(currentTravel.getOriginMultipleDesc4() != null){
+        if(currentTravel.getOriginMultipleDesc4() != null && currentTravel.getOriginMultipleDesc1() != ""){
             numOrigin = 1;
         }
 

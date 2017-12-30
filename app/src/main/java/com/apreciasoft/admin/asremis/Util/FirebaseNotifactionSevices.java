@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
+import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -28,6 +29,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
     public static final String TAG = "NOTICIAS";
     public GlovalVar gloval;
+    public Uri soundUri;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -35,7 +37,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         String from = remoteMessage.getFrom();
-        Log.d(TAG, "Mensaje recibido de: " + from);
+        Log.d(TAG, "Notificación: " + from);
 
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Notificación: " + remoteMessage.getNotification().getBody());
@@ -50,7 +52,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
             gloval = ((GlovalVar) getApplicationContext());
 
             System.out.println(gson.toJson(remoteMessage.getData()));
-//            gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+            gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
 
 
 
@@ -66,13 +68,13 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
             if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {
-                Log.d("NOTIFICA", String.valueOf("YESS"));
+                Log.d("Notificación", String.valueOf("YESS"));
 
                 mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
 
             }else
             {
-                Log.d("NOTIFICA", String.valueOf("YESS"));
+                Log.d("Notificación", String.valueOf("YESS"));
 
                 mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeActivity.class);
 
@@ -106,26 +108,62 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
 
-        Uri soundUri =  Uri.parse("android.resource://"+context.getPackageName()+"/"+R.raw.taxi);//Here is FILE_NAME is the name of file that you want to play
+        if(gloval.getGv_travel_current().getSound() != null) {
+            switch (gloval.getGv_travel_current().getSound()) {
+                case "nuevareserva":
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevareserva);//Here is FILE_NAME is the name of file that you want to play
+                case "nuevoviaje":
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevoviaje);//Here is FILE_NAME is the name of file that you want to play
+                case "remis":
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis);//Here is FILE_NAME is the name of file that you want to play
+                case "remis2":
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis2);//Here is FILE_NAME is the name of file that you want to play
+                case "tienesreserva":
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tienesreserva);//Here is FILE_NAME is the name of file that you want to play
+
+                default:
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis);//Here is FILE_NAME is the name of file that you want to play
+
+            }
+        }else{
+            soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis);//Here is FILE_NAME is the name of file that you want to play
+        }
+
+
+        Log.d("Notificación", String.valueOf(soundUri));
 
 
         if(gloval.getGv_travel_current() != null)
         {
-            if(gloval.getGv_travel_current().getNameOrigin() != null) {
+           if(gloval.getGv_travel_current().getNameOrigin() != null) {
 
-                Log.d("NOTIFICA", String.valueOf("YESS"));
+                Log.d("Notificación", String.valueOf("FINAL"));
+
+                // Patrón de vibración: 1 segundo vibra, 0.5 segundos para, 1 segundo vibra
+                 long[] pattern = new long[]{1000,500,1000};
+
+
 
 
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                         .setContentTitle(title)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(gloval.getGv_travel_current().getNameOrigin())
+                        .setContentText("PRUEBA")
                         .setAutoCancel(true)
                         .setSound(soundUri)
                         .setContentIntent(pendingIntent);
 
+                // Uso en API 11 o mayor
+                notificationBuilder.setVibrate(pattern);
+
+
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notificationBuilder.build());
+
+
+
+
             }
         }
 

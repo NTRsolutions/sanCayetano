@@ -1442,6 +1442,12 @@ public class HomeClientActivity extends AppCompatActivity
                 @Override
                 public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
+
+                    Log.d("VIAJE", response.toString());
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    System.out.println("VIAJE"+gson.toJson(response));
+
                     InfoTravelEntity TRAVEL = (InfoTravelEntity) response.body();
                     gloval.setGv_travel_current(TRAVEL);
                     currentTravel = gloval.getGv_travel_current();
@@ -1472,7 +1478,9 @@ public class HomeClientActivity extends AppCompatActivity
         try {
 
 
-            Log.d("VIAJE PASO","VIAJE PASO");
+
+
+            Log.d("VIAJE PASO", String.valueOf(gloval.getGv_travel_current()));
 
             cliaerNotificationAndoid();
             currentTravel = gloval.getGv_travel_current();
@@ -1619,6 +1627,8 @@ public class HomeClientActivity extends AppCompatActivity
 
         try {
 
+
+
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             Date date = new Date();
 
@@ -1643,10 +1653,11 @@ public class HomeClientActivity extends AppCompatActivity
                 this.dateTravel = currentDate;
             }
 
-
+            int idUserCompany = 0;
             boolean isTravelComany = false;
             if (gloval.getGv_id_profile() == 5) {
                 isTravelComany = true;
+                idUserCompany = gloval.getGv_user_id();
             }
 
             if (HomeClientActivity.ReservationName != null) {
@@ -1684,7 +1695,7 @@ public class HomeClientActivity extends AppCompatActivity
                                     this.lonDestination,
                                     this.destination
                             )
-                            , this.dateTravel, idTypeVehicle, true, gloval.getGv_user_id(),
+                            , this.dateTravel, idTypeVehicle, true, idUserCompany,
                             _hoursAribo,_terminal,_airlineCompany,_flyNumber
                     )
             );

@@ -34,6 +34,8 @@
     </style>
 
 
+
+
     <style name="Etiquetas">
         <item name="android:background">@drawable/background_label_fab</item>
         <item name="android:textColor">@color/whithe</item>

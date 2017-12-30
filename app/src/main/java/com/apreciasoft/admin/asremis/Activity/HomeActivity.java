@@ -470,7 +470,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         refreshButomPermision();
 
-        setTitle("C:("+gloval.getGv_id_driver()+")");
+        setTitle("Chofer: "+gloval.getGv_nr_driver());
 
 
 
@@ -678,7 +678,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-            cliaerNotificationAndoid();
+           // cliaerNotificationAndoid();
 
 
             if(currentTravel == null){
@@ -2484,87 +2484,90 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  void  checkVersion()
     {
 
-        if (this.daoTravel == null) { this.apiService = HttpConexion.getUri().create(ServicesLoguin.class); }
-
-
-        try {
-
-            Call<Boolean> call = this.apiService.checkVersion(MainActivity.version);
-            Log.d("Call request", call.request().toString());
-            Log.d("Call request header", call.request().headers().toString());
-
-            call.enqueue(new Callback<Boolean>() {
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-
-                    Log.d("Response request", call.request().toString());
-                    Log.d("Response request header", call.request().headers().toString());
-                    Log.d("Response raw header", response.headers().toString());
-                    Log.d("Response raw", String.valueOf(response.raw().body()));
-                    Log.d("Response code", String.valueOf(response.code()));
 
 
 
-                    if (response.code() == 200) {
-                        boolean rs = (boolean) response.body();
+            if (this.daoTravel == null) {
+                this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
+            }
 
 
+            try {
 
-                        if (!rs) {
+                Call<Boolean> call = this.apiService.checkVersion(MainActivity.version);
+                Log.d("Call request", call.request().toString());
+                Log.d("Call request header", call.request().headers().toString());
+
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                        Log.d("Response request", call.request().toString());
+                        Log.d("Response request header", call.request().headers().toString());
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                        Log.d("Response code", String.valueOf(response.code()));
+
+
+                        if (response.code() == 200) {
+                            boolean rs = (boolean) response.body();
+
+
+                            if (!rs) {
+                            } else {
+                                AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                                alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
+                                alertDialog.setCancelable(false);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                                //       Uri.parse("http://as-nube.com/apk.apk"));
+                                                //startActivity(browserIntent);
+
+                                                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                                                try {
+                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                                } catch (android.content.ActivityNotFoundException anfe) {
+                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                                }
+                                            }
+                                        });
+                                alertDialog.show();
+
+
+                            }
+
                         } else {
+
                             AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                            alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
-                            alertDialog.setCancelable(false);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
+                            alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
+                            alertDialog.setMessage(response.errorBody().source().toString());
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                            //       Uri.parse("http://as-nube.com/apk.apk"));
-                                            //startActivity(browserIntent);
-
-                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                                            try {
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                            } catch (android.content.ActivityNotFoundException anfe) {
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                                            }
                                         }
                                     });
                             alertDialog.show();
 
-
-
                         }
 
-                    } else {
-
-                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                        alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
-                        alertDialog.setMessage(response.errorBody().source().toString());
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
 
                     }
 
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
+                });
 
-                }
+            } finally {
+                this.apiService = null;
 
-                public void onFailure(Call<Boolean> call, Throwable t) {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-                }
-            });
+            }
 
-        } finally {
-            this.apiService = null;
-
-        }
 
     }
 
