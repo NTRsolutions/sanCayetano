@@ -19,7 +19,7 @@ public class HttpConexion {
     public  static  String PROTOCOL = "https";
 
 
-    public static final String BASE_URL = "https://"+ip+"/";
+    public static final String BASE_URL = PROTOCOL+"://"+ip+"/";
 
         public static Retrofit retrofit = null;
 

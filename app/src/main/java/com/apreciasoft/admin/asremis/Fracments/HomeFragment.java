@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment implements
         public static TextView txt_calling_info = null;
         public static TextView txt_observationFromDriver = null;
         public static TextView txt_amount_info = null;
-        public static TextView txt_pasajeros_info = null;
+        public static TextView txt_pasajeros_info,infoGneral = null;
         public MapFragment  mMap;
         public static int PARAM_26  = 0;
 
@@ -179,11 +179,6 @@ public class HomeFragment extends Fragment implements
 
         return view;
     }
-
-
-    /*public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home,container,false);
-    }*/
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -233,26 +228,10 @@ public class HomeFragment extends Fragment implements
 
 
 
-
-        /*final ScrollView scrollview = ((ScrollView)  getActivity().findViewById(R.id.scrollview));
-        scrollview.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });*/
+        infoGneral = (TextView) getActivity().findViewById(R.id.infoGneral);
+        infoGneral.setVisibility(View.INVISIBLE);
 
     }
-
-
-    //@Override
-   // public void onMapReady(GoogleMap googleMap) {
-        /*LatLng point = new LatLng(36.2048, 138.2529);
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,13));
-
-        googleMap.addMarker(new MarkerOptions().title("Usted esta Aqui").position(point));*/
-   //}
 
 
     @Override
@@ -637,50 +616,53 @@ public class HomeFragment extends Fragment implements
     public void sendSocketId()
     {
 
-        if(SPCKETMAP.id() != null) {
-            if (this.daoLoguin == null) {
-                this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
-            }
+        if(SPCKETMAP != null) {
 
-            try {
-
-                Log.d("SOCK MAP", SPCKETMAP.id().toString());
-
-
-                if (SPCKETMAP.id() != null) {
-
-
-                    token T = new token();
-                    T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
-
-                    GsonBuilder builder = new GsonBuilder();
-                    Gson gson = builder.create();
-                    Log.d("Response JSON", gson.toJson(T));
-
-                    Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
-
-                    call.enqueue(new Callback<Boolean>() {
-                        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            Log.d("Response request", call.request().toString());
-                            Log.d("Response request header", call.request().headers().toString());
-                            Log.d("Response raw header", response.headers().toString());
-                            Log.d("Response raw", String.valueOf(response.raw().body()));
-                            Log.d("Response code", String.valueOf(response.code()));
-
-                        }
-
-                        public void onFailure(Call<Boolean> call, Throwable t) {
-
-
-                            Log.d("ERROR", t.getMessage());
-                        }
-                    });
+            if (SPCKETMAP.id() != null) {
+                if (this.daoLoguin == null) {
+                    this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
                 }
 
-            } finally {
-                this.daoLoguin = null;
+                try {
+
+                    Log.d("SOCK MAP", SPCKETMAP.id().toString());
+
+
+                    if (SPCKETMAP.id() != null) {
+
+
+                        token T = new token();
+                        T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
+
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.create();
+                        Log.d("Response JSON", gson.toJson(T));
+
+                        Call<Boolean> call = this.daoLoguin.updateSocketWeb(T);
+
+                        call.enqueue(new Callback<Boolean>() {
+                            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                Log.d("Response request", call.request().toString());
+                                Log.d("Response request header", call.request().headers().toString());
+                                Log.d("Response raw header", response.headers().toString());
+                                Log.d("Response raw", String.valueOf(response.raw().body()));
+                                Log.d("Response code", String.valueOf(response.code()));
+
+                            }
+
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+
+
+                                Log.d("ERROR", t.getMessage());
+                            }
+                        });
+                    }
+
+                } finally {
+                    this.daoLoguin = null;
+                }
             }
         }
     }
@@ -1054,6 +1036,16 @@ public class HomeFragment extends Fragment implements
     {
 
 
+
+        if(currentTravel.isFleetTravelAssistance > 0) {
+            infoGneral.setVisibility(View.VISIBLE);
+            infoGneral.setText("Necesita ("+currentTravel.isFleetTravelAssistance+") Ayudantes!");
+        }else {
+            infoGneral.setVisibility(View.INVISIBLE);
+        }
+
+
+
         HomeFragment.txt_date_info.setText(currentTravel.getMdate().toString());
         HomeFragment.txt_client_info.setText(currentTravel.getClient());
         HomeFragment.txt_client_info.setText(currentTravel.getClient());
@@ -1071,6 +1063,8 @@ public class HomeFragment extends Fragment implements
         }else {
             HomeFragment.txt_destination_info.setText(currentTravel.getNameDestination());
         }
+
+
 
 
         int numOrigin = 0;
@@ -1148,6 +1142,10 @@ public class HomeFragment extends Fragment implements
         }
 
 
+
+
+
+
     }
 
     public static void clearInfo() {
@@ -1163,6 +1161,7 @@ public class HomeFragment extends Fragment implements
 
         HomeFragment.txt_date_info.setText("");
 
+        infoGneral.setVisibility(View.INVISIBLE);
     }
 
 

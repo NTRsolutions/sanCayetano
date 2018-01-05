@@ -2,8 +2,15 @@ package com.apreciasoft.admin.asremis.Util;
 
 
 import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -73,19 +80,30 @@ public class WsTravel extends Activity {
                 /* Our code */
                     Log.d("SOCKET IO","DISCONESCT");
                 }
-            });
-
-
-
-            mWebSocketClient.emit(MY_EVENT, new Ack() {
-
+            }).on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener(){
                 @Override
                 public void call(Object... args) {
-             /* Our code */
+                        /* Our code */
+                    Log.d("SOCK IO","EVENT_RECONNECT_ERROR");
 
-                    Log.d("SOCK IO"," SOCKET NOTIFICO ");
+
+                }
+            }).on(MY_EVENT, new Emitter.Listener(){
+                @Override
+                public void call(Object... args) {
+                        /* Our code */
+                    Log.d("SOCK IO","NOTIFICO");
+
+
+                    Intent intent = new Intent("update-loaction-driver");
+                    LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+
+
                 }
             });
+
+
+
 
             mWebSocketClient.connect();
 
@@ -184,8 +202,10 @@ public class WsTravel extends Activity {
 
 
     public void coseWebSocket() {
+        mWebSocketClient.disconnect();
         mWebSocketClient.close();
-        Log.d("Websocket","closee");
+        mWebSocketClient = null;
+        Log.d("SOCKET IO","closee");
     }
 
 

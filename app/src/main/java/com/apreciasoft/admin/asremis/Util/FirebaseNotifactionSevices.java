@@ -20,6 +20,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by jorge gutierrez on 13/02/2017.
  */
@@ -36,52 +38,49 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        String from = remoteMessage.getFrom();
-        Log.d(TAG, "Notificación: " + from);
+        try {
 
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Notificación: " + remoteMessage.getNotification().getBody());
+            String from = remoteMessage.getFrom();
+            Log.d(TAG, "Notificación: " + from);
 
-        }
-
-        if (remoteMessage.getData().size() > 0) {
-
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-
-            gloval = ((GlovalVar) getApplicationContext());
-
-            System.out.println(gson.toJson(remoteMessage.getData()));
-            gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
-
-
-
-
-            Intent intent = new Intent("update-message");
-
-
-           // intent.putExtra("message", gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
-            intent.putExtra("message", "CANGUE INFO FIREBASE (ASREMIS)");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-
-
-            if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
-            {
-                Log.d("Notificación", String.valueOf("YESS"));
-
-                mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
-
-            }else
-            {
-                Log.d("Notificación", String.valueOf("YESS"));
-
-                mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeActivity.class);
+            if (remoteMessage.getNotification() != null) {
+                Log.d(TAG, "Notificación: " + remoteMessage.getNotification().getBody());
 
             }
 
+            if (remoteMessage.getData().size() > 0) {
+
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+
+                gloval = ((GlovalVar) getApplicationContext());
+
+                System.out.println(gson.toJson(remoteMessage.getData()));
+                gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
 
 
+                Intent intent = new Intent("update-message");
+                // intent.putExtra("message", gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+                intent.putExtra("message", "CANGUE INFO FIREBASE (ASREMIS)");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+
+                if (gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5) {
+                    Log.d("Notificación", String.valueOf("YESS"));
+
+                    mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
+
+                } else {
+                    Log.d("Notificación", String.valueOf("YESS"));
+
+                    mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeActivity.class);
+
+                }
+
+
+            }
+        }catch (Exception e){
+            Log.d("ERROR" , e.getMessage());
         }
 
     }

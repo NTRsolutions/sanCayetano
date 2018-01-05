@@ -26,6 +26,15 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("idDriverOld")
     public int idDriverOld;
 
+    @Expose
+    @SerializedName("start")
+    public int start;
+
+
+    @Expose
+    @SerializedName("isFleetTravelAssistance")
+    public int isFleetTravelAssistance;
+
 
 
     @Expose
@@ -316,13 +325,33 @@ public  class InfoTravelEntity implements Serializable {
 
 
 
+
     @Expose
     @SerializedName("priceMinTravel")
     public double priceMinTravel;
 
     @Expose
+    @SerializedName("passenger1")
+    public String passenger1;
+
+    @Expose
+    @SerializedName("passenger2")
+    public String passenger2;
+
+    @Expose
+    @SerializedName("passenger3")
+    public String passenger3;
+
+    @Expose
+    @SerializedName("passenger4")
+    public String passenger4;
+
+    @Expose
     @SerializedName("reason")
     public String reason;
+
+
+
 
     @Expose
     @SerializedName("obsertavtionFlight")
@@ -911,5 +940,56 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setInfocar(String infocar) {
         this.infocar = infocar;
+    }
+
+
+    public String getPassenger1() {
+        return passenger1;
+    }
+
+    public void setPassenger1(String passenger1) {
+        this.passenger1 = passenger1;
+    }
+
+    public String getPassenger2() {
+        return passenger2;
+    }
+
+    public void setPassenger2(String passenger2) {
+        this.passenger2 = passenger2;
+    }
+
+    public String getPassenger3() {
+        return passenger3;
+    }
+
+    public void setPassenger3(String passenger3) {
+        this.passenger3 = passenger3;
+    }
+
+    public String getPassenger4() {
+        return passenger4;
+    }
+
+    public void setPassenger4(String passenger4) {
+        this.passenger4 = passenger4;
+    }
+
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+
+    public int getIsFleetTravelAssistance() {
+        return isFleetTravelAssistance;
+    }
+
+    public void setIsFleetTravelAssistance(int isFleetTravelAssistance) {
+        this.isFleetTravelAssistance = isFleetTravelAssistance;
     }
 }

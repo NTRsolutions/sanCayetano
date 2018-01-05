@@ -1,42 +1,55 @@
 package com.apreciasoft.admin.asremis.Fracments;
 
-import android.Manifest;
+        import android.Manifest;
         import android.app.Activity;
         import android.app.Fragment;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.location.Geocoder;
+        import android.content.BroadcastReceiver;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.IntentFilter;
+        import android.content.pm.PackageManager;
+        import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
+        import android.graphics.Color;
+        import android.graphics.drawable.BitmapDrawable;
+        import android.location.Geocoder;
         import android.location.Location;
-import android.os.AsyncTask;
+        import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Bundle;
+        import android.os.Handler;
         import android.support.annotation.Nullable;
         import android.support.annotation.RequiresApi;
+        import android.support.design.widget.Snackbar;
         import android.support.v4.app.ActivityCompat;
         import android.support.v4.content.ContextCompat;
+        import android.support.v4.content.LocalBroadcastManager;
         import android.util.Log;
-import android.view.InflateException;
-import android.view.LayoutInflater;
+        import android.view.InflateException;
+        import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
-import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
-import com.apreciasoft.admin.asremis.Http.HttpConexion;
-import com.apreciasoft.admin.asremis.R;
+        import android.widget.Button;
+        import android.widget.ImageView;
+        import android.widget.ProgressBar;
+        import android.widget.Switch;
+        import android.widget.TextView;
+        import android.widget.Toast;
+
+        import com.apreciasoft.admin.asremis.Activity.HomeActivity;
+        import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+        import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
+        import com.apreciasoft.admin.asremis.Http.HttpConexion;
+        import com.apreciasoft.admin.asremis.R;
+        import com.apreciasoft.admin.asremis.Services.ServicesTravel;
         import com.apreciasoft.admin.asremis.Util.DataParser;
-import com.apreciasoft.admin.asremis.Util.GlovalVar;
-import com.google.android.gms.common.ConnectionResult;
+        import com.apreciasoft.admin.asremis.Util.GlovalVar;
+        import com.google.android.gms.common.ConnectionResult;
         import com.google.android.gms.common.api.GoogleApiClient;
         import com.google.android.gms.location.LocationListener;
         import com.google.android.gms.location.LocationRequest;
         import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
+        import com.google.android.gms.maps.CameraUpdateFactory;
         import com.google.android.gms.maps.GoogleMap;
         import com.google.android.gms.maps.MapFragment;
         import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,11 +59,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
         import com.google.android.gms.maps.model.Marker;
         import com.google.android.gms.maps.model.MarkerOptions;
         import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
-
+        import com.google.gson.Gson;
+        import com.google.gson.GsonBuilder;
+        import com.kofigyan.stateprogressbar.StateProgressBar;
+        import org.json.JSONObject;
         import java.io.BufferedReader;
         import java.io.IOException;
         import java.io.InputStream;
@@ -63,6 +75,13 @@ import org.json.JSONObject;
         import java.util.Timer;
         import java.util.TimerTask;
 
+        import retrofit2.Call;
+        import retrofit2.Callback;
+        import retrofit2.Response;
+
+        import static com.apreciasoft.admin.asremis.Activity.HomeClientActivity.currentTravel;
+        import static com.apreciasoft.admin.asremis.Activity.HomeClientActivity.gloval;
+
 
 /**
  * Created by Admin on 04/01/2017.
@@ -70,7 +89,6 @@ import org.json.JSONObject;
 
 public class HomeClientFragment extends Fragment implements  OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,LocationListener {
 
-    public List<LatLng> listPosition = new ArrayList<>();
     static GoogleMap mGoogleMap;
     LocationRequest mLocationRequest;
     static GoogleApiClient mGoogleApiClient;
@@ -78,14 +96,14 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     public  static  String nameLocation;
     public static PolylineOptions options;
     Marker mCurrLocationMarker;
-    public  boolean isFistLocation = true;
+    public static   boolean isFistLocation,visible_progress = true;
     public static ArrayList<LatLng> MarkerPoints;
-    public  Timer timer;
+    public static   Timer timerblink;
     public static Location getmLastLocation() {
         return mLastLocation;
     }
-    private static View view;
-    public static TextView txtStatus = null;
+    public static View view;
+    public static TextView txtStatus,txtStatus2 = null;
     public static TextView txt_client_info = null;
     public static TextView txt_destination_info = null;
     public static TextView txt_origin_info = null;
@@ -94,10 +112,13 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     public static TextView txt_domain = null;
     public static TextView txt_amount_info = null;
     public static TextView txt_date_info = null;
+    public static ProgressBar progressBarTravel = null;
+    public static StateProgressBar stateProgressBar;
 
-    public static void setmLastLocation(Location mLastLocation) {
-        HomeClientFragment.mLastLocation = mLastLocation;
-    }
+    public ServicesTravel daoTravel = null;
+
+    public static String[] satusTravel;
+
 
     @Nullable
     @Override
@@ -150,6 +171,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
         HomeClientFragment.txt_date_info = (TextView) getActivity().findViewById(R.id.txt_date_info);
         HomeClientFragment.txtStatus = (TextView) getActivity().findViewById(R.id.txtStatus);
+        HomeClientFragment.txtStatus2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
         HomeClientFragment.txt_client_info = (TextView) getActivity().findViewById(R.id.txt_client_info);
         HomeClientFragment.txt_destination_info = (TextView) getActivity().findViewById(R.id.txt_destination_info);
         HomeClientFragment.txt_origin_info = (TextView) getActivity().findViewById(R.id.txt_origin_info);
@@ -159,13 +181,46 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         HomeClientFragment.txt_domain = (TextView) getActivity().findViewById(R.id.txt_domain);
 
 
+        txtStatus2.setText("SERVICIO ACTIVO");
 
-       txtStatus.setText("SERVICIO ACTIVO");
+        stateProgressBar = (StateProgressBar) getActivity().findViewById(R.id.your_state_progress_bar_id);
+        stateProgressBar.enableAnimationToCurrentState(true);
+
+        satusTravel = new String[]{"Aceptado", "Chofer en camino", "En Curso"};
+        stateProgressBar.setStateDescriptionData(satusTravel);
+
+        HomeClientFragment.progressBarTravel = (ProgressBar) getActivity().findViewById(R.id.progressBarTravel);
+
+
+
+            setVisibleprogressTravel(false);
+
+
+        blink(); // ACTIVAR EFECTO BLINK
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(recibeNotifiacionSocket, new IntentFilter("update-loaction-driver"));
+
+
+    }
+
+
+    private BroadcastReceiver recibeNotifiacionSocket = new BroadcastReceiver() {
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getDriverMapBidUserSocket();
+
+
+        }
+    };
 
 
 
 
-       // panelTopIsVisible(false);
+    public static void setVisibleprogressTravel(Boolean visible){
+
+        HomeClientFragment.visible_progress = visible;
 
 
     }
@@ -177,35 +232,40 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         HomeClientFragment.txt_domain.setText("No se cargo informacion");
         HomeClientFragment.txt_destination_info.setText("No se cargo informacion");
         HomeClientFragment.txt_origin_info.setText("No se cargo informacion");
-        HomeClientFragment.txt_km_info.setText("0Km");
-        HomeClientFragment.txt_amount_info.setText("0$");
-        HomeClientFragment.txtStatus.setText("SERVICIO ACTIVO");
+        HomeClientFragment.txt_km_info.setText("0.0Km");
+        HomeClientFragment.txt_amount_info.setText("0.0$");
         HomeClientFragment.txt_date_info.setText("---");
         getPick(-1);
+
+        HomeClientFragment.txtStatus.setVisibility(View.INVISIBLE);
+
+        setVisibleprogressTravel(false);
+
 
     }
 
     public static void setInfoTravel(InfoTravelEntity currentTravel)
     {
 
+        Log.d("VIAJE", "*"+String.valueOf(currentTravel.getIdSatatusTravel()));
+
+
         if(currentTravel != null) {
 
             if (view != null) {
 
+                setVisibleprogressTravel(true);
+
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                Log.d("currentTravel",gson.toJson(currentTravel.getInfocar()));
+                Log.d("VIAJE",gson.toJson(currentTravel.getIdSatatusTravel()));
 
 
                 HomeClientFragment.txt_client_info.setText(currentTravel.getDriver());
-
-
                 HomeClientFragment.txt_calling_info.setText(currentTravel.getPhoneNumberDriver());
                 HomeClientFragment.txt_domain.setText(currentTravel.getInfocar());
-
                 HomeClientFragment.txt_date_info.setText(currentTravel.getMdate().toString());
-
                 HomeClientFragment.txt_destination_info.setText(currentTravel.getNameDestination());
                 HomeClientFragment.txt_origin_info.setText(currentTravel.getNameOrigin());
                 HomeClientFragment.txt_km_info.setText(currentTravel.getDistanceLabel());
@@ -225,6 +285,47 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                         HomeClientFragment.txt_amount_info.setText(currentTravel.getAmountCalculate() + "$");
                     }
                 }
+
+
+                switch (currentTravel.getIdSatatusTravel()) {
+                    case 1:
+
+                        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
+                        break;
+                    case 4:
+
+                        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
+                        break;
+                    case 5:
+
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
+
+                            }
+                        }, 2000);
+
+
+                        break;
+                    case 6:
+                        setVisibleprogressTravel(false);
+                        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
+
+                        break;
+                    default:
+                        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
+                        setVisibleprogressTravel(false);
+
+                }
+
+
+            }
+            else {
+                setVisibleprogressTravel(false);
+
             }
         }
 
@@ -265,17 +366,17 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
             super.onPostExecute(result);
 
             ImageView your_imageView = (ImageView) view.findViewById(R.id.img_face_client);
-            ImageView your_imageView2 = (ImageView) view.findViewById(R.id.img_face_client2);
+           // ImageView your_imageView2 = (ImageView) view.findViewById(R.id.img_face_client2);
 
             if(result != null)
             {
                 your_imageView.setImageBitmap(result);
-                your_imageView2.setImageBitmap(result);
+             //   your_imageView2.setImageBitmap(result);
 
             }else
             {
                 your_imageView.setImageResource(R.drawable.noimg);
-                your_imageView2.setImageResource(R.drawable.noimg);
+                //your_imageView2.setImageResource(R.drawable.noimg);
             }
 
 
@@ -339,7 +440,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                 buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
                 mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+
 
                 if (MarkerPoints != null) {
                     MarkerPoints.clear();
@@ -370,7 +471,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
             mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+
 
             if (MarkerPoints != null) {
                 MarkerPoints.clear();
@@ -405,57 +506,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
     }
 
-    public  void setDirection(LatLng point)
-    {
 
-
-
-        // Already two locations
-        if (MarkerPoints.size() > 1) {
-            MarkerPoints.clear();
-            mGoogleMap.clear();
-        }
-
-        // Adding new item to the ArrayList
-        MarkerPoints.add(point);
-
-        // Creating MarkerOptions
-        MarkerOptions optionsDriving = new MarkerOptions();
-
-        // Setting the position of the marker
-        optionsDriving.position(point);
-
-        /**
-         * For the start location, the color of marker is GREEN and
-         * for the end location, the color of marker is RED.
-         */
-        if (MarkerPoints.size() == 1) {
-            optionsDriving.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        } else if (MarkerPoints.size() == 2) {
-            optionsDriving.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }
-
-
-        // Add new marker to the Google Map Android API V2
-        mGoogleMap.addMarker(optionsDriving);
-
-        // Checks, whether start and end locations are captured
-        if (MarkerPoints.size() >= 2) {
-            LatLng origin = MarkerPoints.get(0);
-            LatLng dest = MarkerPoints.get(1);
-
-            // Getting URL to the Google Directions API
-            String url = getUrl(origin, dest);
-            FetchUrl FetchUrl = new FetchUrl();
-
-            // Start downloading json data from Google Directions API
-            FetchUrl.execute(url);
-            //move map camera
-            // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
-        }
-
-    }
 
     private static String getUrl(LatLng origin, LatLng dest) {
 
@@ -515,7 +566,19 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                     == PackageManager.PERMISSION_GRANTED) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
-                this._activeTimerMap();
+
+
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
+                if (mLastLocation != null) {
+
+                    LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+
+                }
+
+
 
             }
         } catch (Exception e) {
@@ -757,32 +820,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         }
     }
 
-    public void _activeTimerMap()
-    {
 
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-
-                if(getActivity() != null)
-                {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            addDriverMap();
-                        }
-                    });
-                }
-
-
-
-
-                 }
-            }, 0, 9000);
-
-    }
 
     public static float calculateMiles() {
         float totalDistance = 0;
@@ -952,6 +990,121 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         }
     }
 
+
+    private void blink(){
+
+
+
+        timerblink = new Timer();
+        timerblink.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+
+                if(getActivity() != null)
+                {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView txt = (TextView) getActivity().findViewById(R.id.txtStatus);
+                            TextView txt2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
+
+                            if (HomeClientFragment.visible_progress) {
+
+                                if (txt.getVisibility() == View.VISIBLE) {
+                                    txt.setVisibility(View.INVISIBLE);
+                                } else {
+                                    txt.setVisibility(View.VISIBLE);
+                                }
+                                txt2.setVisibility(View.INVISIBLE);
+                                HomeClientFragment.stateProgressBar.setVisibility(View.VISIBLE);
+                                HomeClientFragment.progressBarTravel.setVisibility(View.VISIBLE);
+                            }
+
+                            if (!HomeClientFragment.visible_progress) {
+
+                                if (txt2.getVisibility() == View.VISIBLE) {
+                                    txt2.setVisibility(View.INVISIBLE);
+                                } else {
+                                    txt2.setVisibility(View.VISIBLE);
+                                }
+                                txt.setVisibility(View.INVISIBLE);
+                                stateProgressBar.setVisibility(View.INVISIBLE);
+                                progressBarTravel.setVisibility(View.INVISIBLE);
+
+                            }
+                        }
+                    });
+                }
+
+
+            }
+        }, 0, 1000);
+
+
+
+    }
+
+
+    public  void  getDriverMapBidUserSocket()
+    {
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+        try {
+
+            Call<TravelLocationEntity> call = null;
+            call = this.daoTravel.getDriverMapBiIdTravel(currentTravel.getIdTravel());
+
+
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
+
+            call.enqueue(new Callback<TravelLocationEntity>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<TravelLocationEntity> call, Response<TravelLocationEntity> response) {
+
+
+                    TravelLocationEntity TRAVEL = (TravelLocationEntity) response.body();
+
+                    Log.d("VIAJE", response.toString());
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    System.out.println("VIAJE"+gson.toJson(response));
+
+                    gloval.setLocationDriverFromClient(TRAVEL);
+                    addDriverMap();
+
+
+                }
+
+                public void onFailure(Call<TravelLocationEntity> call, Throwable t) {
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                }
+
+
+            });
+
+        } finally {
+            this.daoTravel = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            //stop location updates when Activity is no longer active
+            if (mGoogleApiClient != null) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            }
+        }catch (Exception e) {
+            Log.d("ERROR", e.getMessage());
+        }
+    }
 
 
 

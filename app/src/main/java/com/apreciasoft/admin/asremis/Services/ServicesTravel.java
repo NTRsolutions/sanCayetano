@@ -4,6 +4,7 @@ import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelEntity;
+import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.reason;
 import com.apreciasoft.admin.asremis.Entity.resp;
@@ -32,6 +33,10 @@ public interface ServicesTravel {
     Call<InfoTravelEntity> getCurrentTravelByIdClient(@Path("id") int id);
 
     @Headers("Content-Type: application/json")
+    @GET("travel/getDriverMapBiIdTravel/{id}")
+    Call<TravelLocationEntity> getDriverMapBiIdTravel(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
     @GET("travel/getCurrentTravelByIdUserCompany/{id}")
     Call<InfoTravelEntity> getCurrentTravelByIdUserCompany(@Path("id") int id);
 
@@ -58,6 +63,10 @@ public interface ServicesTravel {
     @Headers("Content-Type: application/json")
     @GET("travel/confirmCancelByClient/{id}")
     Call<Boolean> confirmCancelByClient(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
+    @GET("travel/calificateDriver/{idTravel}/{start}")
+    Call<Boolean> calificateDriver(@Path("idTravel") int idTravel,@Path("start") int start);
 
     @Headers("Content-Type: application/json")
     @GET("travel/confirmCancelByDriver/{id}")
@@ -108,4 +117,7 @@ public interface ServicesTravel {
     @Headers("Content-Type: application/json")
     @GET("config/param")
     Call<List<paramEntity>> getparam();
+
+
+
 }

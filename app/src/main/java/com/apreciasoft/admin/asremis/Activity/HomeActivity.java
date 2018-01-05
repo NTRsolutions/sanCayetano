@@ -1,6 +1,5 @@
 package com.apreciasoft.admin.asremis.Activity;
 
-import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -10,10 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -52,7 +49,6 @@ import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
-import com.apreciasoft.admin.asremis.Entity.modelEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.token;
@@ -60,7 +56,6 @@ import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.AcountDriver;
 import com.apreciasoft.admin.asremis.Fracments.HistoryTravelDriver;
 import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
-import com.apreciasoft.admin.asremis.Fracments.NewFormDriver;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.Fracments.PaymentCreditCar;
 import com.apreciasoft.admin.asremis.Fracments.ProfileClientFr;
@@ -77,8 +72,6 @@ import com.apreciasoft.admin.asremis.Util.Signature;
 import com.apreciasoft.admin.asremis.Util.Tiempo;
 import com.apreciasoft.admin.asremis.Util.Utils;
 import com.apreciasoft.admin.asremis.Util.WsTravel;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -112,13 +105,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public ServicesTravel daoTravel = null;
     public ServicesLoguin daoLoguin = null;
-    public ServicesDriver daoDriver = null;
 
     public ProgressDialog loading;
     public static double totalFinal = 0;
 
+    boolean _NOCONEXION = false;
 
-    public Timer timer;
+
+    public Timer timer,timerConexion;
     public ProgressDialog loadingCronometro;
     public static final int SIGNATURE_ACTIVITY = 1;
     public static final int PROFILE_DRIVER_ACTIVITY = 2;
@@ -152,7 +146,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public DecimalFormat df = new DecimalFormat("####0.00");
     public double amounCalculateGps;
     protected PowerManager.WakeLock wakelock;
+
+
     public boolean viewAlert = false;
+
+
+
     private DatabaseReference databaseReference;//defining a database reference
     public Bitmap bitmap;
     private Uri filePath;
@@ -193,10 +192,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
-
-
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,16 +221,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         gloval = ((GlovalVar)getApplicationContext());
 
 
-        Log.d("gloval param", String.valueOf(gloval.getGv_param()));
 
         TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>(){};
         Gson gson = new Gson();
         List<paramEntity> listParam = gson.fromJson(pref.getString("param",""), token3.getType());
 
-        Log.d("gloval s param", String.valueOf(listParam));
-        Log.d("gloval", String.valueOf(gloval));
+        gloval.setGv_param(listParam);
 
        setParamLocal();
+
+
 
         // BOTON PARA PRE FINALIZAR UN VIAJE //
         btnPreFinish = (Button) findViewById(R.id.btn_pre_finish);
@@ -434,7 +429,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
        // Llamamos que control si tenemos un viaje //
-        controlVieTravel();
+      //  controlVieTravel();
 
         //ACTIVAMOS EL TOkEN FIRE BASE//
         String token = FirebaseInstanceId.getInstance().getToken();
@@ -470,9 +465,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         refreshButomPermision();
 
-        setTitle("Chofer: "+gloval.getGv_nr_driver());
-
-
+        setTitle(gloval.getGv_nr_driver());
+        toolbar.setLogo(R.drawable.ic_directions_car_black_24dp);
+        toolbar.setSubtitle("Chofer");
 
 
 
@@ -492,6 +487,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
         PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
 
+
+
+        Log.d("PARAM_66 0", String.valueOf(gloval.getGv_param().get(65).getValue()));
+        Log.d("PARAM_66 1", String.valueOf(PARAM_66));
 
     }
 
@@ -551,8 +550,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             Log.d("currentTravel", String.valueOf(currentTravel.isResignet));
             Log.d("currentTravel", String.valueOf(currentTravel.getIdSatatusTravel()));
-                if(currentTravel.getIdSatatusTravel() == 0)
-                {
+            Log.d("currentTravel", String.valueOf(viewAlert));
+
+            if(dialogTravel != null){
+                dialogTravel.dismiss();
+            }
+
+
+
+                if (currentTravel.getIdSatatusTravel() == 0) {
 
                     Toast.makeText(getApplicationContext(), "VIAJE Cancelado!", Toast.LENGTH_LONG).show();
                     btPreFinishVisible(false);
@@ -571,10 +577,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     textTiempo = (TextView) findViewById(R.id.textTiempo);
                     textTiempo.setVisibility(View.INVISIBLE);
 
-                   // _activeTimer();
-                }
-                else  if(currentTravel.getIdSatatusTravel() == 8)
-                {
+                    // _activeTimer();
+                } else if (currentTravel.getIdSatatusTravel() == 8) {
                     Toast.makeText(getApplicationContext(), "VIAJE Cancelado por Cliente!", Toast.LENGTH_LONG).show();
                     btPreFinishVisible(false);
                     btnFlotingVisible(true);
@@ -592,9 +596,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     textTiempo = (TextView) findViewById(R.id.textTiempo);
                     textTiempo.setVisibility(View.INVISIBLE);
 
-                  //  _activeTimer();
-                }else  if(currentTravel.getIdSatatusTravel() == 6)
-                {
+                    //  _activeTimer();
+                } else if (currentTravel.getIdSatatusTravel() == 6) {
                     Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
 
                     btPreFinishVisible(false);
@@ -611,23 +614,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     textTiempo.setVisibility(View.INVISIBLE);
 
                     //_activeTimer();
+                } else {
+
+                    if(viewAlert == false) {
+                        if (currentTravel.getIdSatatusTravel() == 2) {
+                            viewAlert = true;
+
+
+
+                           FragmentManager fm = getFragmentManager();
+                            dialogTravel = new TravelDialog();
+                            dialogTravel.show(fm, "Sample Fragment");
+                            dialogTravel.setCancelable(false);
+                        }
+                    }
                 }
-                else
-                {
-                    viewAlert = true;
-                    FragmentManager fm = getFragmentManager();
-                    dialogTravel = new TravelDialog();
-                    dialogTravel.show(fm, "Sample Fragment");
-                    dialogTravel.setCancelable(false);
-                }
+
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 
 
 
@@ -650,6 +658,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         {
             timer.cancel();
         }
+
+        if(timerConexion != null)
+        {
+            timerConexion.cancel();
+        }
+
+
+
 
 
         if(HomeFragment.SPCKETMAP != null){
@@ -678,7 +694,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-           // cliaerNotificationAndoid();
+            Log.d("currentTravel", "CONTROL");
 
 
             if(currentTravel == null){
@@ -689,6 +705,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
                 if (currentTravel != null) {
+
 
 
                     Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel.getIdSatatusTravel()));
@@ -907,7 +924,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
 
-        Log.d("noti", "1");
+        this.getParam();
 
         if(dialogTravel != null){
             dialogTravel.dismiss();
@@ -917,13 +934,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         if(currentTravel !=  null) {
-            Log.d("currentTravel", String.valueOf(currentTravel.getIdSatatusTravel()));
+            Log.d("currentTravel", "onResume"+String.valueOf(currentTravel.getIdSatatusTravel()));
 
             controlVieTravel();
 
         }else {
 
-               getCurrentTravelByIdDriver();
+            getCurrentTravelByIdDriver();
         }
     }
 
@@ -938,8 +955,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            getCurrentTravelByIdDriver();
-            Log.d("TRAVEL","LLEGO NOTIFICCION");
+            if(currentTravel == null){
+                getCurrentTravelByIdDriver();
+            }else {
+                controlVieTravel();
+            }
+
+            Log.d("currentTravel", String.valueOf(currentTravel));
+
         }
     };
 
@@ -974,108 +997,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    /*METODO PARA NOTIFICACIONES CON MOBIL EN SEGUNDO PLANO*/
-  /*  public  void searchTravelByIdDriver()
-    {
-        if (this.daoTravel == null) {  this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);  }
-
-        try {
-
-            String lat = "";
-            String lon = "";
-            String add = "";
-
-
-
-            if (HomeFragment.getmLastLocation() != null) {
-                lat = String.valueOf(HomeFragment.getmLastLocation().getLatitude());
-                lon = String.valueOf(HomeFragment.getmLastLocation().getLongitude());
-                add = HomeFragment.nameLocation;
-            }
-
-
-
-                int idTrave = 0;
-                int  idClientKf = 0;
-
-
-                TraveInfoSendEntity travel =
-                        new TraveInfoSendEntity(new
-                                TravelLocationEntity(
-                                gloval.getGv_user_id(),
-                                idTrave,
-                                add,
-                                lon,
-                                lat,
-                                gloval.getGv_id_driver(),
-                                gloval.getGv_id_vehichle(),
-                                idClientKf,
-                                HomeFragment.calculateMiles()[0]
-
-                        )
-                        );
-
-
-                GsonBuilder builder = new GsonBuilder();
-                final Gson gson = builder.create();
-                Log.d("Object location ", gson.toJson(travel));
-
-
-                Call<List<InfoTravelEntity>> call = this.daoTravel.infoTravelByDriver(travel);
-
-
-                Log.d("Call location", call.request().body().toString());
-                Log.d("Call location", call.request().toString());
-                Log.d("Call location", call.request().headers().toString());
-
-                call.enqueue(new Callback<List<InfoTravelEntity>>() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onResponse(Call<List<InfoTravelEntity>> call, Response<List<InfoTravelEntity>> response) {
-
-                        Log.d("Response raw header", response.headers().toString());
-                        Log.d("Response raw", String.valueOf(response.raw().body()));
-                        Log.d("Response code", String.valueOf(response.code()));
-
-                        if (response.code() == 200) {
-
-                            List<InfoTravelEntity> list = (List<InfoTravelEntity>) response.body();
-
-
-                            gloval.setGv_travel_current(list.get(0));
-                            currentTravel = gloval.getGv_travel_current();
-
-                            if (currentTravel.getIdSatatusTravel() == 2) {
-                                controlVieTravel();
-                            }
-
-
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<InfoTravelEntity>> call, Throwable t) {
-
-
-
-
-                        Log.d("********* ERROR ********","ERROR ENVIADO UBICACION");
-                        Log.d("t.getMessage()",t.getMessage());
-
-
-                    }
-                });
-
-
-
-        } finally {
-            this.daoTravel = null;
-        }
-    }
-
-*/
 
     public void showFinshTravel() throws IOException {
 
@@ -1440,9 +1361,47 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    private void fn_verificateConexion() {
+
+        if( Utils.verificaConexion(this) == true) {
+            _NOCONEXION = false;
+
+        }else
+        {
+
+            if(_NOCONEXION == false) {
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                alertDialog.setTitle("Sin Conexion a Internet,  Verifica tu Conexion!");
+                alertDialog.setCancelable(false);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Verificar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                                startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                                finish();
+                                alertDialog.dismiss();
+                                System.exit(0);
+
+
+                            }
+                        });
+                alertDialog.show();
+                _NOCONEXION = true;
+            }
+
+
+        }
+    }
+
+
+
     private void fn_refhesh() {
+
             getParam();
             getCurrentTravelByIdDriver();
+
     }
 
     public  void  fn_gotoprofile()
@@ -1526,7 +1485,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void _activeTimer()
     {
 
-        Log.d("location","TIMER");
+        Log.d("TIMER","TIMER 1");
 
 
             timer = new Timer();
@@ -1543,6 +1502,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             }, 0, 60000);
+
+
+        timerConexion = new Timer();
+        timerConexion.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(
+                        new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TIMER","TIMER 2");
+                        fn_verificateConexion();
+
+                    }
+                });
+
+            }
+        }, 0, 10000);
 
     }
 
@@ -1623,6 +1600,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                             RemisSocketInfo list = (RemisSocketInfo) response.body();
                             notificate(list.getListNotification(), list.getListReservations());
+                            fn_refhesh();
 
 
                         }
@@ -1717,11 +1695,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setNotification(final InfoTravelEntity travel)
     {
-            Log.d("viewAlert", String.valueOf(viewAlert));
+            Log.d("currentTravel  full", String.valueOf(viewAlert));
 
         if(viewAlert == false)
         {
-            viewAlert = true;
             currentTravel =  travel;
             gloval.setGv_travel_current(currentTravel);
 
@@ -1801,6 +1778,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  void btCancelVisible(boolean b)
     {
         final Button btn = (Button) findViewById(R.id.btn_cancel);
+
+        Log.d("PARAM_66 2", String.valueOf(PARAM_66));
 
         if(b)
         {
@@ -1992,7 +1971,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 cliaerNotificationAndoid();
                 viewAlert = true;
                 dialogTravel.dismiss();
-
                 currentTravel = response.body();
                 setInfoTravel();
 
@@ -2575,28 +2553,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void getParam(){
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
+        Log.d("PARAM_69", "GET PARAM");
+
 
 
         try {
 
         Call<List<paramEntity>> call = this.daoTravel.getparam();
 
-            Log.d("Call request", call.request().toString());
-            Log.d("Call request header", call.request().headers().toString());
+            Log.d("PARAM_69", call.request().toString());
+            Log.d("PARAM_69", call.request().headers().toString());
 
 
             call.enqueue(new Callback<List<paramEntity>>() {
             @Override
             public void onResponse(Call<List<paramEntity>> call, Response<List<paramEntity>> response) {
 
-
-                Log.d("Response request", call.request().toString());
-                Log.d("Response request header", call.request().headers().toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", String.valueOf(response.raw().body()));
-                Log.d("Response code", String.valueOf(response.code()));
-
-
+                Log.d("PARAM_69", response.headers().toString());
+                Log.d("PARAM_69", String.valueOf(response.raw().body()));
+                Log.d("PARAM_69", String.valueOf(response.code()));
 
 
 

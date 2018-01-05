@@ -33,6 +33,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +48,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -65,6 +67,7 @@ import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.HistoryTravelDriver;
 import com.apreciasoft.admin.asremis.Fracments.HomeClientFragment;
+import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
 import com.apreciasoft.admin.asremis.Fracments.ListTypeCarLayout;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.Fracments.PaymentFormClient;
@@ -147,7 +150,7 @@ public class HomeClientActivity extends AppCompatActivity
     public static String latDestination = "";
     public static String lonDestination = "";
 
-
+    public  RatingBar rating;
     public Spinner spinner;
     public Spinner spinner2;
     public String dateTravel= "";
@@ -163,7 +166,6 @@ public class HomeClientActivity extends AppCompatActivity
     private static final String API_KEY = "AIzaSyApZ1embZ2bhcI4Ir8NepmyjTfNvGvjUas";
 
     /*DATE*/
-    //UI References
     private EditText fromDateEtxt;
     private EditText fromTimeEtxt;
     private DatePickerDialog fromDatePickerDialog;
@@ -186,6 +188,8 @@ public class HomeClientActivity extends AppCompatActivity
     public ProgressDialog loading;
     private Integer idTypeVehicle;
 
+
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +198,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
+        //LocalBroadcastManager.getInstance(this).registerReceiver(recibeNotifiacionSocket, new IntentFilter("update-loaction-driver"));
 
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
@@ -264,6 +269,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
         });
+
 
 
 
@@ -404,10 +410,6 @@ public class HomeClientActivity extends AppCompatActivity
 
         });
 
-        //autoCompView2.setOnItemClickListener(this);
-
-
-
 
         contetRequestTravelVisible(false);
 
@@ -460,6 +462,14 @@ public class HomeClientActivity extends AppCompatActivity
         terminal = (EditText) findViewById(R.id.txt_terminalnew);
         airlineCompany = (EditText) findViewById(R.id.txt_airlineCompany);
         flyNumber = (EditText) findViewById(R.id.txt_flyNumber);
+
+
+        setTitle(R.string.app_name);
+        toolbar.setSubtitle("Bienvenido!");
+
+        this.getCurrentTravelByIdClient();
+
+
 
 
     }
@@ -1417,6 +1427,21 @@ public class HomeClientActivity extends AppCompatActivity
         }
     };
 
+  /*
+    private BroadcastReceiver recibeNotifiacionSocket = new BroadcastReceiver() {
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("TRAVEL","LLEGO SOCKET");
+
+
+        }
+    };
+*/
+
+
+
 
 
     public  void  getCurrentTravelByIdClient()
@@ -1504,36 +1529,65 @@ public class HomeClientActivity extends AppCompatActivity
 
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
                         alertDialog.setTitle("Viaje Aceptado");
-                        alertDialog.setMessage("Viaje Aceptado, Chofer en camino..!, ");
+                        alertDialog.setMessage("Chofer en camino..!, ");
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+
                                     }
                                 });
+                        alertDialog.setCancelable(false);
                         alertDialog.show();
-                        //  HomeClientFragment.panelTopIsVisible(true);
+
+
 
                     } else if (currentTravel.getIdSatatusTravel() == 5) {
                         Toast.makeText(getApplicationContext(), "Viaje En Curso, Feliz Viaje!", Toast.LENGTH_SHORT).show();
-                        //HomeClientFragment.panelTopIsVisible(true);
+
 
                     } else if (currentTravel.getIdSatatusTravel() == 6) {
-                        HomeClientFragment.txtStatus.setText("SERVICIO ACTIVO");
                         Toast.makeText(getApplicationContext(), "Viaje Finalizado, Gracias por Preferirnos!", Toast.LENGTH_SHORT).show();
-                        currentTravel = null;
-                        materialDesignFAM.setVisibility(View.VISIBLE);
-                        gloval.setGv_travel_current(null);
-                        HomeClientFragment.clearInfo();
-                        // HomeClientFragment.panelTopIsVisible(false);
+
+
+                            Log.d("start", String.valueOf(currentTravel.start));
+
+                            if(currentTravel.start == 0) {
+
+                                this.ShowDialogStarts();
+                            }else
+                            {
+                                currentTravel = null;
+                                materialDesignFAM.setVisibility(View.VISIBLE);
+                                gloval.setGv_travel_current(null);
+                                HomeClientFragment.clearInfo();
+                            }
+
+
+
+
                     } else if (currentTravel.getIdSatatusTravel() == 7) {
-                        Toast.makeText(getApplicationContext(), "Viaje Reachazado!", Toast.LENGTH_SHORT).show();
-                        HomeClientFragment.txtStatus.setText("Viaje Reachazado por el Chofer!");
+
+                        final int idTravel = currentTravel.getIdTravel();
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                        alertDialog.setTitle("Viaje Reachazado!");
+                        alertDialog.setMessage("Viaje Reachazado por el Chofer!");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        confirmCancelByClient(idTravel);
+                                    }
+                                });
+                        alertDialog.show();
+
                         currentTravel = null;
                         materialDesignFAM.setVisibility(View.VISIBLE);
                         gloval.setGv_travel_current(null);
                         HomeClientFragment.clearInfo();
-                        // HomeClientFragment.panelTopIsVisible(false);
+
                     } else if (currentTravel.getIdSatatusTravel() == 0) {
 
 
@@ -1557,8 +1611,9 @@ public class HomeClientActivity extends AppCompatActivity
                         materialDesignFAM.setVisibility(View.VISIBLE);
                         gloval.setGv_travel_current(null);
                         HomeClientFragment.clearInfo();
-                        // HomeClientFragment.panelTopIsVisible(false);
                         activeGif(false, "");
+
+
                     }
 
 
@@ -1567,8 +1622,11 @@ public class HomeClientActivity extends AppCompatActivity
                 } else if (currentTravel.getIdSatatusTravel() == 1) {
                     activeGif(false, "");
 
+                    final int idTravel = currentTravel.getIdTravel();
+
                     AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
                     alertDialog.setTitle("Viaje Aceptado");
+                    alertDialog.setCancelable(false);
                     alertDialog.setMessage("El Viaje  (" + currentTravel.getCodTravel() + ") ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, ");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
@@ -1578,41 +1636,33 @@ public class HomeClientActivity extends AppCompatActivity
                             });
                     alertDialog.show();
 
-
-                    currentTravel = null;
+                   // currentTravel = null;
                     materialDesignFAM.setVisibility(View.INVISIBLE);
-                    gloval.setGv_travel_current(null);
-                    HomeClientFragment.clearInfo();
+                    //gloval.setGv_travel_current(null);
+                    HomeClientFragment.setInfoTravel(currentTravel);
 
 
                 }
-                else if (currentTravel.getIdSatatusTravel() == 2) {
-                    activeGif(false, "");
+                else if (currentTravel.getIdSatatusTravel() == 2) {// viaje solicitado sin asignacion aun
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
-                    alertDialog.setTitle("USTED POSEE UN VIAJE SOLICITADO!");
-                    alertDialog.setMessage("El Viaje  (" + currentTravel.getCodTravel() + ") esta en espera de Aceptacion de la Agencia..!");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ESPERAR",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCELAR VIAJE",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    activeGifMotivos(true,"");
-                                }
-                            });
+                    materialDesignFAM.close(true);
 
-                    alertDialog.show();
+                    LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
+                    contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
+                    isReervation = false;
+                    contetRequestTravelVisible(false);
+                    btnrequertReser.setEnabled(true);
+                    btnrequetTravelNow.setEnabled(true);
 
                 }
 
             } else {
                 materialDesignFAM.setVisibility(View.VISIBLE);
-                // setInfoTravel();
+                currentTravel = null;
+                materialDesignFAM.setVisibility(View.VISIBLE);
+                gloval.setGv_travel_current(null);
+                HomeClientFragment.clearInfo();
+                activeGif(false, "");
             }
         }catch (Exception e)
         {
@@ -1729,9 +1779,6 @@ public class HomeClientActivity extends AppCompatActivity
 
                 Call<resp> call = this.daoTravel.addTravel(travel);
 
-                Log.d("Call request", call.request().body().toString());
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers().toString());
 
                 call.enqueue(new Callback<resp>() {
                 @Override
@@ -1871,7 +1918,7 @@ public class HomeClientActivity extends AppCompatActivity
     }
 
     private void fn_refhesh() {
-
+        getCurrentTravelByIdClient();
     }
 
     public  void  fn_gotoprofile()
@@ -1894,22 +1941,29 @@ public class HomeClientActivity extends AppCompatActivity
 
     // SALIR DE ACTIVITY //
     public void fn_exit() throws IOException {
-        // LAMAMOS A EL MAIN ACTIVITY//
-        Intent main = new Intent(HomeClientActivity.this, MainActivity.class);
-        startActivity(main);
+
 
         currentTravel = null;
         gloval.setGv_logeed(false);
         new GlovalVar();
 
-        // enviarTokenAlServidor("",gloval.getGv_user_id());
-        ws.coseWebSocket();
+        enviarTokenAlServidor("",gloval.getGv_user_id());
+        if(ws != null) {
+            ws.coseWebSocket();
+        }
+        HomeClientFragment.timerblink.cancel();
 
 
         editor.clear();
         editor.commit(); // commit changes
 
+
+
         finish();
+
+        // LAMAMOS A EL MAIN ACTIVITY//
+        Intent main = new Intent(HomeClientActivity.this, MainActivity.class);
+        startActivity(main);
 
 
     }
@@ -2010,6 +2064,111 @@ public class HomeClientActivity extends AppCompatActivity
     {
         NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.cancelAll();
+    }
+
+    public void ShowDialogStarts()
+    {
+        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+
+        );
+
+
+
+        lp.gravity = Gravity.CENTER;
+
+        rating = new RatingBar(this);
+        rating.setLayoutParams(lp);
+
+        rating.setNumStars(5);
+        rating.setStepSize(1);
+        //add ratingBar to linearLayout
+        linearLayout.addView(rating);
+
+
+        popDialog.setIcon(android.R.drawable.star_big_on);
+        popDialog.setTitle("Dale una Puntuacion al Chofer!");
+        popDialog.setCancelable(false);
+        popDialog.setMessage("Chofer del Viaje "+currentTravel.getCodTravel()+
+                " Fecha:"+currentTravel.getMdate()+
+                " Origen:"+currentTravel.getNameOrigin()+
+                " Destino:"+currentTravel.getNameDestination());
+
+        //add linearLayout to dailog
+
+        linearLayout.setGravity(Gravity.CENTER);
+        popDialog.setView(linearLayout);
+
+
+        // Button OK
+        popDialog.setPositiveButton("Enviar",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        rating.getProgress();
+                        dialog.dismiss();
+                        servicesCalificateDriver(rating.getProgress());
+                    }
+
+                })
+
+                // Button Cancel
+                .setNegativeButton("Omitir",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                servicesCalificateDriver(-1);
+                            }
+                        });
+
+        popDialog.create();
+        popDialog.show();
+
+    }
+
+
+    public void servicesCalificateDriver(int start){
+
+
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+        try {
+            Call<Boolean> call = this.daoTravel.calificateDriver(currentTravel.idTravel,start);
+
+
+
+            call.enqueue(new Callback<Boolean>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+
+                    Toast.makeText(getApplicationContext(), "Puntuacion Enviada!", Toast.LENGTH_LONG).show();
+                    currentTravel = null;
+                    materialDesignFAM.setVisibility(View.VISIBLE);
+                    gloval.setGv_travel_current(null);
+                    HomeClientFragment.clearInfo();
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                }
+
+
+            });
+
+        } finally {
+            this.daoTravel = null;
+        }
+
     }
 
 
