@@ -115,69 +115,7 @@ public class WsTravel extends Activity {
             Log.d("SOCK IO",e.getMessage());
         }
 
-       /* URI uri;
-        try {
-            uri = new URI("wss://"+HttpConexion.ip+":3389?idUser="+idUser+"&uri="+ HttpConexion.base);
 
-            Log.d("Websocket", String.valueOf(uri));
-        } catch (URISyntaxException e) {
-
-            Log.d("Websocket",  e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-
-        mWebSocketClient = new WebSocketClient(uri,new Draft_17()) {
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                Log.d("Websocket", "Opened");
-
-                String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-
-                mWebSocketClient.send(mydate+" - CONECATADO DESDE UN (*" + Build.MANUFACTURER + "*)" + Build.MODEL);
-            }
-
-            @Override
-            public void onMessage(String s) {
-                final String message = s;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                       Log.d("Websocket m",message);
-                       // mWebSocketClient.send("hola menor");
-
-
-                        GsonBuilder builder = new GsonBuilder();
-                         Gson gson = builder.create();
-
-                        TravelLocationEntity info = new Gson().fromJson(message, TravelLocationEntity.class);
-
-                        // variable global //
-                        gloval = ((GlovalVar) HomeClientActivity.gloval);
-
-                        gloval.setLocationDriverFromClient(info);
-
-                       // HomeClientFragment.a
-
-                    }
-                });
-            }
-
-
-
-            @Override
-            public void onClose(int i, String s, boolean b) {
-                Log.d("Websocket", "Closed " + s);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.d("Websocket", "Error " + e.getMessage());
-            }
-        };
-
-        mWebSocketClient.connect();*/
     }
 
     private TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -194,11 +132,6 @@ public class WsTravel extends Activity {
         }
     } };
 
-    /*public static class RelaxedHostNameVerifier implements HostnameVerifier {
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    }*/
 
 
     public void coseWebSocket() {
