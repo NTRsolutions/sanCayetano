@@ -44,7 +44,6 @@ public class WsTravel extends Activity {
         /* Instance object socket */
 
             WsTravel.URL_SOCKET =  HttpConexion.PROTOCOL+"://"+HttpConexion.ip+":"+HttpConexion.portWsCliente+"?idUser="+idUser+"&uri="+ HttpConexion.base;
-            Log.d("SOCKET IO","va a conectar: "+URL_SOCKET);
 
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
@@ -57,7 +56,15 @@ public class WsTravel extends Activity {
             options.secure = true;
             options.port = HttpConexion.portWsCliente;
 
-            mWebSocketClient = IO.socket(URL_SOCKET,options);
+            if(mWebSocketClient == null) {
+                Log.d("SOCKET IO","va a conectar: "+URL_SOCKET);
+                mWebSocketClient = IO.socket(URL_SOCKET, options);
+
+
+            }
+
+
+
 
 
 

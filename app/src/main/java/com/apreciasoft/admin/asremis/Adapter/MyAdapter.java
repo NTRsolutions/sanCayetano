@@ -2,6 +2,7 @@ package com.apreciasoft.admin.asremis.Adapter;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             holder.mtv_amount.setText(mDataset.get(position).getTotalAmount());
 
         }else {
-            holder.mtv_amount.setText("---");
+            holder.mtv_amount.setText("0.0");
         }
 
 
@@ -79,7 +80,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             if (mDataset.get(position).getIsProcesCurrentAcount() == 1) {
                 holder.mtv_isProcesCurrentAcount.setText("(" + mDataset.get(position).getNameStatusTravel() + ") - Liquidado!");
             } else {
-                holder.mtv_isProcesCurrentAcount.setText("(" + mDataset.get(position).getNameStatusTravel() + ")");
+
+                if(mDataset.get(position).getIdStatusTravel() == 2 &&
+                        mDataset.get(position).getIsAceptReservationByDriver() == 1    ){
+                    holder.mtv_isProcesCurrentAcount.setText("(Chofer asignado)");
+
+                }else{
+                    holder.mtv_isProcesCurrentAcount.setText("(" + mDataset.get(position).getNameStatusTravel() + ")");
+
+                }
+
             }
         }
     }

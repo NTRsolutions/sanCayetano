@@ -88,12 +88,6 @@ public class PaymentCreditCar extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-
-        Log.d("va","va");
-        finish();
-    }
 
 
     @Override
@@ -114,6 +108,7 @@ public class PaymentCreditCar extends AppCompatActivity {
                     HomeActivity.mp_paymentMethodId = paymentData.getPaymentMethod().getId();
                     HomeActivity.mp_paymentTypeId = paymentData.getPaymentMethod().getPaymentTypeId();
                     HomeActivity.mp_paymentstatus = paymentData.getTransactionAmount().toEngineeringString();
+                    HomeActivity._PAYCREDITCAR_OK = true;
                     this.finish();
 
 
@@ -140,13 +135,21 @@ public class PaymentCreditCar extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                HomeActivity._PAYCREDITCAR_OK = false;
                 this.finish();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+        Log.d("va","va");
+       // finish();
+    }
+
 
 }
 

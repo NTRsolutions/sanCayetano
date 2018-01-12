@@ -65,6 +65,10 @@ public interface ServicesTravel {
     Call<Boolean> confirmCancelByClient(@Path("id") int id);
 
     @Headers("Content-Type: application/json")
+    @GET("travel/confirmAceptaByClient/{id}")
+    Call<Boolean> confirmAceptaByClient(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
     @GET("travel/calificateDriver/{idTravel}/{start}")
     Call<Boolean> calificateDriver(@Path("idTravel") int idTravel,@Path("start") int start);
 
@@ -94,8 +98,8 @@ public interface ServicesTravel {
 
 
     @Headers("Content-Type: application/json")
-    @GET("travel/rservations/{idDriver}")
-    Call<List<InfoTravelEntity>> getReservations(@Path("idDriver") int id);
+    @GET("travel/rservations/{idDriver}/{idUserClient}/{idProfileUser}")
+    Call<List<InfoTravelEntity>> getReservations(@Path("idDriver") int idDriver,@Path("idUserClient") int idUserClient,@Path("idProfileUser") int idProfileUser);
 
     @Headers("Content-Type: application/json")
     @GET("travel/readrservations/{id}/{idDriver}")

@@ -32,9 +32,18 @@ public  class InfoTravelEntity implements Serializable {
 
 
     @Expose
+    @SerializedName("idTypeTravelKf")
+    public int idTypeTravelKf;
+
+    @Expose
     @SerializedName("isFleetTravelAssistance")
     public int isFleetTravelAssistance;
 
+
+
+    @Expose
+    @SerializedName("isConfirmAceptaByClient")
+    public int isConfirmAceptaByClient;
 
 
     @Expose
@@ -75,6 +84,11 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("distanceLabel")
     public String distanceLabel;
+
+
+    @Expose
+    @SerializedName("idStatusTravel")
+    public int idStatusTravel;
 
 
     @Expose
@@ -318,10 +332,19 @@ public  class InfoTravelEntity implements Serializable {
     public int isConfirReservationFromWeb;
 
 
+    @Expose
+    @SerializedName("isConfirTravelAppFromWeb")
+    public int isConfirTravelAppFromWeb;
+
+
+
+
 
     @Expose
     @SerializedName("distanceSave")
     public double distanceSave;
+
+
 
 
 
@@ -991,5 +1014,37 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setIsFleetTravelAssistance(int isFleetTravelAssistance) {
         this.isFleetTravelAssistance = isFleetTravelAssistance;
+    }
+
+    public int getIdTypeTravelKf() {
+        return idTypeTravelKf;
+    }
+
+    public void setIdTypeTravelKf(int idTypeTravelKf) {
+        this.idTypeTravelKf = idTypeTravelKf;
+    }
+
+    public int getIsConfirmAceptaByClient() {
+        return isConfirmAceptaByClient;
+    }
+
+    public void setIsConfirmAceptaByClient(int isConfirmAceptaByClient) {
+        this.isConfirmAceptaByClient = isConfirmAceptaByClient;
+    }
+
+    public int getIdStatusTravel() {
+        return idStatusTravel;
+    }
+
+    public void setIdStatusTravel(int idStatusTravel) {
+        this.idStatusTravel = idStatusTravel;
+    }
+
+    public int getIsConfirTravelAppFromWeb() {
+        return isConfirTravelAppFromWeb;
+    }
+
+    public void setIsConfirTravelAppFromWeb(int isConfirTravelAppFromWeb) {
+        this.isConfirTravelAppFromWeb = isConfirTravelAppFromWeb;
     }
 }

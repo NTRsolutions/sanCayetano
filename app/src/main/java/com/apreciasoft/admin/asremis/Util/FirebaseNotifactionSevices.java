@@ -107,6 +107,14 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
 
+       // try {
+            // Perform the operation associated with our pendingIntent
+           // pendingIntent.send();
+            Log.d("NOTIFICATE", "Abrir");
+        //} catch (PendingIntent.CanceledException e) {
+          //  e.printStackTrace();
+        //}
+
         if(gloval.getGv_travel_current().getSound() != null) {
             switch (gloval.getGv_travel_current().getSound()) {
                 case "nuevareserva":
@@ -148,7 +156,6 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(gloval.getGv_travel_current().getNameOrigin())
-                        .setContentText("PRUEBA")
                         .setAutoCancel(true)
                         .setSound(soundUri)
                         .setContentIntent(pendingIntent);

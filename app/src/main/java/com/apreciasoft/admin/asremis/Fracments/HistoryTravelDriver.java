@@ -32,7 +32,7 @@ import retrofit2.Response;
 
 public class HistoryTravelDriver extends Fragment {
 
-
+    public static GlovalVar gloval;
     ServicesDriver apiService = null;
     View myView;
     List<InfoTravelEntity> list = null;
@@ -47,12 +47,15 @@ public class HistoryTravelDriver extends Fragment {
         // myView = inflater.inflate(R.layout.history_travel_driver,container,false);
         //return myView;
         this.apiService = HttpConexion.getUri().create(ServicesDriver.class);
+        gloval = ((GlovalVar)getActivity().getApplicationContext());
 
 
-        //aqui se prueba si el servicio esta trayendo data, despues de comprobar crear la validacion.
-            serviceAllTravelClient();
+            if(gloval.getGv_id_profile() == 3){
+                serviceAllTravel();
+            }else {
+                serviceAllTravelClient();
+            }
 
-            serviceAllTravel();
 
 
         // Inflate the layout for this fragment

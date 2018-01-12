@@ -82,7 +82,19 @@ public class ReservationsFrangment extends Fragment  {
 
 
         final GlovalVar gloval = ((GlovalVar)getActivity().getApplicationContext());
-        Call<List<InfoTravelEntity>> call = this.apiService.getReservations(gloval.getGv_id_driver());
+
+        Call<List<InfoTravelEntity>> call = null;
+        if(gloval.getGv_id_profile() ==  3){
+            call =  this.apiService.getReservations(gloval.getGv_id_driver(),0,3);
+        }
+        else if(gloval.getGv_id_profile() ==  4 || gloval.getGv_id_profile() ==  5) {
+
+            call =  this.apiService.getReservations(0,gloval.getGv_user_id(),gloval.getGv_id_profile());
+
+        } else if (gloval.getGv_id_profile() ==  2) {
+            call =  this.apiService.getReservations(0,gloval.getGv_id_cliet(),gloval.getGv_id_profile());
+
+        }
 
         // Log.d("***",call.request().body().toString());
 

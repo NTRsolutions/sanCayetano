@@ -67,7 +67,6 @@ import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.HistoryTravelDriver;
 import com.apreciasoft.admin.asremis.Fracments.HomeClientFragment;
-import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
 import com.apreciasoft.admin.asremis.Fracments.ListTypeCarLayout;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.Fracments.PaymentFormClient;
@@ -128,6 +127,7 @@ public class HomeClientActivity extends AppCompatActivity
 
     Integer motivo = 0;
 
+    PlaceAutocompleteFragment autocompleteFragment;
     public String TAG = "HOME_CLIENT_ACTIVITY";
     protected PowerManager.WakeLock wakelock;
     public static GlovalVar gloval;
@@ -145,6 +145,7 @@ public class HomeClientActivity extends AppCompatActivity
     public String lon = "";
     public Button btnrequertReser;
     public Button btnrequetTravelNow;
+    public  AutoCompleteTextView autoCompView,autoCompView2;
 
     public static String destination = "";
     public static String latDestination = "";
@@ -185,7 +186,7 @@ public class HomeClientActivity extends AppCompatActivity
     private EditText flyNumber;
     private CheckBox isFly;
 
-    public ProgressDialog loading;
+    public ProgressDialog loading,loadingGloval;
     private Integer idTypeVehicle;
 
 
@@ -346,7 +347,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
         /*GOOGLE PACE*/
-        AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -376,9 +377,7 @@ public class HomeClientActivity extends AppCompatActivity
             });
 
 
-        //autoCompView.setOnItemClickListener(this);
-
-        AutoCompleteTextView autoCompView2 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+        autoCompView2 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
         autoCompView2.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -474,7 +473,6 @@ public class HomeClientActivity extends AppCompatActivity
 
     }
 
-
     public void checkPermision()
     {
         LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
@@ -523,8 +521,6 @@ public class HomeClientActivity extends AppCompatActivity
         return;*/
     }
 
-
-
     public void onCheckboxClicked(View view) {
         // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();
@@ -547,11 +543,10 @@ public class HomeClientActivity extends AppCompatActivity
         }
     }
 
-
     public void  _setEditPlaceHolder()
     {
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setHint("A Donde Vas?");
@@ -579,7 +574,6 @@ public class HomeClientActivity extends AppCompatActivity
             }
         });
     }
-
 
     private void findViewsById() {
         fromDateEtxt = (EditText) findViewById(R.id.txtdateReervation);
@@ -617,7 +611,7 @@ public class HomeClientActivity extends AppCompatActivity
                         fromTimeEtxt.setText(hourOfDay + ":" + minute);
 
                     }
-                },newCalendar.get(Calendar.HOUR), newCalendar.get(Calendar.MINUTE), false);
+                },newCalendar.get(Calendar.HOUR), newCalendar.get(Calendar.MINUTE), true);
 
 
     }
@@ -752,8 +746,6 @@ public class HomeClientActivity extends AppCompatActivity
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
-
-
 
 
 
@@ -1179,6 +1171,8 @@ public class HomeClientActivity extends AppCompatActivity
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
         try {
+            loadingGloval = ProgressDialog.show(HomeClientActivity.this, "Cancelar", "Espere unos Segundos...", true, false);
+
 
             motivo = motivo - 1;
             Call<Boolean> call = this.daoTravel.cancelByClient(gloval.getGv_user_id(), motivo);
@@ -1190,6 +1184,8 @@ public class HomeClientActivity extends AppCompatActivity
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                    loadingGloval.dismiss();
 
                     Toast.makeText(getApplicationContext(), "VIAJE CANCELADO!", Toast.LENGTH_LONG).show();
 
@@ -1209,6 +1205,8 @@ public class HomeClientActivity extends AppCompatActivity
                 }
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
+                    loadingGloval.dismiss();
+
                     Snackbar.make(findViewById(android.R.id.content),
                             "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                 }
@@ -1258,6 +1256,49 @@ public class HomeClientActivity extends AppCompatActivity
         }
     }
 
+    public  void  confirmAceptaByClient(int idTravel)
+    {
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+
+        try {
+            Call<Boolean> call = this.daoTravel.confirmAceptaByClient(idTravel);
+
+            Log.d("fatal", call.request().toString());
+            Log.d("fatal", call.request().headers().toString());
+
+            call.enqueue(new Callback<Boolean>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+
+
+                    materialDesignFAM.setVisibility(View.VISIBLE);
+                    currentTravel = null;
+                    materialDesignFAM.setVisibility(View.VISIBLE);
+                    gloval.setGv_travel_current(null);
+                    HomeClientFragment.clearInfo();
+                    activeGif(false, "");
+                    setInfoTravel();
+
+
+                }
+
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                }
+
+
+            });
+
+        } finally {
+            this.daoTravel = null;
+        }
+    }
+
     // Mostramos listado de detalles de el CATEGORIAS //
     public  void showModalCategory() {
         try {
@@ -1271,17 +1312,6 @@ public class HomeClientActivity extends AppCompatActivity
         }
     }
 
-    /*METODO CUANDO SELECIONAMOS UNA CATEGORYA */
-   /* public void savePreferences(int idTipe,String name) throws JSONException {
-        Log.d("fatal", String.valueOf(idTipe));
-        dialogFragment.dismiss();
-
-        this.mIdTypeVehicle = idTipe;
-
-        EditText txt_cateogi =  (EditText) findViewById(R.id.txtCatVehicleReervation);
-        txt_cateogi.setText(name);
-        //this.requestTravel();
-    }*/
 
     // Mostramos listado de detalles de el viajes //
     public  void preRequestTravel()
@@ -1360,6 +1390,9 @@ public class HomeClientActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_gallery) {
 
+            FloatingActionMenu btnTravelNew = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+            btnTravelNew.setVisibility(View.INVISIBLE);
+
             HistoryTravelDriver verifi = new HistoryTravelDriver();
             verifi.ver = 1;
             fm.beginTransaction().replace(R.id.content_frame_client,new HistoryTravelDriver()).commit();
@@ -1379,14 +1412,20 @@ public class HomeClientActivity extends AppCompatActivity
 
         }else if (id == R.id.nav_manage) {
 
+            FloatingActionMenu btnTravelNew = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+            btnTravelNew.setVisibility(View.INVISIBLE);
             fm.beginTransaction().replace(R.id.content_frame_client,new NotificationsFrangment()).commit();
             btnFlotingVisible(false);
 
         } else if (id == R.id.nav_reservations) {
+            FloatingActionMenu btnTravelNew = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+            btnTravelNew.setVisibility(View.INVISIBLE);
             btnFlotingVisible(false);
 
         } else if (id == R.id.nav_send) {
 
+            FloatingActionMenu btnTravelNew = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+            btnTravelNew.setVisibility(View.INVISIBLE);
             activeGifMotivosFalla(true,"");
             btnFlotingVisible(false);
 
@@ -1426,21 +1465,6 @@ public class HomeClientActivity extends AppCompatActivity
 
         }
     };
-
-  /*
-    private BroadcastReceiver recibeNotifiacionSocket = new BroadcastReceiver() {
-
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("TRAVEL","LLEGO SOCKET");
-
-
-        }
-    };
-*/
-
-
 
 
 
@@ -1507,7 +1531,7 @@ public class HomeClientActivity extends AppCompatActivity
 
             Log.d("VIAJE PASO", String.valueOf(gloval.getGv_travel_current()));
 
-            cliaerNotificationAndoid();
+          //  cliaerNotificationAndoid();
             currentTravel = gloval.getGv_travel_current();
 
             if (currentTravel != null) {
@@ -1527,8 +1551,9 @@ public class HomeClientActivity extends AppCompatActivity
 
                     if (currentTravel.getIdSatatusTravel() == 4) {
 
+
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
-                        alertDialog.setTitle("Viaje Aceptado");
+                        alertDialog.setTitle("Viaje aceptado por el chofer");
                         alertDialog.setMessage("Chofer en camino..!, ");
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                 new DialogInterface.OnClickListener() {
@@ -1547,7 +1572,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
                     } else if (currentTravel.getIdSatatusTravel() == 6) {
-                        Toast.makeText(getApplicationContext(), "Viaje Finalizado, Gracias por Preferirnos!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Viaje Finalizado, Gracias por Preferirnos", Toast.LENGTH_SHORT).show();
 
 
                             Log.d("start", String.valueOf(currentTravel.start));
@@ -1594,7 +1619,17 @@ public class HomeClientActivity extends AppCompatActivity
                         final int idTravel = currentTravel.getIdTravel();
 
                         AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
-                        alertDialog.setTitle("Viaje Reachazado!");
+
+
+
+                        if(currentTravel.getIdTypeTravelKf() == 1){
+                            alertDialog.setTitle("Viaje rechazado!");
+                        }
+
+                        if(currentTravel.getIdTypeTravelKf() == 2){
+                            alertDialog.setTitle("Reserva rechazada!");
+                        }
+
                         alertDialog.setMessage(currentTravel.getReason());
                         alertDialog.setCancelable(false);
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1619,27 +1654,62 @@ public class HomeClientActivity extends AppCompatActivity
 
                     setInfoTravel();
 
-                } else if (currentTravel.getIdSatatusTravel() == 1) {
-                    activeGif(false, "");
+                } else if (currentTravel.getIdSatatusTravel() == 1 ) {
 
-                    final int idTravel = currentTravel.getIdTravel();
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
-                    alertDialog.setTitle("Viaje Aceptado");
-                    alertDialog.setCancelable(false);
-                    alertDialog.setMessage("El Viaje  (" + currentTravel.getCodTravel() + ") ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, ");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                       activeGif(false, "");
 
-                   // currentTravel = null;
-                    materialDesignFAM.setVisibility(View.INVISIBLE);
-                    //gloval.setGv_travel_current(null);
-                    HomeClientFragment.setInfoTravel(currentTravel);
+                       final int idTravel = currentTravel.getIdTravel();
+
+                       if (currentTravel.getIdTypeTravelKf() == 1) //VIAJE
+                       {
+                           AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                           alertDialog.setTitle("Viaje Aceptado");
+                           alertDialog.setCancelable(false);
+                           alertDialog.setMessage("El Viaje  (" + currentTravel.getCodTravel() + ") ha sido aceptado por la Agencia!.. y se le asignara un chofer de inmediato..!, ");
+                           alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.dismiss();
+                                       }
+                                   });
+                           alertDialog.show();
+
+                           materialDesignFAM.setVisibility(View.INVISIBLE);
+                           HomeClientFragment.setInfoTravel(currentTravel);
+                       } else {
+
+                           if(currentTravel.getIsConfirTravelAppFromWeb() == 1) {
+
+                               AlertDialog alertDialog = new AlertDialog.Builder(HomeClientActivity.this).create();
+                               alertDialog.setTitle("Reserva aceptada");
+                               alertDialog.setCancelable(false);
+                               alertDialog.setMessage("Su reserva (" + currentTravel.getCodTravel() + ") ha sido aceptada con éxito ");
+                               alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                       new DialogInterface.OnClickListener() {
+                                           public void onClick(DialogInterface dialog, int which) {
+                                               confirmAceptaByClient(idTravel);
+                                               dialog.dismiss();
+                                           }
+                                       });
+                               alertDialog.show();
+                               currentTravel = null;
+                               gloval.setGv_travel_current(null);
+                               HomeClientFragment.clearInfo();
+                           }
+                           else {
+                               materialDesignFAM.setVisibility(View.VISIBLE);
+                               currentTravel = null;
+                               materialDesignFAM.setVisibility(View.VISIBLE);
+                               gloval.setGv_travel_current(null);
+                               HomeClientFragment.clearInfo();
+                               activeGif(false, "");
+                           }
+
+
+                       }
+
+
 
 
                 }
@@ -1697,7 +1767,11 @@ public class HomeClientActivity extends AppCompatActivity
             }
 
 
+
+
             if (!fromTimeEtxt.getText().toString().matches("") && !fromDateEtxt.getText().toString().matches("")) {
+
+                Log.d("** TRAVEL ** ",fromDateEtxt.getText().toString());
                 this.dateTravel = fromDateEtxt.getText().toString() + " " + fromTimeEtxt.getText().toString();
             } else {
                 this.dateTravel = currentDate;
@@ -1772,6 +1846,11 @@ public class HomeClientActivity extends AppCompatActivity
 
             }
 
+            Log.d("validateRequired", String.valueOf(isReervation));
+
+
+            Log.d("validateRequired", String.valueOf(validateRequired));
+
 
             if (validateRequired) {
                 btnrequertReser.setEnabled(false);
@@ -1779,11 +1858,13 @@ public class HomeClientActivity extends AppCompatActivity
 
                 Call<resp> call = this.daoTravel.addTravel(travel);
 
+                loading = ProgressDialog.show(this, "Enviado Solicitud", "Espere unos Segundos...", true, false);
+
 
                 call.enqueue(new Callback<resp>() {
                 @Override
                 public void onResponse(Call<resp> call, Response<resp> response) {
-
+                    loading.dismiss();
 
                     Log.d("Response raw header", response.headers().toString());
                     Log.d("Response raw", String.valueOf(response.raw().body()));
@@ -1792,11 +1873,8 @@ public class HomeClientActivity extends AppCompatActivity
 
                     if (response.code() == 200) {
 
-                        //the response-body is already parseable to your ResponseBody object
                         resp responseBody = (resp) response.body();
-                        //you can do whatever with the response body now...
                         String responseBodyString = responseBody.getResponse().toString();
-
 
                         if (isReervation) {
                             Toast.makeText(getApplicationContext(), "Reserva Solicitada!", Toast.LENGTH_SHORT).show();
@@ -1842,6 +1920,8 @@ public class HomeClientActivity extends AppCompatActivity
 
                 @Override
                 public void onFailure(Call<resp> call, Throwable t) {
+                    loading.dismiss();
+
                     Snackbar.make(findViewById(android.R.id.content),
                             "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
                     btnrequertReser.setEnabled(true);
@@ -1855,7 +1935,21 @@ public class HomeClientActivity extends AppCompatActivity
 
             } finally{
                 this.daoTravel = null;
-            }
+                fromDateEtxt.setText("");
+                fromTimeEtxt.setText("");
+                autoCompView.setText("");
+                autoCompView2.setText("");
+                autocompleteFragment.setText("");
+                isFly.setChecked(false);
+                hoursAribo.setText("");
+                terminal.setText("");
+                airlineCompany.setText("");
+                flyNumber.setText("");
+                LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
+                btnTravelNew.setVisibility(View.GONE);
+
+
+        }
 
 
 
@@ -2058,8 +2152,6 @@ public class HomeClientActivity extends AppCompatActivity
     }
 
 
-
-
     public void cliaerNotificationAndoid()
     {
         NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -2258,9 +2350,6 @@ public class HomeClientActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame_client,new ReservationsFrangment()).commit();
     }
-
-
-
 
 
 }

@@ -142,6 +142,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static String mp_paymentMethodId = "";
     public static String mp_paymentTypeId = "";
     public static String mp_paymentstatus = "";
+    public static  boolean _PAYCREDITCAR_OK = false;
+
 
     public DecimalFormat df = new DecimalFormat("####0.00");
     public double amounCalculateGps;
@@ -437,10 +439,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         enviarTokenAlServidor(token,gloval.getGv_user_id());
 
 
-
-
-        _activeTimer();
-
         textTiempo = (TextView) findViewById(R.id.textTiempo);
         textTiempo.setVisibility(View.INVISIBLE);
 
@@ -469,6 +467,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setLogo(R.drawable.ic_directions_car_black_24dp);
         toolbar.setSubtitle("Chofer");
 
+
+        _activeTimer();
 
 
     }
@@ -626,6 +626,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             dialogTravel = new TravelDialog();
                             dialogTravel.show(fm, "Sample Fragment");
                             dialogTravel.setCancelable(false);
+
+                           // this.cliaerNotificationAndoid();
                         }
                     }
                 }
@@ -780,7 +782,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 } else {
 
 
-                    Toast.makeText(getApplicationContext(), "Sin Viajes Asignados!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Sin Viajes Asignados!", Toast.LENGTH_LONG).show();
 
                 if(dialogTravel != null){
                     dialogTravel.dismiss();
@@ -791,6 +793,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     btnFlotingVisible(true);
                     textTiempo = (TextView) findViewById(R.id.textTiempo);
                     textTiempo.setVisibility(View.INVISIBLE);
+                    currentTravel = null;
                    // _activeTimer();
                 }
 
@@ -961,7 +964,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 controlVieTravel();
             }
 
-            Log.d("currentTravel", String.valueOf(currentTravel));
+            Log.d("BroadcastReceiver", String.valueOf(ws));
+
 
         }
     };
@@ -1129,7 +1133,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             // VERIFICAMOS EL BEMEFICIO POR KM PARA CLIENTES PARTICULARES //
             Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmClientList()));
 
-            if(currentTravel.getIsBenefitKmClientList() == 1) {
+            if(currentTravel.getIsBenefitKmClientList() == 1 && currentTravel.getListBeneficio().size() > 0) {
 
                 amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_total);
 
@@ -1310,6 +1314,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mNotificationsCount = couterNotifications;
         mNotificationsReservationsCount = couterReservations;
         invalidateOptionsMenu();
+
+        if(couterReservations >0) {
+            Toast.makeText(getApplicationContext(), "Tienes (" + couterReservations + ") Reservas!", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -1525,7 +1533,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public  void setLocationVehicheDriver()
     {
-       // Log.d("setLocationVehicheDriver","setLocationVehicheDriver");
+
+
 
         if (this.daoTravel == null) {
             this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
@@ -1583,11 +1592,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 Call<RemisSocketInfo> call = this.daoTravel.sendPosition(travel);
 
-
-                Log.d("setLocationVehicheDriver Call request", call.request().body().toString());
-                Log.d("setLocationVehicheDriver Call request", call.request().toString());
-                Log.d("setLocationVehicheDriver Call request header", call.request().headers().toString());
-
                 call.enqueue(new Callback<RemisSocketInfo>() {
                     @Override
                     public void onResponse(Call<RemisSocketInfo> call, Response<RemisSocketInfo> response) {
@@ -1616,8 +1620,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 });
 
             }
-
-            Log.d("setLocationVehicheDriver  ", "PASO FINAL");
 
 
         }
@@ -2246,7 +2248,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case CREDIT_CAR_ACTIVITY:
                 super.onActivityResult(requestCode, resultCode, data);
-                finishTravel();
+                if(HomeActivity._PAYCREDITCAR_OK) {
+                    finishTravel();
+                }
                 break;
 
         }

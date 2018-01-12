@@ -488,11 +488,16 @@ public class HomeFragment extends Fragment implements
                         options.secure = true;
                         options.port = HttpConexion.portWsWeb;
 
-                        SPCKETMAP = IO.socket(URL_SOCKET_MAP,options);
+
+                        if(SPCKETMAP == null) {
+                            SPCKETMAP = IO.socket(URL_SOCKET_MAP, options);
+                        }
                     }
                     else
                     {
-                        SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+                        if(SPCKETMAP == null) {
+                            SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+                        }
                     }
 
                     Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
@@ -837,6 +842,10 @@ public class HomeFragment extends Fragment implements
 
                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 
+
+                    if (mCurrLocationMarker != null) {
+                        mCurrLocationMarker.remove();
+                    }
                    mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
 
