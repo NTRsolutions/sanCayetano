@@ -136,7 +136,7 @@ public class TravelDialog extends DialogFragment {
 
 
 
-        expandableListDetail = ExpandableListDataPump.getData("Pajeros",subItem);
+        expandableListDetail = ExpandableListDataPump.getData("Pasajeros",subItem);
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
         expandableListAdapter = new CustomExpandableListAdapter(getActivity(), expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);

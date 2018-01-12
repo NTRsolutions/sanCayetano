@@ -41,7 +41,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginTop="30dp" />
+                    android:layout_marginTop="20dp" />
 
 
 
@@ -51,8 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:text="Viaje Solicitado, A la Brevedad le confirmaremos su solicitud!"
-                    android:textSize="18sp"
+                    android:text="Viaje solicitado, le confirmaremos su solicitud a la brevedad"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:layout_alignTop="@+id/progressBar"
                     android:layout_alignParentRight="true"

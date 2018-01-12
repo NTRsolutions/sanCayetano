@@ -1,4 +1,5 @@
 package com.apreciasoft.admin.asremis.Fracments;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -41,6 +42,8 @@ public class InfoDetailTravelAc extends AppCompatActivity {
     public Button btn_init_reserva = null;
     public ServicesTravel daoTravel = null;
     public GlovalVar gloval;
+    public ProgressDialog loading;
+
 
 
     @Override
@@ -157,10 +160,11 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
 
         try {
+
             Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
 
-            Log.d("fatal", call.request().toString());
-            Log.d("fatal", call.request().headers().toString());
+            loading = ProgressDialog.show(this, "Enviado", "Espere unos Segundos...", true, false);
+
 
             call.enqueue(new Callback<InfoTravelEntity>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -168,11 +172,11 @@ public class InfoDetailTravelAc extends AppCompatActivity {
                 public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
                     Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-                    Log.d("fatal",response.body().toString());
 
-                   gloval.setGv_travel_current(response.body());
+                    gloval.setGv_travel_current(response.body());
 
 
+                    loading.dismiss();
 
                     Intent i = new Intent(InfoDetailTravelAc.this,HomeActivity.class);
                     startActivity(i);
@@ -181,6 +185,8 @@ public class InfoDetailTravelAc extends AppCompatActivity {
                 }
 
                 public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                    loading.dismiss();
+
                     AlertDialog alertDialog = new AlertDialog.Builder(InfoDetailTravelAc.this).create();
                     alertDialog.setTitle("ERROR");
                     alertDialog.setCanceledOnTouchOutside(false);
@@ -219,30 +225,28 @@ public class InfoDetailTravelAc extends AppCompatActivity {
                 this.apiService.readReservation(idTravel
                         ,gloval.getGv_id_driver());
 
-        // Log.d("***",call.request().body().toString());
+        loading = ProgressDialog.show(this, "Enviado", "Espere unos Segundos...", true, false);
+
 
         call.enqueue(new Callback<List<InfoTravelEntity>>() {
             @Override
             public void onResponse(Call<List<InfoTravelEntity>> call, Response<List<InfoTravelEntity>> response) {
 
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers().toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", String.valueOf(response.raw().body()));
-                Log.d("Response code", String.valueOf(response.code()));
-
-
                 if (response.code() == 200) {
 
                     //the response-body is already parseable to your ResponseBody object
 
+                    loading.dismiss();
                     Toast.makeText(getApplicationContext(), "Reserva Confirmada!", Toast.LENGTH_SHORT).show();
+
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("result",ReservationsFrangment.class);
                     setResult(ReservationsFrangment.RESULT_OK,returnIntent);
                     finish();
 
                 } else if (response.code() == 404) {
+                    loading.dismiss();
+
                     AlertDialog alertDialog = new AlertDialog.Builder(InfoDetailTravelAc.this).create();
                     alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
                     alertDialog.setMessage(response.errorBody().source().toString());
@@ -266,6 +270,8 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<InfoTravelEntity>> call, Throwable t) {
+                loading.dismiss();
+
                 AlertDialog alertDialog = new AlertDialog.Builder(InfoDetailTravelAc.this).create();
                 alertDialog.setTitle("ERROR");
                 alertDialog.setMessage(t.getMessage());
@@ -295,17 +301,14 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         Call<List<InfoTravelEntity>> call =
                 this.apiService.cacelReservation(idTravel,gloval.getGv_id_driver());
 
+        loading = ProgressDialog.show(this, "Enviado", "Espere unos Segundos...", true, false);
+
 
         call.enqueue(new Callback<List<InfoTravelEntity>>() {
             @Override
             public void onResponse(Call<List<InfoTravelEntity>> call, Response<List<InfoTravelEntity>> response) {
 
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers().toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", String.valueOf(response.raw().body()));
-                Log.d("Response code", String.valueOf(response.code()));
-
+                loading.dismiss();
 
                 if (response.code() == 200) {
 
@@ -340,6 +343,8 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<InfoTravelEntity>> call, Throwable t) {
+                loading.dismiss();
+
                 AlertDialog alertDialog = new AlertDialog.Builder(InfoDetailTravelAc.this).create();
                 alertDialog.setTitle("ERROR");
                 alertDialog.setMessage(t.getMessage());

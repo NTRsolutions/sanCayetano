@@ -56,21 +56,6 @@ public class NorificationAdapter
             mtv_blah = (TextView) v.findViewById(R.id.tv_blah);
             mImageButton= (ImageButton) v.findViewById(R.id.imageButton);
 
-            /*btn = (Button) v.findViewById(R.id.read);
-
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    //  leer notificacion
-                    itemListener.recyclerViewListClicked(v,temObj.getPosition());
-                }
-            });
-
-            v.setOnClickListener(this);
-
-            btn_cancel = (Button) v.findViewById(R.id.cancel);
-            btn_cancel.setVisibility(v.INVISIBLE);*/
 
 
         }

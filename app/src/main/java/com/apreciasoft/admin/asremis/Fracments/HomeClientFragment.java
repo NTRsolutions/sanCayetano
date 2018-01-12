@@ -141,6 +141,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
 
 
+        blink(); // ACTIVAR EFECTO BLINK
 
 
 
@@ -196,7 +197,6 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
             setVisibleprogressTravel(false);
 
 
-        blink(); // ACTIVAR EFECTO BLINK
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(recibeNotifiacionSocket, new IntentFilter("update-loaction-driver"));
 
@@ -758,65 +758,66 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     public    void addDriverMap()
     {
 
-        Log.d("onLocationChanged","timer");
+        try {
+            Log.d("onLocationChanged", "timer");
 
-         GlovalVar gloval;
+            GlovalVar gloval;
 
-        // variable global //
-        gloval = ((GlovalVar)getActivity().getApplicationContext());
+            // variable global //
+            gloval = ((GlovalVar) getActivity().getApplicationContext());
 
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
 
-        if (mGoogleMap != null) {
-            mGoogleMap.clear();
-        }
+            if (mGoogleMap != null) {
+                mGoogleMap.clear();
+            }
 
-         if (gloval.getLocationDriverFromClient() != null) {
-             Log.d("onLocationChanged","auto");
-
-
-             TravelLocationEntity info = gloval.getLocationDriverFromClient();
+            if (gloval.getLocationDriverFromClient() != null) {
+                Log.d("onLocationChanged", "auto");
 
 
+                TravelLocationEntity info = gloval.getLocationDriverFromClient();
 
 
+                //Place current location marker
+                LatLng latLng = new LatLng(Double.parseDouble(info.getLatLocation()),
+                        Double.parseDouble(info.getLongLocation()));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(info.getLocation());
 
-             //Place current location marker
-             LatLng latLng = new LatLng(Double.parseDouble(info.getLatLocation()),
-                     Double.parseDouble(info.getLongLocation()));
-             MarkerOptions markerOptions = new MarkerOptions();
-             markerOptions.position(latLng);
-             markerOptions.title( info.getLocation());
 
-
-             int height = 45;
-             int width = 40;
-             BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.auto);
-             Bitmap b=bitmapdraw.getBitmap();
-             Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                int height = 45;
+                int width = 40;
+                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.auto);
+                Bitmap b = bitmapdraw.getBitmap();
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
             /* BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.auto);*/
-             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 
-             mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-         }
+                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+            }
 
-        if(mLastLocation != null) {
-
-
-            //Place current location marker
-            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Usted esta Aqui ");
+            if (mLastLocation != null) {
 
 
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.persona);
-            markerOptions.icon(icon);
+                //Place current location marker
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title("Usted esta Aqui ");
 
-            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.persona);
+                markerOptions.icon(icon);
+
+                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+            }
+        }catch (Exception e){
+            Log.d("EROR",e.getMessage());
         }
     }
 
@@ -993,54 +994,68 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
     private void blink(){
 
+        try {
+
+            timerblink = new Timer();
+            timerblink.schedule(new TimerTask() {
+                @Override
+                public void run() {
 
 
-        timerblink = new Timer();
-        timerblink.schedule(new TimerTask() {
-            @Override
-            public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
 
-                if(getActivity() != null)
-                {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView txt = (TextView) getActivity().findViewById(R.id.txtStatus);
-                            TextView txt2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
+                                if (getActivity().findViewById(R.id.txtStatus) != null &&
+                                        getActivity().findViewById(R.id.txtStatus) != null) {
 
-                            if (HomeClientFragment.visible_progress) {
+                                    TextView txt = (TextView) getActivity().findViewById(R.id.txtStatus);
+                                    TextView txt2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
 
-                                if (txt.getVisibility() == View.VISIBLE) {
-                                    txt.setVisibility(View.INVISIBLE);
-                                } else {
-                                    txt.setVisibility(View.VISIBLE);
+                                    if (HomeClientFragment.visible_progress) {
+
+                                        if (txt.getVisibility() == View.VISIBLE) {
+                                            txt.setVisibility(View.INVISIBLE);
+                                        } else {
+                                            txt.setVisibility(View.VISIBLE);
+                                        }
+                                        txt2.setVisibility(View.INVISIBLE);
+                                        HomeClientFragment.stateProgressBar.setVisibility(View.VISIBLE);
+                                        HomeClientFragment.progressBarTravel.setVisibility(View.VISIBLE);
+                                    }
+
+
+                                    if (!HomeClientFragment.visible_progress) {
+
+                                        if (txt2 != null) {
+
+                                            if (txt2.getVisibility() == View.VISIBLE) {
+                                                txt2.setVisibility(View.INVISIBLE);
+                                            } else {
+                                                txt2.setVisibility(View.VISIBLE);
+                                            }
+                                        }
+
+                                        if (txt != null) {
+                                            txt.setVisibility(View.INVISIBLE);
+                                        }
+                                        stateProgressBar.setVisibility(View.INVISIBLE);
+                                        progressBarTravel.setVisibility(View.INVISIBLE);
+
+                                    }
                                 }
-                                txt2.setVisibility(View.INVISIBLE);
-                                HomeClientFragment.stateProgressBar.setVisibility(View.VISIBLE);
-                                HomeClientFragment.progressBarTravel.setVisibility(View.VISIBLE);
                             }
+                        });
+                    }
 
-                            if (!HomeClientFragment.visible_progress) {
 
-                                if (txt2.getVisibility() == View.VISIBLE) {
-                                    txt2.setVisibility(View.INVISIBLE);
-                                } else {
-                                    txt2.setVisibility(View.VISIBLE);
-                                }
-                                txt.setVisibility(View.INVISIBLE);
-                                stateProgressBar.setVisibility(View.INVISIBLE);
-                                progressBarTravel.setVisibility(View.INVISIBLE);
-
-                            }
-                        }
-                    });
                 }
-
-
-            }
-        }, 0, 1000);
-
+            }, 0, 1000);
+        }catch (Exception e){
+            Log.d("ERROR",e.getMessage());
+        }
 
 
     }
