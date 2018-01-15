@@ -702,7 +702,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if(currentTravel == null){
                 currentTravel = gloval.getGv_travel_current();
             }
-
             Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel));
 
 
@@ -757,6 +756,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             textTiempo.setVisibility(View.INVISIBLE);
 
                         } else if (currentTravel.getIdSatatusTravel() == 0) {
+
+
                             final int idTravel = currentTravel.getIdTravel();
 
                             AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
@@ -775,6 +776,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             btInitVisible(false);
                             btCancelVisible(false);
                             btPreFinishVisible(false);
+
+
                         }
 
 
@@ -958,13 +961,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            Log.d("BroadcastReceiver 1-", String.valueOf(currentTravel));
+
+
             if(currentTravel == null){
                 getCurrentTravelByIdDriver();
             }else {
                 controlVieTravel();
             }
 
-            Log.d("BroadcastReceiver", String.valueOf(ws));
+            Log.d("BroadcastReceiver 2-", String.valueOf(ws));
 
 
         }
