@@ -2135,7 +2135,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     GsonBuilder builder = new GsonBuilder();
                     Gson gson = builder.create();
-                    Log.d("Object Info", gson.toJson(travel));
+
 
 
                     Call<InfoTravelEntity> call = null;
@@ -2148,6 +2148,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     {
                         call = this.daoTravel.preFinishMobil(travel);
                     }
+
+            Log.d("FIANLIZAR", gson.toJson(travel));
+            Log.d("FIANLIZAR", call.request().toString());
+            Log.d("FIANLIZAR", call.request().headers().toString());
 
 
                     call.enqueue(new Callback<InfoTravelEntity>() {
