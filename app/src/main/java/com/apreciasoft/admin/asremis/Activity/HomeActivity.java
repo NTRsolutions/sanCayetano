@@ -1064,6 +1064,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         /* DITANCIA TOTAL RECORRIDA */
         m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
+
+        Log.d("-TRAVEL DistanceSave-", String.valueOf( m_total));
+
         kilometros_total = (m_total + currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
         //**************************//
 
@@ -2120,7 +2123,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                             currentTravel.getIdTravel(),
                                             amounCalculateGps,
                                             //Double.parseDouble(val),
-                                            kilometros_total,
+                                            Double.parseDouble(df.format(kilometros_total)),
                                             df.format(kilometros_total),
                                             add,
                                             lon,

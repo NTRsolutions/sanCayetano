@@ -891,7 +891,7 @@ public class HomeFragment extends Fragment implements
                        options = new
                                PolylineOptions()
                                .width(5)
-                               .color(Color.GRAY)
+                               .color(Color.TRANSPARENT)
                                .geodesic(true);
 
                        for (int z = 0; z < listPosition.size(); z++) {
@@ -902,17 +902,19 @@ public class HomeFragment extends Fragment implements
                                optionReturnActive = new
                                        PolylineOptions()
                                        .width(5)
-                                       .color(Color.GRAY)
+                                       .color(Color.TRANSPARENT)
                                        .geodesic(true);
                                optionReturnActive.add(point);
                            }
-                           //options.add(point);
+
+
+                           options.add(point);
                        }
 
                        Log.d("CODUCE", "CINDUCEEEE");
 
-                       Polyline line = mGoogleMap.addPolyline(options);
-                       line.setColor(Color.parseColor("#579ea8"));
+                       //Polyline line = mGoogleMap.addPolyline(options);
+                       //line.setColor(Color.parseColor("#579ea8"));
                    }else
                    {
                        options = null;
@@ -1038,6 +1040,10 @@ public class HomeFragment extends Fragment implements
 
                 }
         }
+
+
+        Log.d("totalDistance", String.valueOf(totalDistance));
+
         return  new float[]{totalDistance, totalDistanceVuelta};
     }
 
