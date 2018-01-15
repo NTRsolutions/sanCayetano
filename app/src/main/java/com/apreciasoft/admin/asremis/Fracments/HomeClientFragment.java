@@ -1008,42 +1008,45 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                             public void run() {
 
 
-                                if (getActivity().findViewById(R.id.txtStatus) != null &&
-                                        getActivity().findViewById(R.id.txtStatus) != null) {
+                                if (getActivity() != null) {
 
-                                    TextView txt = (TextView) getActivity().findViewById(R.id.txtStatus);
-                                    TextView txt2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
+                                    if (getActivity().findViewById(R.id.txtStatus) != null &&
+                                            getActivity().findViewById(R.id.txtStatus) != null) {
 
-                                    if (HomeClientFragment.visible_progress) {
+                                        TextView txt = (TextView) getActivity().findViewById(R.id.txtStatus);
+                                        TextView txt2 = (TextView) getActivity().findViewById(R.id.txtStatus2);
 
-                                        if (txt.getVisibility() == View.VISIBLE) {
-                                            txt.setVisibility(View.INVISIBLE);
-                                        } else {
-                                            txt.setVisibility(View.VISIBLE);
-                                        }
-                                        txt2.setVisibility(View.INVISIBLE);
-                                        HomeClientFragment.stateProgressBar.setVisibility(View.VISIBLE);
-                                        HomeClientFragment.progressBarTravel.setVisibility(View.VISIBLE);
-                                    }
+                                        if (HomeClientFragment.visible_progress) {
 
-
-                                    if (!HomeClientFragment.visible_progress) {
-
-                                        if (txt2 != null) {
-
-                                            if (txt2.getVisibility() == View.VISIBLE) {
-                                                txt2.setVisibility(View.INVISIBLE);
+                                            if (txt.getVisibility() == View.VISIBLE) {
+                                                txt.setVisibility(View.INVISIBLE);
                                             } else {
-                                                txt2.setVisibility(View.VISIBLE);
+                                                txt.setVisibility(View.VISIBLE);
                                             }
+                                            txt2.setVisibility(View.INVISIBLE);
+                                            HomeClientFragment.stateProgressBar.setVisibility(View.VISIBLE);
+                                            HomeClientFragment.progressBarTravel.setVisibility(View.VISIBLE);
                                         }
 
-                                        if (txt != null) {
-                                            txt.setVisibility(View.INVISIBLE);
-                                        }
-                                        stateProgressBar.setVisibility(View.INVISIBLE);
-                                        progressBarTravel.setVisibility(View.INVISIBLE);
 
+                                        if (!HomeClientFragment.visible_progress) {
+
+                                            if (txt2 != null) {
+
+                                                if (txt2.getVisibility() == View.VISIBLE) {
+                                                    txt2.setVisibility(View.INVISIBLE);
+                                                } else {
+                                                    txt2.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+
+                                            if (txt != null) {
+                                                txt.setVisibility(View.INVISIBLE);
+                                            }
+                                            stateProgressBar.setVisibility(View.INVISIBLE);
+                                            progressBarTravel.setVisibility(View.INVISIBLE);
+
+                                        }
                                     }
                                 }
                             }

@@ -2114,6 +2114,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+                    double _RECORIDO_TOTAL = 0;
+                    if(kilometros_total > 0) {
+                        _RECORIDO_TOTAL =  Utils.round(kilometros_total,2);
+                    }
+
 
 
                     TraveInfoSendEntity travel =
@@ -2123,7 +2128,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                             currentTravel.getIdTravel(),
                                             amounCalculateGps,
                                             //Double.parseDouble(val),
-                                            Double.parseDouble(df.format(kilometros_total)),
+                                            _RECORIDO_TOTAL,
                                             df.format(kilometros_total),
                                             add,
                                             lon,
