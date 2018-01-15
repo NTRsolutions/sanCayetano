@@ -66,12 +66,12 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
 
                 if (gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5) {
-                    Log.d("Notificación", String.valueOf("YESS"));
+                    Log.d("Notificación", String.valueOf("YESS 2,5"));
 
                     mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeClientActivity.class);
 
                 } else {
-                    Log.d("Notificación", String.valueOf("YESS"));
+                    Log.d("Notificación", String.valueOf("YESS DRIVER"));
 
                     mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), HomeActivity.class);
 

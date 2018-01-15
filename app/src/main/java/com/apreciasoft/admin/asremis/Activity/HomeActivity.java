@@ -678,6 +678,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit(); // commit changes
         finish();

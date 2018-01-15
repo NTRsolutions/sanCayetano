@@ -908,7 +908,13 @@ public class HomeFragment extends Fragment implements
                            }
 
 
-                           options.add(point);
+                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel.getIdStatusTravel()));
+                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel.getIdSatatusTravel()));
+
+                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel));
+                           if(HomeActivity.currentTravel.getIdSatatusTravel() == 5) {
+                               options.add(point);
+                           }
                        }
 
                        Log.d("CODUCE", "CINDUCEEEE");

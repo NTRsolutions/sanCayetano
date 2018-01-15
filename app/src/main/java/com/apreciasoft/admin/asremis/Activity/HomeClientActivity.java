@@ -694,32 +694,32 @@ public class HomeClientActivity extends AppCompatActivity
     public void _setCategory()
     {
 
-        List<String> list = new ArrayList<String>();
+        try {
 
-        VEHYCLETYPE = new String[gloval.getGv_listvehicleType().size()];
+            List<String> list = new ArrayList<String>();
 
-        for (int i =0 ;i< gloval.getGv_listvehicleType().size();i++)
-        {
-            list.add("Tipo De Vehiculo: "+gloval.getGv_listvehicleType().get(i).getVehiclenType());
-            listCatgoryId.add(gloval.getGv_listvehicleType().get(i).getIdVehicleType());
-        }
+            VEHYCLETYPE = new String[gloval.getGv_listvehicleType().size()];
 
-
-        list.toArray(VEHYCLETYPE);
+            for (int i = 0; i < gloval.getGv_listvehicleType().size(); i++) {
+                list.add("Tipo De Vehiculo: " + gloval.getGv_listvehicleType().get(i).getVehiclenType());
+                listCatgoryId.add(gloval.getGv_listvehicleType().get(i).getIdVehicleType());
+            }
 
 
+            list.toArray(VEHYCLETYPE);
 
-        // Spinner click listener
-        spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+            // Spinner click listener
+            spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
 
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Creating adapter for spinner
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
 
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+            // Drop down layout style - list view with radio button
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            // attaching data adapter to spinner
+            spinner.setAdapter(dataAdapter);
 
           /*MULTI AUTO COMPLETE*/
         /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -727,6 +727,9 @@ public class HomeClientActivity extends AppCompatActivity
          AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.txtCatVehicleReervation);
          textView.setAdapter(adapter);
          textView.setOnItemClickListener(this);*/
+        }catch (Exception e){
+            Log.d("ERROR",e.getMessage());
+        }
 
 
     }
@@ -1459,7 +1462,10 @@ public class HomeClientActivity extends AppCompatActivity
 
 
             currentTravel = gloval.getGv_travel_current();
-            getCurrentTravelByIdClient();
+
+            if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5) {
+                getCurrentTravelByIdClient();
+            }
             Log.d("TRAVEL","LLEGO NOTIFICCION");
 
 
@@ -2048,16 +2054,22 @@ public class HomeClientActivity extends AppCompatActivity
         HomeClientFragment.timerblink.cancel();
 
 
+
+
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit(); // commit changes
 
 
 
-        finish();
-
         // LAMAMOS A EL MAIN ACTIVITY//
         Intent main = new Intent(HomeClientActivity.this, MainActivity.class);
+        main.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(main);
+
+        finish();
+
 
 
     }
