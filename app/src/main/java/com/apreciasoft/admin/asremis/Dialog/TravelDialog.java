@@ -68,6 +68,14 @@ public class TravelDialog extends DialogFragment {
         final TextView txt_distancia = (TextView) rootView.findViewById(R.id.txt_distancia);
 
         final TextView txt_date_info = (TextView) rootView.findViewById(R.id.txt_date_info);
+
+
+        final TextView txt_lote = (TextView) rootView.findViewById(R.id.txt_lote_dialog);
+        final TextView txt_flete = (TextView) rootView.findViewById(R.id.txt_flete_dialog);
+
+        final TextView txt_piso_dialog = (TextView) rootView.findViewById(R.id.txt_piso_dialog);
+        final TextView txt_dpto_dialog = (TextView) rootView.findViewById(R.id.txt_dpto_dialog);
+
         final TextView txt_observation = (TextView) rootView.findViewById(R.id.txt_observation);//is multi destination
 
 
@@ -93,6 +101,13 @@ public class TravelDialog extends DialogFragment {
 
         txt_date_info.setText(currentTravel.getMdate());
 
+        txt_lote.setText(currentTravel.getLot());
+        txt_flete.setText(String.valueOf(currentTravel.getIsFleetTravelAssistance()));
+
+
+
+        txt_piso_dialog.setText(currentTravel.getFLOOR());
+        txt_dpto_dialog.setText(currentTravel.getDepartment());
 
 
        txt_observation.setText(currentTravel.getObservationFromDriver());

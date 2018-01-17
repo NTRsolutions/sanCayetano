@@ -68,6 +68,15 @@ public  class InfoTravelEntity implements Serializable {
     public String phoneNumberDriver;
 
 
+    @Expose
+    @SerializedName("department")
+    public String department;
+
+    @Expose
+    @SerializedName("FLOOR")
+    public String FLOOR;
+
+
 
     @Expose
     @SerializedName("nameStatusTravel")
@@ -80,6 +89,10 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("latOrigin")
     public String latOrigin;
+
+    @Expose
+    @SerializedName("lot")
+    public String lot;
 
     @Expose
     @SerializedName("distanceLabel")
@@ -1046,5 +1059,29 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setIsConfirTravelAppFromWeb(int isConfirTravelAppFromWeb) {
         this.isConfirTravelAppFromWeb = isConfirTravelAppFromWeb;
+    }
+
+    public String getLot() {
+        return lot;
+    }
+
+    public void setLot(String lot) {
+        this.lot = lot;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getFLOOR() {
+        return FLOOR;
+    }
+
+    public void setFLOOR(String FLOOR) {
+        this.FLOOR = FLOOR;
     }
 }

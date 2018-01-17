@@ -119,7 +119,7 @@ public class HomeFragment extends Fragment implements
         public  boolean CONEXION_MAP_ERROR = false;
         public ServicesLoguin daoLoguin = null;
         public String TAG = "HomeFragment";
-        public List<LatLng> listPosition = new ArrayList<>();
+        public static List<LatLng> listPosition = new ArrayList<>();
         static GoogleMap mGoogleMap;
         LocationRequest mLocationRequest;
         static GoogleApiClient mGoogleApiClient;
@@ -143,6 +143,10 @@ public class HomeFragment extends Fragment implements
         public static TextView txt_observationFromDriver = null;
         public static TextView txt_amount_info = null;
         public static TextView txt_pasajeros_info,infoGneral = null;
+        public static TextView txt_lote = null;
+        public static TextView txt_flete = null;
+        public static TextView txt_piso_dialog = null;
+        public static TextView txt_dpto_dialog = null;
         public MapFragment  mMap;
         public static int PARAM_26  = 0;
 
@@ -214,6 +218,12 @@ public class HomeFragment extends Fragment implements
         HomeFragment.txt_client_info = (TextView) getActivity().findViewById(R.id.txt_client_info);
         HomeFragment.txt_destination_info = (TextView) getActivity().findViewById(R.id.txt_destination_info);
         HomeFragment.txt_origin_info = (TextView) getActivity().findViewById(R.id.txt_origin_info);
+        HomeFragment.txt_lote = (TextView) getActivity().findViewById(R.id.txt_lote);
+        HomeFragment.txt_flete = (TextView) getActivity().findViewById(R.id.txt_flete);
+
+        HomeFragment.txt_piso_dialog = (TextView) getActivity().findViewById(R.id.txt_piso_dialog);
+        HomeFragment.txt_dpto_dialog = (TextView) getActivity().findViewById(R.id.txt_dpto_dialog);
+
         HomeFragment.txt_km_info = (TextView) getActivity().findViewById(R.id.txt_km_info);
         HomeFragment.txt_amount_info = (TextView) getActivity().findViewById(R.id.txt_amount_info);
         HomeFragment.txt_calling_info = (TextView) getActivity().findViewById(R.id.txt_calling_info);
@@ -788,8 +798,6 @@ public class HomeFragment extends Fragment implements
 
                    if (HomeActivity.currentTravel != null) {
                        if (!isReadyDrawingRouting) {
-                           Log.d(TAG, "T-5");
-
                            // Initializing
                            MarkerPoints = new ArrayList<>();
 
@@ -804,7 +812,6 @@ public class HomeFragment extends Fragment implements
                                        if (HomeActivity.currentTravel.getLonDestination() != "") {
                                            LatLng desination = new LatLng(Double.parseDouble(HomeActivity.currentTravel.getLatDestination()), Double.parseDouble(HomeActivity.currentTravel.getLonDestination()));
                                            setDirection(desination);
-                                           Log.d(TAG, "T-6");
                                            isReadyDrawingRouting = true;
                                        }
                                    }
@@ -814,7 +821,6 @@ public class HomeFragment extends Fragment implements
 
 
                    } else {
-                       Log.d(TAG, "T-7");
 
                        if (MarkerPoints != null) {
                            MarkerPoints.clear();
@@ -831,7 +837,6 @@ public class HomeFragment extends Fragment implements
                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                    MarkerOptions markerOptions = new MarkerOptions();
                    markerOptions.position(latLng);
-                   //markerOptions.title(strAdd);
 
 
                    int height = 45;
@@ -849,82 +854,87 @@ public class HomeFragment extends Fragment implements
                    mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
 
-
-/*
-
-                   Log.d(TAG, "T-8");
-
-
-           /* if(isFistLocation)
-            {*/
-
                    if (HomeActivity.currentTravel != null) {
-
-                /*Si el viajes esta encurso , busqueda de chofer  */
                        if (HomeActivity.currentTravel.getIdSatatusTravel() == 4 ||
                                HomeActivity.currentTravel.getIdSatatusTravel() == 5
                                ) {
-                           //move map camera
-                           Log.d(TAG, "T-9");
-                          // isFistLocation = false;
                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                        }
                    } else {
-                       Log.d(TAG, "T-10");
-                      // isFistLocation = false;
                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                    }
 
-                   Log.d(TAG, "T-11");
+
 
 
 
                    // SI POSEE UN VIAJE DIBUAMOS LA RUTA QUE ESTA RECORRINEDO EL CHOFER //
                    if (HomeActivity.currentTravel != null) {
-
-                       mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                       mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
-
-                       listPosition.add(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-                       options = new
-                               PolylineOptions()
-                               .width(5)
-                               .color(Color.TRANSPARENT)
-                               .geodesic(true);
-
-                       for (int z = 0; z < listPosition.size(); z++) {
-                           LatLng point = listPosition.get(z);
-
-                           if (HomeActivity.isRoundTrip && optionReturnActive == null)//VERIFICAMOS SI ESTA ACTIVA LA VUETA PARA SABER DESDE QUE UBUCACION SE REALIZO
-                           {
-                               optionReturnActive = new
-                                       PolylineOptions()
-                                       .width(5)
-                                       .color(Color.TRANSPARENT)
-                                       .geodesic(true);
-                               optionReturnActive.add(point);
-                           }
+                       if(HomeActivity.currentTravel.getIdSatatusTravel() == 5) {
 
 
-                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel.getIdStatusTravel()));
-                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel.getIdSatatusTravel()));
+                           mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                           mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
 
-                           Log.d("CODUCE", String.valueOf(HomeActivity.currentTravel));
-                           if(HomeActivity.currentTravel.getIdSatatusTravel() == 5) {
-                               options.add(point);
-                           }
-                       }
+                           HomeFragment.listPosition.add(new LatLng(latLng.latitude, latLng.longitude));
+                           HomeFragment.options = new
+                                   PolylineOptions()
+                                   .width(5)
+                                   .color(Color.TRANSPARENT)
+                                   .geodesic(true);
 
-                       Log.d("CODUCE", "CINDUCEEEE");
+                           Log.d("totalDistance listPosition", String.valueOf(HomeFragment.listPosition.size()));
+
+
+                           for (int z = 0; z < HomeFragment.listPosition.size(); z++) {
+                               LatLng point = HomeFragment.listPosition.get(z);
+
+                               if (HomeActivity.isRoundTrip && optionReturnActive == null)//VERIFICAMOS SI ESTA ACTIVA LA VUETA PARA SABER DESDE QUE UBUCACION SE REALIZO
+                               {
+                                   optionReturnActive = new
+                                           PolylineOptions()
+                                           .width(5)
+                                           .color(Color.TRANSPARENT)
+                                           .geodesic(true);
+                                   optionReturnActive.add(point);
+                                   Log.d("totalDistance", "'RETORNO ADD");
+
+                               }else {
+                                   HomeFragment.options.add(point);
+                                   Log.d("totalDistance", "ADD");
+                                   Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
+
+
+                               }
+
+
+                               }
+                           }else {
+                                    if(HomeFragment.options != null){
+                                        HomeFragment.options.getPoints().clear();
+                                    }
+                                HomeFragment.options = null;
+                                HomeFragment.listPosition.clear();
+                                HomeFragment.listPosition = new ArrayList<>();
+                            }
+
+
 
                        //Polyline line = mGoogleMap.addPolyline(options);
                        //line.setColor(Color.parseColor("#579ea8"));
                    }else
                    {
-                       options = null;
-                       listPosition.clear();
+                       if(HomeFragment.options != null){
+                           HomeFragment.options.getPoints().clear();
+                       }
+                       HomeFragment.options = null;
+                       HomeFragment.listPosition.clear();
+                       HomeFragment.listPosition = new ArrayList<>();
+
+                       Log.d("CODUCE NO", String.valueOf(HomeFragment.listPosition.size()));
+
                    }
 
 
@@ -1019,16 +1029,19 @@ public class HomeFragment extends Fragment implements
         float totalDistance =  0;
         float totalDistanceVuelta =  0;
 
-        if(options != null)
+
+
+
+        if(HomeFragment.options != null)
         {
-            for(int i = 1; i < options.getPoints().size(); i++) {
+            for(int i = 1; i < HomeFragment.options.getPoints().size(); i++) {
                 Location currLocation = new Location("this");
-                currLocation.setLatitude(options.getPoints().get(i).latitude);
-                currLocation.setLongitude(options.getPoints().get(i).longitude);
+                currLocation.setLatitude(HomeFragment.options.getPoints().get(i).latitude);
+                currLocation.setLongitude(HomeFragment.options.getPoints().get(i).longitude);
 
                 Location lastLocation = new Location("this");
-                lastLocation.setLatitude(options.getPoints().get(i-1).latitude);
-                lastLocation.setLongitude(options.getPoints().get(i-1).longitude);
+                lastLocation.setLatitude(HomeFragment.options.getPoints().get(i-1).latitude);
+                lastLocation.setLongitude(HomeFragment.options.getPoints().get(i-1).longitude);
 
                 totalDistance += lastLocation.distanceTo(currLocation);
 
@@ -1036,8 +1049,10 @@ public class HomeFragment extends Fragment implements
                 if(HomeActivity.isRoundTrip) {
                     if (optionReturnActive.getPoints().get(0) != null)
                     {
-                        if (optionReturnActive.getPoints().get(0).latitude == options.getPoints().get(i).latitude) {
-                            if (optionReturnActive.getPoints().get(0).longitude == options.getPoints().get(i).longitude) {
+                        if (optionReturnActive.getPoints().get(0).latitude == HomeFragment.options.getPoints().get(i).latitude) {
+                            if (optionReturnActive.getPoints().get(0).longitude == HomeFragment.options.getPoints().get(i).longitude) {
+                                Log.d("totalDistance 2", "retorno");
+
                                 totalDistanceVuelta += lastLocation.distanceTo(currLocation);
                             }
                         }
@@ -1048,7 +1063,7 @@ public class HomeFragment extends Fragment implements
         }
 
 
-        Log.d("totalDistance", String.valueOf(totalDistance));
+        Log.d("totalDistance 3", String.valueOf(totalDistance));
 
         return  new float[]{totalDistance, totalDistanceVuelta};
     }
@@ -1111,13 +1126,20 @@ public class HomeFragment extends Fragment implements
             numOrigin = 1;
         }
 
-        Log.d("numOrigin", String.valueOf(numOrigin));
 
         if(numOrigin > 0){
             HomeFragment.txt_origin_info.setText(multiOrigen);
         }else {
             HomeFragment.txt_origin_info.setText(currentTravel.getNameOrigin());
         }
+
+
+        HomeFragment.txt_lote.setText(currentTravel.getLot());
+        HomeFragment.txt_flete.setText(String.valueOf(currentTravel.getIsFleetTravelAssistance()));
+
+
+        HomeFragment.txt_dpto_dialog.setText(currentTravel.getDepartment());
+        HomeFragment.txt_piso_dialog.setText(currentTravel.getFLOOR());
 
 
 

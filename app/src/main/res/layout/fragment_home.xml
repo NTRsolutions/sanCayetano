@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="top"
-
-app:umanoPanelHeight="120dp"
-app:umanoShadowHeight="20dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        app:umanoPanelHeight="120dp"
+        app:umanoShadowHeight="20dp">
 
 
 
@@ -36,7 +35,7 @@ app:umanoShadowHeight="20dp">
 <RelativeLayout
     android:id="@+id/contentSildePanel"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="385dp">
     <include layout="@layout/panel_top_info"/>
 
 

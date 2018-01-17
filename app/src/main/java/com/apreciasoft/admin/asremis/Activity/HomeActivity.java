@@ -1018,10 +1018,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        if(timer != null) {
-            timer.cancel();
-        }
-
 
     }
 
@@ -1067,9 +1063,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         /* DITANCIA TOTAL RECORRIDA */
         m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
 
-        Log.d("-TRAVEL DistanceSave-", String.valueOf( m_total));
+        Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
 
-        kilometros_total = (m_total + currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+       /// if(m_total > 0){
+            kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+       /* }else {
+            kilometros_total = (currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+
+        }*/
+
         //**************************//
 
         /* DITANCIA TOTAL VULETA */
@@ -1504,7 +1506,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void _activeTimer()
     {
 
-        Log.d("TIMER","TIMER 1");
+
 
 
             timer = new Timer();
@@ -1514,6 +1516,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d("TIMER","TIMER 1");
                             setLocationVehicheDriver();
 
                         }
@@ -1564,8 +1567,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 add = HomeFragment.nameLocation;
             }
 
-           // Log.d("setLocationVehicheDriver 00", String.valueOf(HomeFragment.nameLocation));
-          //  Log.d("setLocationVehicheDriver  01", "**"+add);
+           Log.d("setLocationVehicheDriver 00", String.valueOf(HomeFragment.nameLocation));
+            Log.d("setLocationVehicheDriver  01", "**"+add);
 
             if(add != "") {
 
@@ -2200,7 +2203,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                             currentTravel = null;
                             HomeFragment.MarkerPoints = null;
-                            HomeFragment.options = null;
+                            if(HomeFragment.options != null){
+                                HomeFragment.options.getPoints().clear();
+                            }
                             gloval.setGv_travel_current(null);
                             setInfoTravel();
                             viewAlert = false;
@@ -2214,6 +2219,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                             final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
                             lg.setVisibility(View.INVISIBLE);
+
+
 
                         }
 

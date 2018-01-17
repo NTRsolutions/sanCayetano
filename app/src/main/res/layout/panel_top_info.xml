@@ -366,6 +366,177 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp">
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="2dp"
+                        android:textSize="20dp"
+                        android:text="Lote:"
+                        android:textColor="@color/colorPrimary" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:id="@+id/txt_lote"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="--"
+                        android:textAlignment="center"
+                        android:textColor="@color/GRREN_FULL"
+                        android:textSize="20dp" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="2dp"
+                        android:textSize="20dp"
+                        android:text="Flete:"
+                        android:textColor="@color/colorPrimary" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:id="@+id/txt_flete"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:text="--"
+                        android:textAlignment="center"
+                        android:textColor="@color/danger"
+                        android:textSize="20dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp">
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="2dp"
+                        android:textSize="20dp"
+                        android:text="Piso:"
+                        android:textColor="@color/colorPrimary" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:id="@+id/txt_piso_dialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="--"
+                        android:textAlignment="center"
+                        android:textColor="@color/GRREN_FULL"
+                        android:textSize="20dp" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:paddingTop="2dp"
+                        android:textSize="20dp"
+                        android:text="Dpto:"
+                        android:textColor="@color/colorPrimary" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:id="@+id/txt_dpto_dialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:text="--"
+                        android:inputType="text"
+                        android:textAlignment="center"
+                        android:textColor="@color/danger"
+                        android:textSize="30dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="130dp"
@@ -539,7 +710,7 @@
         android:layout_alignParentTop="true"
         android:paddingTop="0dp"
         android:background="@color/yelow"
-        android:text="Reuiere 4 Ayudantes"
+        android:text=""
         android:textAlignment="center"
         android:textStyle="bold"
         android:textColor="@color/mpsdk_black_info_background"
