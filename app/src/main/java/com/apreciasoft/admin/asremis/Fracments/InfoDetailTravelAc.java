@@ -114,8 +114,15 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
 
         txt_date_info.setText(travel.getMdate().toString());
-        txt_origin_info.setText(travel.getNameOrigin().toString());
-        txt_destination_info.setText(travel.getNameDestination().toString());
+
+        if(travel.getNameOrigin() != null) {
+            txt_origin_info.setText(travel.getNameOrigin().toString());
+        }
+
+        if(travel.getNameDestination() != null) {
+            txt_destination_info.setText(travel.getNameDestination().toString());
+        }
+
         txt_observationFromDriver.setText(travel.getObservationFromDriver().toString());
         txt_pasajeros_info.setText(travel.getPasajero());
 
