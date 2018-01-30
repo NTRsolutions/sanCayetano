@@ -1,6 +1,7 @@
 package com.apreciasoft.admin.asremis.Fracments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +37,8 @@ import retrofit2.Response;
 public class NotificationsFrangment extends Fragment  {
 
     public static final int INFO_ACTIVITY = 1;
+    public ProgressDialog loading;
+
     ServicesNotification apiService = null;
     View myView;
     List<notification> list = null;
@@ -87,18 +90,14 @@ public class NotificationsFrangment extends Fragment  {
         final GlovalVar gloval = ((GlovalVar)getActivity().getApplicationContext());
         Call<List<notification>> call = this.apiService.getNotifications(gloval.getGv_user_id());
 
-        // Log.d("***",call.request().body().toString());
+
+        loading = ProgressDialog.show(getActivity(), "Buscado Notificaciones", "Espere unos Segundos...", true, false);
 
         call.enqueue(new Callback<List<notification>>() {
             @Override
             public void onResponse(Call<List<notification>> call, Response<List<notification>> response) {
 
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers().toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", String.valueOf(response.raw().body()));
-                Log.d("Response code", String.valueOf(response.code()));
-
+                loading.dismiss();
 
                 if (response.code() == 200) {
 
@@ -135,6 +134,8 @@ public class NotificationsFrangment extends Fragment  {
             public void onFailure(Call<List<notification>> call, Throwable t) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content),
                         "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                loading.dismiss();
+
             }
         });
 

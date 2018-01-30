@@ -7,6 +7,7 @@ import com.apreciasoft.admin.asremis.Entity.TravelEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.reason;
+import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.resp;
 
 import java.util.List;
@@ -115,8 +116,8 @@ public interface ServicesTravel {
     Call<Boolean> cancelByClient(@Path("id") int id, @Path("idReasonCancelKf") int idReasonCancelKf );
 
     @Headers("Content-Type: application/json")
-    @GET("travel/reason")
-    Call<List<reason>> obtIdMotivo();
+    @GET("travel/reasonForId/{id}")
+    Call<reasonEntity> obtIdMotivo(@Path("id") int id);
 
     @Headers("Content-Type: application/json")
     @GET("config/param")

@@ -444,6 +444,7 @@
 
             <Button
                 android:id="@+id/button1"
+                android:visibility="invisible"
                 android:background="@color/danger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -462,6 +463,7 @@
 
             <Button
                 android:id="@+id/bt_confirmar_reserva"
+                android:visibility="invisible"
                 android:background="@color/succes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -470,6 +472,7 @@
 
             <Button
                 android:id="@+id/btn_init_reserva"
+                android:visibility="invisible"
                 android:background="@color/blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

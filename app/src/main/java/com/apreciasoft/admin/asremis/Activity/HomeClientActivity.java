@@ -61,6 +61,7 @@ import com.apreciasoft.admin.asremis.Entity.OriginEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelBodyEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelEntity;
 import com.apreciasoft.admin.asremis.Entity.reason;
+import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.reporte;
 import com.apreciasoft.admin.asremis.Entity.resp;
 import com.apreciasoft.admin.asremis.Entity.token;
@@ -211,10 +212,7 @@ public class HomeClientActivity extends AppCompatActivity
         wakelock.acquire();
 
 
-        //this.apiService = HttpConexion.getUri().create(ServicesTravel.class);
 
-        //Prueba de funcion para traer data de motivos
-        serviceAllTravel();
 
 
 
@@ -283,7 +281,6 @@ public class HomeClientActivity extends AppCompatActivity
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
 
-                //activeGifMotivos(true,"");
 
                 if(isReervation)
                 {
@@ -953,7 +950,8 @@ public class HomeClientActivity extends AppCompatActivity
                     try {
 
                         activeGif(false,"");
-                        activeGifMotivos(true,"");
+                        serviceAllTravel();
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1007,6 +1005,10 @@ public class HomeClientActivity extends AppCompatActivity
                 rg.addView(rb);
             }
 
+            if(list.size() == 0){
+                Toast.makeText(getApplicationContext(), "Agencia sin Motivos de cancelacion configurados" , Toast.LENGTH_LONG).show();
+            }
+
             rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
                 @Override
@@ -1032,7 +1034,6 @@ public class HomeClientActivity extends AppCompatActivity
 
                     try {
 
-                        //activeGifMotivos(false,"");
                         if (motivo == 0){
                             Toast.makeText(getApplicationContext(), "Debe seleccionar algun motivo" , Toast.LENGTH_LONG).show();
                         }
@@ -1429,7 +1430,6 @@ public class HomeClientActivity extends AppCompatActivity
 
             FloatingActionMenu btnTravelNew = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
             btnTravelNew.setVisibility(View.INVISIBLE);
-            activeGifMotivosFalla(true,"");
             btnFlotingVisible(false);
 
         }
@@ -1852,10 +1852,6 @@ public class HomeClientActivity extends AppCompatActivity
 
             }
 
-            Log.d("validateRequired", String.valueOf(isReervation));
-
-
-            Log.d("validateRequired", String.valueOf(validateRequired));
 
 
             if (validateRequired) {
@@ -1885,6 +1881,11 @@ public class HomeClientActivity extends AppCompatActivity
                         if (isReervation) {
                             Toast.makeText(getApplicationContext(), "Reserva Solicitada!", Toast.LENGTH_SHORT).show();
                             activeGif(false, "");
+                            location = "";
+                            destination = "";
+
+
+
                         } else {
                             Toast.makeText(getApplicationContext(), "Viaje Solicitado!", Toast.LENGTH_SHORT).show();
                             activeGif(true, "Buscando Chofer...");
@@ -1996,20 +1997,27 @@ public class HomeClientActivity extends AppCompatActivity
         }else if (id == R.id.action_notifications) {
 
             fn_gotonotification();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_reervations) {
 
             fn_gotoreservation();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_refhesh) {
 
             fn_refhesh();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_profile) {
             fn_gotoprofile();
+            btnFlotingVisible(false);
 
             return true;
         }
@@ -2065,7 +2073,6 @@ public class HomeClientActivity extends AppCompatActivity
 
         // LAMAMOS A EL MAIN ACTIVITY//
         Intent main = new Intent(HomeClientActivity.this, MainActivity.class);
-        main.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(main);
 
         finish();
@@ -2279,13 +2286,14 @@ public class HomeClientActivity extends AppCompatActivity
     public void serviceAllTravel() {
 
         this.apiService = HttpConexion.getUri().create(ServicesTravel.class);
-        Call<List<reason>> call = this.apiService.obtIdMotivo();
+        Call<reasonEntity> call = this.apiService.obtIdMotivo(2);
 
-        call.enqueue(new Callback<List<reason>>() {
+        Log.d("Call request", call.request().toString());
+
+        call.enqueue(new Callback<reasonEntity>() {
             @Override
-            public void onResponse(Call<List<reason>> call, Response<List<reason>> response) {
+            public void onResponse(Call<reasonEntity> call, Response<reasonEntity> response) {
 
-                Log.d("Call request", call.request().toString());
                 Log.d("Call request header", call.request().headers().toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", String.valueOf(response.raw().body()));
@@ -2293,10 +2301,9 @@ public class HomeClientActivity extends AppCompatActivity
 
                 if (response.code() == 200) {
 
-                    list = (List<reason>) response.body();
 
-                    //Toast.makeText(getApplicationContext(), list.get(0).getReason().toString(), Toast.LENGTH_SHORT).show();
-
+                    list = (List<reason>) response.body().getReason();
+                    activeGifMotivos(true,"");
 
 
 
@@ -2323,7 +2330,7 @@ public class HomeClientActivity extends AppCompatActivity
             }
 
             @Override
-            public void onFailure(Call<List<reason>> call, Throwable t) {
+            public void onFailure(Call<reasonEntity> call, Throwable t) {
                 Snackbar.make(findViewById(android.R.id.content),
                         "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
             }

@@ -1,6 +1,7 @@
 package com.apreciasoft.admin.asremis.Fracments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.Adapter.ReservationsAdapter;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
@@ -33,6 +36,7 @@ import retrofit2.Response;
 public class ReservationsFrangment extends Fragment  {
 
 
+    public ProgressDialog loading;
     public static final int INFO_ACTIVITY = 1;
     public static final int RESULT_OK = 2;
     ServicesTravel apiService = null;
@@ -81,6 +85,9 @@ public class ReservationsFrangment extends Fragment  {
     public void serviceAllNotification() {
 
 
+        loading = ProgressDialog.show(getActivity(), "Buscado reservas", "Espere unos Segundos...", true, false);
+
+
         final GlovalVar gloval = ((GlovalVar)getActivity().getApplicationContext());
 
         Call<List<InfoTravelEntity>> call = null;
@@ -96,12 +103,12 @@ public class ReservationsFrangment extends Fragment  {
 
         }
 
-        // Log.d("***",call.request().body().toString());
 
         call.enqueue(new Callback<List<InfoTravelEntity>>() {
             @Override
             public void onResponse(Call<List<InfoTravelEntity>> call, Response<List<InfoTravelEntity>> response) {
 
+                loading.dismiss();
                 Log.d("Call request", call.request().toString());
                 Log.d("Call request header", call.request().headers().toString());
                 Log.d("Response raw header", response.headers().toString());
@@ -143,6 +150,8 @@ public class ReservationsFrangment extends Fragment  {
             public void onFailure(Call<List<InfoTravelEntity>> call, Throwable t) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content),
                         "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                loading.dismiss();
+
             }
         });
 

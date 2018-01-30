@@ -357,7 +357,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.d("onTextChanged","onTextChanged");
+                try {
                     pay();
+                }catch (Exception e){
+                    Log.d("ERRROR",e.getMessage());
+                }
 
             }
 
@@ -495,52 +499,42 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void checkPermision()
+    public boolean checkPermision()
     {
-        LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-        // Comprobamos si está disponible el proveedor GPS.
-        if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-            alertDialog.setTitle("GPS INACTIVO!");
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.setMessage("Active el GPS para continuar!");
+        try{
+                LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+                // Comprobamos si está disponible el proveedor GPS.
+                if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                {
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                    alertDialog.setTitle("GPS INACTIVO!");
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setMessage("Active el GPS para continuar!");
 
 
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        }// end if.
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ACTIVAR",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 
-       /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                                }
+                            });
+                    alertDialog.show();
 
-            Toast.makeText(this, "This version is not Android 6 or later " + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
+                    return false;
 
-        } else {
+                }else {
+                    return true;
+                }
 
-            int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.CAMERA);
-
-            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(new String[] {Manifest.permission.CAMERA},
-                        REQUEST_CODE_ASK_PERMISSIONS);
-
-                Toast.makeText(this, "Requesting permissions", Toast.LENGTH_LONG).show();
-
-            }else if (hasWriteContactsPermission == PackageManager.PERMISSION_GRANTED){
-
-                Toast.makeText(this, "The permissions are already granted ", Toast.LENGTH_LONG).show();
-                openCamera();
-
-            }
+        }catch (Exception e){
+             Toast.makeText(getApplicationContext(), "GPS ERROR:"+e.getMessage(), Toast.LENGTH_LONG).show();
+            return false;
 
         }
-
-        return;*/
     }
 
     public  void  showDialogTravel()
@@ -1025,16 +1019,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void pay()
     {
 
+        try{
+
         final TextView txtMount = (TextView) findViewById(R.id.txt_mount);
         final TextView distance_txt = (TextView) findViewById(R.id.distance_txt);
         final TextView txtTimeslep = (TextView) findViewById(R.id.txtTimeslep);
 
         /* VERIFICAMOS METODOS DE PAGO DISPONIBLES */
-        if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+        if(currentTravel != null)// EMPRESA
         {
-            if (currentTravel.isPaymentCash != 1) {
-                btnFinishCash.setEnabled(false);
-            } else {
+            if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+            {
+                if (currentTravel.isPaymentCash != 1) {
+                    btnFinishCash.setEnabled(false);
+                } else {
+                    btnFinishCash.setEnabled(true);
+                }
+            }else {
                 btnFinishCash.setEnabled(true);
             }
         }else {
@@ -1269,7 +1270,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             txtMount.setText("---");
         }
 
-
+    }catch (Exception e){
+        Log.d("ERRROR",e.getMessage());
+    }
 
     }
 
@@ -1358,21 +1361,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.action_notifications) {
 
             fn_gotonotification();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_reervations) {
 
             fn_gotoreservation();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_refhesh) {
 
             fn_refhesh();
+            btnFlotingVisible(false);
+
             return true;
         }
         else if (id == R.id.action_profile) {
 
             fn_gotoprofile();
+            btnFlotingVisible(false);
             return true;
         }
 
@@ -1960,62 +1970,68 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  void  aceptTravel(int idTravel)
     {
 
-        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
 
-        try {
-            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
-
-            Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
-
-            Log.d("fatal", call.request().toString());
-            Log.d("fatal", call.request().headers().toString());
-
-            call.enqueue(new Callback<InfoTravelEntity>() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
-                loading.dismiss();
-
-                Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-                Log.d("fatal",response.body().toString());
-
-
-                btnFlotingVisible(false);
-                btInitVisible(true);
-                btCancelVisible(true);
-                cliaerNotificationAndoid();
-                viewAlert = true;
-                dialogTravel.dismiss();
-                currentTravel = response.body();
-                setInfoTravel();
-
-            }
-
-            public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                loading.dismiss();
-
-                Snackbar.make(findViewById(android.R.id.content),
-                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+            if (this.daoTravel == null) {
+                this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
             }
 
 
-        });
+            try {
+                loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
-        } finally {
+                Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
 
-            this.daoTravel = null;
-        }
+                Log.d("fatal", call.request().toString());
+                Log.d("fatal", call.request().headers().toString());
+
+                call.enqueue(new Callback<InfoTravelEntity>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
+                        loading.dismiss();
+
+                        Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
+                        Log.d("fatal", response.body().toString());
+
+
+                        btnFlotingVisible(false);
+                        btInitVisible(true);
+                        btCancelVisible(true);
+                        cliaerNotificationAndoid();
+                        viewAlert = true;
+                        dialogTravel.dismiss();
+                        currentTravel = response.body();
+                        setInfoTravel();
+
+                    }
+
+                    public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                        loading.dismiss();
+
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
+
+
+                });
+
+            } finally {
+
+                this.daoTravel = null;
+            }
+
     }
 
     public  void  initTravel()
     {
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
-        try {
-            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
+        if(this.checkPermision()) {
+            try {
+                loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
-            Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
+                Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
 
                 call.enqueue(new Callback<InfoTravelEntity>() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -2038,12 +2054,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
                         loading.dismiss();
                         Snackbar.make(findViewById(android.R.id.content),
-                                "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
                     }
                 });
 
-        } finally {
-            this.daoTravel = null;
+            } finally {
+                this.daoTravel = null;
+            }
         }
     }
 

@@ -79,8 +79,12 @@ public class TravelDialog extends DialogFragment {
         final TextView txt_observation = (TextView) rootView.findViewById(R.id.txt_observation);//is multi destination
 
 
+        int param49 = Integer.parseInt(gloval.getGv_param().get(48).getValue());// SE PUEDE VER TELEFONO DE PASAJEROS
 
-        telefono.setText(currentTravel.getPhoneNumber());
+        if(currentTravel.getPhoneNumber() !=null && param49 == 1) {
+            telefono.setText(currentTravel.getPhoneNumber());
+        }
+
         title1.setText(currentTravel.getCodTravel());
         title2.setText(currentTravel.getClient());
         titleOrigin.setText(currentTravel.getNameOrigin());

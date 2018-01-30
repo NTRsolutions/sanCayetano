@@ -1085,7 +1085,14 @@ public class HomeFragment extends Fragment implements
         HomeFragment.txt_date_info.setText(currentTravel.getMdate().toString());
         HomeFragment.txt_client_info.setText(currentTravel.getClient());
         HomeFragment.txt_client_info.setText(currentTravel.getClient());
-        HomeFragment.txt_calling_info.setText("No se cargo informacion");
+
+
+        int param49 = Integer.parseInt(gloval.getGv_param().get(48).getValue());// SE PUEDE VER TELEFONO DE PASAJEROS
+
+        if(currentTravel.getPhoneNumber() != null && param49 == 1) {
+            HomeFragment.txt_calling_info.setText(currentTravel.getPhoneNumber());
+        }
+
         HomeFragment.txt_observationFromDriver.setText(currentTravel.getObservationFromDriver());
 
         HomeFragment.txt_observationFlight.setText(currentTravel.getObsertavtionFlight());

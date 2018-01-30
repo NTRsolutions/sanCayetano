@@ -69,28 +69,45 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         final TextView txt_pasajeros_info = (TextView) findViewById(R.id.txt_pasajeros_info);
 
 
+        // variable global //
+        gloval = ((GlovalVar)getApplicationContext());
 
         bt_confirmar_reserva = (Button) findViewById(R.id.bt_confirmar_reserva);
         btn_init_reserva = (Button) findViewById(R.id.btn_init_reserva);
 
 
         txt_nr_travel.setText(travel.getCodTravel().toString());
-        txt_client_info.setText(travel.getClient().toString());
+
+        if(gloval.getGv_id_profile() == 3) {
+            txt_client_info.setText(travel.getClient().toString());
+        }else{
+            txt_client_info.setText(travel.getDriver().toString());
+        }
 
         txt_km_info.setText(travel.getDistanceLabel().toString());
         button1 = (Button) findViewById(R.id.button1);
 
+
+
         if(HomeActivity.param25 == 1) {
             txt_amount_info.setText(travel.getAmountCalculate().toString());
         }else {
-            txt_amount_info.setText("---");
+            txt_amount_info.setText("0");
+        }
+
+
+        if(gloval.getGv_id_profile() != 3) {
+            txt_amount_info.setText(travel.getAmountCalculate().toString());
         }
 
 
         if(travel.getIdSatatusTravel() != 5 && travel.getIdSatatusTravel() != 4) {
             if (travel.getIsAceptReservationByDriver() == 1) {
                 if (HomeActivity.currentTravel == null) {
-                    btn_init_reserva.setVisibility(View.VISIBLE);
+                    if(gloval.getGv_id_profile() == 3) {
+
+                        btn_init_reserva.setVisibility(View.VISIBLE);
+                    }
                 } else {
 
                     btn_init_reserva.setEnabled(false);
@@ -101,7 +118,10 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
             } else {
                 btn_init_reserva.setVisibility(View.INVISIBLE);
-                bt_confirmar_reserva.setVisibility(View.VISIBLE);
+                if(gloval.getGv_id_profile() == 3) {
+
+                    bt_confirmar_reserva.setVisibility(View.VISIBLE);
+                }
             }
         }else
         {
@@ -150,10 +170,14 @@ public class InfoDetailTravelAc extends AppCompatActivity {
             }
         });
 
-        // variable global //
-        gloval = ((GlovalVar)getApplicationContext());
 
 
+        if(gloval.getGv_id_profile() == 3){
+            bt_confirmar_reserva.setVisibility(View.VISIBLE);
+            btn_init_reserva.setVisibility(View.VISIBLE);
+            button1.setVisibility(View.VISIBLE);
+
+        }
     }
 
 
