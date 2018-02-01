@@ -1,11 +1,13 @@
 package com.apreciasoft.admin.asremis.Adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
@@ -30,6 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView mtv_blah;
         public TextView mtv_amount;
         public TextView mtv_isProcesCurrentAcount;
+        public ImageView iv_image;
 
 
         public MyViewHolder(View v) {
@@ -39,6 +42,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             mTextView = (TextView) v.findViewById(R.id.tv_text);
             mtv_amount = (TextView) v.findViewById(R.id.tv_amount);
             mtv_blah = (TextView) v.findViewById(R.id.tv_blah);
+            iv_image= (ImageView) v.findViewById(R.id.iv_image);
             mtv_isProcesCurrentAcount = (TextView) v.findViewById(R.id.tv_isProcesCurrentAcount);
         }
     }
@@ -73,6 +77,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }else {
             holder.mtv_amount.setText("0.0");
         }
+
+
+
 
 
         if(mDataset.get(position).getNameStatusTravel() != null) {

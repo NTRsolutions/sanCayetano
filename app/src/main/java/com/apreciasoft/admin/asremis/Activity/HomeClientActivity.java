@@ -1852,6 +1852,8 @@ public class HomeClientActivity extends AppCompatActivity
 
             }
 
+            Log.d("isReervation", String.valueOf(isReervation));
+
 
 
             if (validateRequired) {
@@ -1966,6 +1968,8 @@ public class HomeClientActivity extends AppCompatActivity
 
     public  void  contetRequestTravelVisible(boolean visible)
     {
+
+        isReervation = false;
         if(visible)
         {
             CardView btnTravelNew = (CardView) findViewById(R.id.contetRequestTravel);
@@ -2253,6 +2257,7 @@ public class HomeClientActivity extends AppCompatActivity
             Call<Boolean> call = this.daoTravel.calificateDriver(currentTravel.idTravel,start);
 
 
+            Log.d("Call request", call.request().toString());
 
             call.enqueue(new Callback<Boolean>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

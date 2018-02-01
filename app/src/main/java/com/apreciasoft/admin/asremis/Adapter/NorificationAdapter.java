@@ -28,7 +28,6 @@ public class NorificationAdapter
 
     private List<notification> mDataset;
     private Context context;
-   // private static RecyclerViewClickListener itemListener;
     private Fragment fragment;
     private final OnItemClickListener listener;
 
@@ -43,7 +42,6 @@ public class NorificationAdapter
         public TextView mtv_blah;
         public MyViewHolder temObj = null;
         public ImageButton mImageButton;
-        private Fragment fragment;
 
 
         public MyViewHolder(View v) {
@@ -54,6 +52,12 @@ public class NorificationAdapter
             mCardView = (CardView) v.findViewById(R.id.car_notifications);
             mTextView = (TextView) v.findViewById(R.id.tv_text);
             mtv_blah = (TextView) v.findViewById(R.id.tv_blah);
+            TextView mtv_blah2 = (TextView) v.findViewById(R.id.tv_blah2);
+            TextView mtv_blah3 = (TextView) v.findViewById(R.id.tv_blah3);
+
+            mtv_blah2.setVisibility(View.GONE);
+            mtv_blah3.setVisibility(View.GONE);
+
             mImageButton= (ImageButton) v.findViewById(R.id.imageButton);
 
 

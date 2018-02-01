@@ -42,8 +42,8 @@ public class ReservationsAdapter
         public TextView mtv_blah3;
         public ImageButton mImageButton;
         public MyViewHolder temObj = null;
-        public ImageView img_statsok;
-        public ImageView img_statsfail;
+        public TextView img_statsok;
+        public TextView img_statsfail;
 
 
 
@@ -59,8 +59,8 @@ public class ReservationsAdapter
             mtv_blah = (TextView) v.findViewById(R.id.tv_blah);
             mtv_blah2 = (TextView) v.findViewById(R.id.tv_blah2);
             mtv_blah3 = (TextView) v.findViewById(R.id.tv_blah3);
-            img_statsfail = (ImageView) v.findViewById(R.id.img_statsfail);
-            img_statsok = (ImageView) v.findViewById(R.id.img_statsok);
+            img_statsfail = (TextView) v.findViewById(R.id.img_statsfail);
+            img_statsok = (TextView) v.findViewById(R.id.img_statsok);
             mImageButton= (ImageButton) v.findViewById(R.id.imageButton);
 
 
@@ -120,9 +120,15 @@ public class ReservationsAdapter
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.mTextView.setText(mDataset.get(position).getCodTravel()+" - "+mDataset.get(position).getMdate());
+
+       if(mDataset.get(position).getNameOrigin().length() > 0){
         holder.mtv_blah.setText(mDataset.get(position).getNameOrigin());
+       }
         holder.mtv_blah2.setText(mDataset.get(position).getNameDestination());
         holder.mtv_blah3.setText(mDataset.get(position).getClient());
+
+        holder.img_statsok.setText("CONFIRMADA");
+        holder.img_statsfail.setText("NO CONFIRMADA");
 
 
 
@@ -130,12 +136,10 @@ public class ReservationsAdapter
         {
             holder.img_statsok.setVisibility(View.VISIBLE);
             holder.img_statsfail.setVisibility(View.INVISIBLE);
-            holder.img_statsok.setBackgroundColor(Color.parseColor("#1e753c"));
         }else {
 
             holder.img_statsok.setVisibility(View.INVISIBLE);
             holder.img_statsfail.setVisibility(View.VISIBLE);
-            holder.img_statsfail.setBackgroundColor(Color.parseColor("#e35b5a"));
 
         }
 

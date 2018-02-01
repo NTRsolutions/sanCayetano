@@ -102,6 +102,7 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
 
         if(travel.getIdSatatusTravel() != 5 && travel.getIdSatatusTravel() != 4) {
+
             if (travel.getIsAceptReservationByDriver() == 1) {
                 if (HomeActivity.currentTravel == null) {
                     if(gloval.getGv_id_profile() == 3) {
@@ -119,7 +120,6 @@ public class InfoDetailTravelAc extends AppCompatActivity {
             } else {
                 btn_init_reserva.setVisibility(View.INVISIBLE);
                 if(gloval.getGv_id_profile() == 3) {
-
                     bt_confirmar_reserva.setVisibility(View.VISIBLE);
                 }
             }
@@ -173,10 +173,7 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
 
         if(gloval.getGv_id_profile() == 3){
-            bt_confirmar_reserva.setVisibility(View.VISIBLE);
-            btn_init_reserva.setVisibility(View.VISIBLE);
             button1.setVisibility(View.VISIBLE);
-
         }
     }
 
