@@ -2,9 +2,12 @@ package com.apreciasoft.admin.asremis.Fracments;
 
         import android.Manifest;
         import android.app.Activity;
+        import android.app.AlertDialog;
         import android.app.Fragment;
+        import android.app.ProgressDialog;
         import android.content.BroadcastReceiver;
         import android.content.Context;
+        import android.content.DialogInterface;
         import android.content.Intent;
         import android.content.IntentFilter;
         import android.content.pm.PackageManager;
@@ -24,6 +27,7 @@ package com.apreciasoft.admin.asremis.Fracments;
         import android.support.v4.app.ActivityCompat;
         import android.support.v4.content.ContextCompat;
         import android.support.v4.content.LocalBroadcastManager;
+        import android.support.v7.widget.CardView;
         import android.util.Log;
         import android.view.InflateException;
         import android.view.LayoutInflater;
@@ -31,17 +35,24 @@ package com.apreciasoft.admin.asremis.Fracments;
         import android.view.ViewGroup;
         import android.widget.Button;
         import android.widget.ImageView;
+        import android.widget.LinearLayout;
         import android.widget.ProgressBar;
+        import android.widget.RadioButton;
+        import android.widget.RadioGroup;
         import android.widget.Switch;
         import android.widget.TextView;
         import android.widget.Toast;
 
         import com.apreciasoft.admin.asremis.Activity.HomeActivity;
+        import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
         import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
         import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
+        import com.apreciasoft.admin.asremis.Entity.reason;
+        import com.apreciasoft.admin.asremis.Entity.reasonEntity;
         import com.apreciasoft.admin.asremis.Http.HttpConexion;
         import com.apreciasoft.admin.asremis.R;
         import com.apreciasoft.admin.asremis.Services.ServicesTravel;
+        import com.apreciasoft.admin.asremis.Util.CallbackActivity;
         import com.apreciasoft.admin.asremis.Util.DataParser;
         import com.apreciasoft.admin.asremis.Util.GlovalVar;
         import com.google.android.gms.common.ConnectionResult;
@@ -93,6 +104,8 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     LocationRequest mLocationRequest;
     static GoogleApiClient mGoogleApiClient;
     public static Location mLastLocation;
+    List<reason> list = null;
+    Integer motivo = 0;
     public  static  String nameLocation;
     public static PolylineOptions options;
     Marker mCurrLocationMarker;
@@ -114,16 +127,19 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     public static TextView txt_date_info = null;
     public static ProgressBar progressBarTravel = null;
     public static StateProgressBar stateProgressBar;
+    public static  Button btnCnacel;
 
     public ServicesTravel daoTravel = null;
 
     public static String[] satusTravel;
+    CallbackActivity iCallback;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        // return inflater.inflate(R.layout.fragment_home,container,false);
+
 
 
 
@@ -201,7 +217,39 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(recibeNotifiacionSocket, new IntentFilter("update-loaction-driver"));
 
 
+
+        btnCnacel = (Button) getActivity().findViewById(R.id.car_notifications_cancel_client2);
+        btnCnacel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    iCallback.doSomething();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+
+        });
+
+
     }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            iCallback = (CallbackActivity) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException();
+        }
+    }
+
+
 
 
     private BroadcastReceiver recibeNotifiacionSocket = new BroadcastReceiver() {
@@ -234,10 +282,11 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         HomeClientFragment.txt_origin_info.setText("No se cargo informacion");
         HomeClientFragment.txt_km_info.setText("0.0Km");
         HomeClientFragment.txt_amount_info.setText("0.0$");
-        HomeClientFragment.txt_date_info.setText("---");
+        HomeClientFragment.txt_date_info.setText("--/--/----");
         getPick(-1);
 
         HomeClientFragment.txtStatus.setVisibility(View.INVISIBLE);
+        btnCnacel.setVisibility(View.INVISIBLE);
 
         setVisibleprogressTravel(false);
 
@@ -247,7 +296,6 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     public static void setInfoTravel(InfoTravelEntity currentTravel)
     {
 
-        Log.d("VIAJE", "*"+String.valueOf(currentTravel.getIdSatatusTravel()));
 
 
         if(currentTravel != null) {
@@ -259,7 +307,6 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
-                Log.d("VIAJE",gson.toJson(currentTravel.getIdSatatusTravel()));
 
 
                 HomeClientFragment.txt_client_info.setText(currentTravel.getDriver());
@@ -271,11 +318,20 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                 HomeClientFragment.txt_km_info.setText(currentTravel.getDistanceLabel());
                 HomeClientFragment.txtStatus.setText(currentTravel.getNameStatusTravel());
 
+
+
                 getPick(currentTravel.getIdUserDriver());// PASAMOS EL ID DE EL USUARIO DE EL CHOFER
 
                 HomeClientFragment.txtStatus.setTextColor(Color.parseColor(currentTravel.getClassColorTwo()));
 
-                if (currentTravel.getIdSatatusTravel() == 6) {
+                if (currentTravel.getIdSatatusTravel() == 4 || currentTravel.getIdSatatusTravel() == 1) {// VIAJE EN BUSQUEDA DE CLIENTE
+                    btnCnacel.setVisibility(View.VISIBLE);
+                }else {
+                    btnCnacel.setVisibility(View.INVISIBLE);
+
+                }
+
+                    if (currentTravel.getIdSatatusTravel() == 6) {
                     if (currentTravel.getAmountCalculate() != null) {
                         HomeClientFragment.txt_amount_info.setText(currentTravel.getTotalAmount() + "$");
                     }

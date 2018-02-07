@@ -77,6 +77,7 @@ import com.apreciasoft.admin.asremis.Http.HttpConexion;
 import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Services.ServicesTravel;
+import com.apreciasoft.admin.asremis.Util.CallbackActivity;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.GooglePlacesAutocompleteAdapter;
 import com.apreciasoft.admin.asremis.Util.WsTravel;
@@ -120,7 +121,7 @@ import retrofit2.Response;
 
 public class HomeClientActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        AdapterView.OnItemClickListener,View.OnClickListener ,AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemClickListener,View.OnClickListener ,AdapterView.OnItemSelectedListener,CallbackActivity {
 
     private static String ReservationName;
     ServicesTravel apiService = null;
@@ -178,7 +179,7 @@ public class HomeClientActivity extends AppCompatActivity
 
     public FloatingActionMenu materialDesignFAM;
     public FloatingActionButton floatingActionButton1, floatingActionButton2;
-    public    SharedPreferences.Editor editor;
+    public SharedPreferences.Editor editor;
 
 
     private EditText hoursAribo;
@@ -325,6 +326,8 @@ public class HomeClientActivity extends AppCompatActivity
 
         FragmentManager fr =  getFragmentManager();
         fr.beginTransaction().replace(R.id.content_frame_client, new HomeClientFragment()).commit();
+
+
 
         // HEADER MENU //
         View header = navigationView.getHeaderView(0);
@@ -963,6 +966,7 @@ public class HomeClientActivity extends AppCompatActivity
 
             });
 
+
         }
         else
         {
@@ -1205,6 +1209,8 @@ public class HomeClientActivity extends AppCompatActivity
 
                     isReervation =  false;
                     contetRequestTravelVisible(false);
+
+                    HomeClientFragment.clearInfo();
 
                 }
 
@@ -2029,7 +2035,7 @@ public class HomeClientActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void fn_refhesh() {
+    public void  fn_refhesh() {
         getCurrentTravelByIdClient();
     }
 
@@ -2114,6 +2120,13 @@ public class HomeClientActivity extends AppCompatActivity
         DowloadImg dwImg = new DowloadImg();
         dwImg.execute(HttpConexion.BASE_URL+HttpConexion.base+"/Frond/img_users/"+idUserDriver);
 
+    }
+
+
+    // interfaz de ptro metodo de la actividad
+    @Override
+    public void doSomething() {
+            serviceAllTravel();
     }
 
     public class DowloadImg extends AsyncTask<String, Void, Bitmap> {
@@ -2344,21 +2357,9 @@ public class HomeClientActivity extends AppCompatActivity
 
     }
 
-    private void refreshContent(){
-/*
-        rv = (RecyclerView) myView.findViewById(R.id.rv_recycler_view);
-        rv.setHasFixedSize(true);
-        adapter = new MyAdapter(list.);
-        rv.setAdapter(adapter);
 
-        LinearLayoutManager llm = new LinearLayoutManager(new HomeClientActivity());
-        rv.setLayoutManager(llm);
-*/
-    }
 
     //Notificacioens
-
-
     public void fn_gotonotification()
     {
 

@@ -950,6 +950,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
 
+        if(HomeFragment.SPCKETMAP !=null) {
+            HomeFragment.SPCKETMAP.disconnect();
+        }
     }
 
     private BroadcastReceiver broadcastReceiverLoadTodays = new BroadcastReceiver() {
@@ -1427,7 +1430,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     private void fn_refhesh() {
 
             getParam();
@@ -1452,7 +1454,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().replace(R.id.content_frame,new ProfileClientFr()).commit();
         }
     }
-
 
 
     public void fn_gotonotification()
@@ -1507,10 +1508,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
-
 
 
     public void _activeTimer()
@@ -1927,7 +1924,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     public  void  getCurrentTravelByIdDriver()
     {
 
@@ -1963,8 +1959,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             this.daoTravel = null;
         }
     }
-
-
 
     /* METODO PARA ACEPATAR EL VIAJE*/
     public  void  aceptTravel(int idTravel)
@@ -2088,9 +2082,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
-
-
-
 
 
     /* METODO PARA FINALIZAR O PREFINALIZAR  UN VIAJE*/
@@ -2370,8 +2361,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
-
     // CONONTRO BOTON FLOTANTE //
     public  void  btnFlotingVisible(boolean isVisible)
     {
@@ -2466,9 +2455,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
-
-
     public double getPriceReturnBylistBeneficion(List<BeneficioEntity> list,double distance){
         double value = 0;
 
@@ -2504,8 +2490,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         return  value;
     }
-
-
 
     public  void  checkVersion()
     {
@@ -2597,7 +2581,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
     public void getParam(){
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
@@ -2650,7 +2633,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
     }
-
 
     public void  refreshButomPermision(){
         Log.d("PARAM_69",PARAM_69);

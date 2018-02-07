@@ -447,6 +447,23 @@
         </RelativeLayout>
     </LinearLayout>
 
+            <Button
+                android:id="@+id/car_notifications_cancel_client2"
+                android:layout_width="match_parent"
+                android:visibility="invisible"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/buton_round_red"
+                android:text="CANCELAR Viaje"
+                android:textColor="@color/blanco"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+
+                />
+
 
         </LinearLayout>
 

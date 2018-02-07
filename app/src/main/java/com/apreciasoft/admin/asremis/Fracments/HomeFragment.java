@@ -108,9 +108,7 @@ public class HomeFragment extends Fragment implements
 
         /* SOCKET MAPA */
         public static Socket SPCKETMAP;
-        //  public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.instance+":"+HttpConexion.portWsWeb+"";
         public static String URL_SOCKET_MAP =  HttpConexion.PROTOCOL+"://"+HttpConexion.ip+":"+HttpConexion.portWsWeb+"";
-
         public static String MY_EVENT_MAP = "init";
         /*++++++++++++*/
 
@@ -251,7 +249,7 @@ public class HomeFragment extends Fragment implements
             //stop location updates when Activity is no longer active
             if (mGoogleApiClient != null) {
                 Log.d("YA","6");
-                HomeFragment.SPCKETMAP.disconnect();
+               // HomeFragment.SPCKETMAP.disconnect();
                 LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
             }
