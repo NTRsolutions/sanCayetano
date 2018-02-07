@@ -227,7 +227,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, token);
+       // Log.d(TAG, token);
         enviarTokenAlServidor(token,gloval.getGv_user_id());
 
 
@@ -1377,7 +1377,6 @@ public class HomeClientActivity extends AppCompatActivity
 
         LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
         contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
-
         contetRequestTravelVisible(false);
     }
 
@@ -1386,6 +1385,12 @@ public class HomeClientActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         FragmentManager fm = getFragmentManager();
+
+
+        LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
+        contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
+        contetRequestTravelVisible(false);
+        isReervation =  false;
 
 
         if (id == R.id.nav_camera) {
@@ -1988,6 +1993,11 @@ public class HomeClientActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        LinearLayout contentInfoReervation = (LinearLayout) findViewById(R.id.contentInfoReervation);
+        contentInfoReervation.setVisibility(LinearLayout.INVISIBLE);
+        contetRequestTravelVisible(false);
+        isReervation =  false;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_exit) {
