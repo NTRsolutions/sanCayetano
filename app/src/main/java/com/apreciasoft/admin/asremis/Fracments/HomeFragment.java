@@ -724,7 +724,9 @@ public class HomeFragment extends Fragment implements
                     if (_COUNT_CHANGUE == 0 &&
                             Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
                         if(SPCKETMAP == null){
-                            conexionSocketMap(addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
+                            if(addresses.size() > 0) {
+                                conexionSocketMap(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                            }
 
                         }
                     }

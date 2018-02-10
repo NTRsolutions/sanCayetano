@@ -22,6 +22,8 @@ public  class InfoTravelEntity implements Serializable {
     public int idTravel;
 
 
+
+
     @Expose
     @SerializedName("idDriverOld")
     public int idDriverOld;
@@ -38,6 +40,10 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("isFleetTravelAssistance")
     public int isFleetTravelAssistance;
+
+    @Expose
+    @SerializedName("isPointToPoint")
+    public int isPointToPoint;
 
 
 
@@ -357,9 +363,9 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("distanceSave")
     public double distanceSave;
 
-
-
-
+    @Expose
+    @SerializedName("pricePoint")
+    public double pricePoint;
 
 
     @Expose
@@ -1083,5 +1089,21 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setFLOOR(String FLOOR) {
         this.FLOOR = FLOOR;
+    }
+
+    public int getIsPointToPoint() {
+        return isPointToPoint;
+    }
+
+    public void setIsPointToPoint(int isPointToPoint) {
+        this.isPointToPoint = isPointToPoint;
+    }
+
+    public double getPricePoint() {
+        return pricePoint;
+    }
+
+    public void setPricePoint(double pricePoint) {
+        this.pricePoint = pricePoint;
     }
 }

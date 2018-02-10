@@ -256,11 +256,20 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         loading = ProgressDialog.show(this, "Enviado", "Espere unos Segundos...", true, false);
 
 
+        Log.d("Call request", call.request().toString());
+        Log.d("Call request header", call.request().headers().toString());
+
+
+
         call.enqueue(new Callback<List<InfoTravelEntity>>() {
             @Override
             public void onResponse(Call<List<InfoTravelEntity>> call, Response<List<InfoTravelEntity>> response) {
 
                 if (response.code() == 200) {
+
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
 
                     //the response-body is already parseable to your ResponseBody object
 

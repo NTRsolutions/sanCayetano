@@ -5,10 +5,15 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by usario on 25/4/2017.

@@ -27,9 +27,10 @@
     <include layout="@layout/content_home"/>
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="112dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false"
 
@@ -42,38 +43,48 @@
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
+                android:background="@drawable/buton_round_red"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="4dp"
+                android:layout_margin="5dp"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="top|center"
-                android:background="@drawable/circle_btn_red"
-                android:drawableTop="@drawable/ic_close_black_24dp"
-                android:paddingTop="20dp"
-                android:text="Cancelar"
-                android:textColor="#fff"
-                android:tint="@color/colorPrimary"
-                app:layout_anchorGravity="bottom|left" />
+                android:layout_centerVertical="true"
+                android:textColor="@color/whithe"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="RECHAZAR"
+                app:layout_anchorGravity="bottom|left"
+                android:drawableLeft="@drawable/ic_close_black_24dp" />
+
+
 
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
+
             <Button
                 android:id="@+id/btn_init"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
+                android:padding="4dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/buton_round_dark"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="top|center"
-                android:background="@drawable/circle"
-                android:drawableTop="@drawable/ic_nature_people_black_24dp"
-                android:paddingTop="20dp"
-                android:text="Iniciar"
-                android:textColor="#fff"
-                app:layout_anchorGravity="bottom|left" />
+                android:layout_centerVertical="true"
+                android:textColor="@color/whithe"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="INICIAR"
+                app:layout_anchorGravity="bottom|left"
+                android:drawableLeft="@drawable/ic_nature_people_black_24dp" />
+
+
+
         </RelativeLayout>
 
     </LinearLayout>
@@ -96,7 +107,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="112dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false"
 
@@ -107,60 +118,70 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
+
             <Button
                 android:id="@+id/btn_iniTimeSlep"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
+                android:padding="4dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/buton_round_dark"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="top|center"
-                android:background="@drawable/circle"
-                android:drawableTop="@drawable/ic_timer_black_40dp"
-                android:paddingTop="20dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/whithe"
+                android:textStyle="bold"
+                android:textSize="15dp"
                 android:text="Espera"
-                android:textColor="#fff"
-                android:tint="@color/colorPrimary"
-                app:layout_anchorGravity="bottom|left" />
+                app:layout_anchorGravity="bottom|left"
+                android:drawableLeft="@drawable/ic_timer_black_40dp" />
+
+
 
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+
+
             <Button
                 android:id="@+id/btn_pre_finish"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="top|center"
-                android:background="@drawable/circle_btn_red"
-                android:drawableTop="@drawable/ic_thumb_up_black_24dp"
-                android:paddingTop="20dp"
-                android:textSize="12dp"
+                android:padding="4dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/buton_round_red"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/whithe"
+                android:textStyle="bold"
+                android:textSize="10dp"
                 android:text="Finalizar"
-                android:textColor="#fff"
                 app:layout_anchorGravity="bottom|left"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:drawableLeft="@drawable/ic_thumb_up_black_24dp" />
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+
 
             <Button
                 android:id="@+id/btn_return"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
+                android:padding="4dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/buton_round_dark"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="top|center"
-                android:background="@drawable/circle"
-                android:drawableTop="@drawable/ic_autorenew_black_24dp"
-                android:paddingTop="20dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/whithe"
+                android:textStyle="bold"
+                android:textSize="15dp"
                 android:text="Vuelta"
-                android:textColor="#fff"
-                android:tint="@color/colorPrimary"
-                app:layout_anchorGravity="bottom|left" />
+                app:layout_anchorGravity="bottom|left"
+                android:drawableLeft="@drawable/ic_autorenew_black_24dp" />
         </RelativeLayout>
     </LinearLayout>
 
