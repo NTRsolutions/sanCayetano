@@ -210,7 +210,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
 
 
-            setVisibleprogressTravel(false);
+        setVisibleprogressTravel(false);
 
 
 
@@ -289,6 +289,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
         btnCnacel.setVisibility(View.INVISIBLE);
 
         setVisibleprogressTravel(false);
+
 
 
     }
@@ -698,42 +699,9 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
                 }
 
 
-                // SI POSEE UN VIAJE DIBUAMOS LA RUTA //
-            /*if(HomeActivity.currentTravel != null) {
-
-                listPosition.add(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                addDriverMap();// actualizamos el la ubicacion del chofer
 
 
-                // List<LatLng> list = new ArrayList<>();
-
-                //list.add(new LatLng(-34.508809, -58.534441));
-                //list.add(new LatLng(-34.520094, -58.524079));  // North of the previous point, but at the same longitude
-
-
-                options = new
-                        PolylineOptions()
-                        .width(5)
-                        .color(Color.GRAY)
-                        .geodesic(true);
-
-                for (int z = 0; z < listPosition.size(); z++) {
-                    LatLng point = listPosition.get(z);
-                    options.add(point);
-                }
-
-                Log.d("valuePrama", "Vaa gps");
-
-                Polyline line = mGoogleMap.addPolyline(options);
-                line.setColor(Color.argb(	23, 61, 113, 21));
-            }
-
-*/
-
-
-                //optionally, stop location updates if only current location is needed
-                ///if (mGoogleApiClient != null) {
-                // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-                //}
 
             } catch (IOException e) {
                 Log.d("ERROR", e.getMessage());
@@ -815,7 +783,7 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
     {
 
         try {
-            Log.d("onLocationChanged", "timer");
+
 
             GlovalVar gloval;
 
@@ -831,7 +799,9 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
             }
 
             if (gloval.getLocationDriverFromClient() != null) {
-                Log.d("onLocationChanged", "auto");
+
+                Log.d("addDriverMap","addDriverMap");
+
 
 
                 TravelLocationEntity info = gloval.getLocationDriverFromClient();
@@ -1128,39 +1098,37 @@ public class HomeClientFragment extends Fragment implements  OnMapReadyCallback,
 
         try {
 
-            Call<TravelLocationEntity> call = null;
-            call = this.daoTravel.getDriverMapBiIdTravel(currentTravel.getIdTravel());
+            if(currentTravel != null) {
+
+                Call<TravelLocationEntity> call = null;
+                call = this.daoTravel.getDriverMapBiIdTravel(currentTravel.getIdTravel());
 
 
-            Log.d("Call request", call.request().toString());
-            Log.d("Call request header", call.request().headers().toString());
-
-            call.enqueue(new Callback<TravelLocationEntity>() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onResponse(Call<TravelLocationEntity> call, Response<TravelLocationEntity> response) {
+                call.enqueue(new Callback<TravelLocationEntity>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<TravelLocationEntity> call, Response<TravelLocationEntity> response) {
 
 
-                    TravelLocationEntity TRAVEL = (TravelLocationEntity) response.body();
+                        TravelLocationEntity TRAVEL = (TravelLocationEntity) response.body();
 
-                    Log.d("VIAJE", response.toString());
-                    GsonBuilder builder = new GsonBuilder();
-                    Gson gson = builder.create();
-                    System.out.println("VIAJE"+gson.toJson(response));
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.create();
 
-                    gloval.setLocationDriverFromClient(TRAVEL);
-                    addDriverMap();
+                        gloval.setLocationDriverFromClient(TRAVEL);
+                        addDriverMap();
 
 
-                }
+                    }
 
-                public void onFailure(Call<TravelLocationEntity> call, Throwable t) {
-                    Snackbar.make(getActivity().findViewById(android.R.id.content),
-                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-                }
+                    public void onFailure(Call<TravelLocationEntity> call, Throwable t) {
+                        Snackbar.make(getActivity().findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
 
 
-            });
+                });
+            }
 
         } finally {
             this.daoTravel = null;

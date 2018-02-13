@@ -121,9 +121,12 @@ public class ReservationsAdapter
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.mTextView.setText(mDataset.get(position).getCodTravel()+" - "+mDataset.get(position).getMdate());
 
-       if(mDataset.get(position).getNameOrigin().length() > 0){
-        holder.mtv_blah.setText(mDataset.get(position).getNameOrigin());
-       }
+        if(mDataset.get(position).getNameOrigin() != null) {
+            if (mDataset.get(position).getNameOrigin().length() > 0) {
+                holder.mtv_blah.setText(mDataset.get(position).getNameOrigin());
+            }
+        }
+
         holder.mtv_blah2.setText(mDataset.get(position).getNameDestination());
         holder.mtv_blah3.setText(mDataset.get(position).getClient());
 

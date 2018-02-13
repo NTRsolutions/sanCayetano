@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.LayerDrawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -493,11 +494,57 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        Log.d("PARAM_66 0", String.valueOf(gloval.getGv_param().get(65).getValue()));
-        Log.d("PARAM_66 1", String.valueOf(PARAM_66));
-
     }
 
+
+    public boolean checkDistanceSucces() {
+
+        try{
+
+        int param30 = Integer.parseInt(gloval.getGv_param().get(29).getValue());
+        if(param30 > 0){
+
+            Location locationA = new Location(HomeFragment.nameLocation);
+            locationA.setLatitude(HomeFragment.getmLastLocation().getLatitude());
+            locationA.setLongitude(HomeFragment.getmLastLocation().getLongitude());
+
+            Location locationB = new Location(currentTravel.getNameOrigin());
+            locationB.setLatitude(Double.parseDouble(currentTravel.getLatOrigin()));
+            locationB.setLongitude(Double.parseDouble(currentTravel.getLonOrigin()));
+
+            float distance = locationA.distanceTo(locationB)/1000;;
+
+
+
+            Log.d("distance", String.valueOf(distance));
+            Log.d("distance", String.valueOf(param30));
+
+
+            if(distance <= param30){
+
+                return true;
+
+            }else {
+                return false;
+            }
+
+
+        }
+            return false;
+
+
+
+
+        }catch (Exception e){
+
+            Log.d("ERROR",e.getMessage());
+            return  false;
+
+        }
+
+
+
+    }
 
     public boolean checkPermision()
     {
@@ -1184,6 +1231,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         amounCalculateGps =  amounCalculateGps + currentTravel.getAmountOriginPac();
         Log.d("-TRAVEL amounCalculateGps (10)-", String.valueOf(amounCalculateGps));
 
+
+
+        // VALIDAMOS VIAJES PUTO A PUNTO
+            if(currentTravel.getIsPointToPoint() == 1){
+                Log.d("getIsPointToPoint", String.valueOf(currentTravel.getIsPointToPoint()));
+                amounCalculateGps = currentTravel.pricePoint; // sumamos el precio del punto a punto
+                kilometros_total = 0;
+            }
+
+
         //VALIDAMOS SI EL VIAJE NO SUPERA EL MINUMO//
         if(currentTravel.getIsTravelComany() == 1)// PARA EMPRESA
         {
@@ -1761,7 +1818,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     loading.dismiss();
                     Toast.makeText(getApplicationContext(), "VIAJE RECHAZADO!", Toast.LENGTH_LONG).show();
-                    Log.d("fatal",response.body().toString());
+//                    Log.d("fatal",response.body().toString());
 
                     // cerramo el dialog //
 
@@ -1986,7 +2043,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         loading.dismiss();
 
                         Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
-                        Log.d("fatal", response.body().toString());
+//                        Log.d("fatal", response.body().toString());
 
 
                         btnFlotingVisible(false);
@@ -2021,39 +2078,46 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
 
+
         if(this.checkPermision()) {
-            try {
-                loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
+            if (this.checkDistanceSucces()) {
 
-                Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
+                try {
+                    loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
-                call.enqueue(new Callback<InfoTravelEntity>() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
+                    Call<InfoTravelEntity> call = this.daoTravel.init(currentTravel.getIdTravel());
 
-                        loading.dismiss();
-                        btInitVisible(false);
-                        btCancelVisible(false);
-                        btPreFinishVisible(true);
-                        btnFlotingVisible(false);
+                    call.enqueue(new Callback<InfoTravelEntity>() {
+                        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                        @Override
+                        public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
 
-                        currentTravel = response.body();
-                        setInfoTravel();
+                            loading.dismiss();
+                            btInitVisible(false);
+                            btCancelVisible(false);
+                            btPreFinishVisible(true);
+                            btnFlotingVisible(false);
+
+                            currentTravel = response.body();
+                            setInfoTravel();
 
 
-                        //activeTimerInit();
-                    }
+                            //activeTimerInit();
+                        }
 
-                    public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                        loading.dismiss();
-                        Snackbar.make(findViewById(android.R.id.content),
-                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                        public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                            loading.dismiss();
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
 
-            } finally {
-                this.daoTravel = null;
+                } finally {
+                    this.daoTravel = null;
+                }
+            }else {
+                Snackbar.make(findViewById(android.R.id.content),
+                        "No puedes iniciar este viaje, debe aproximarse mas al punto de origen", Snackbar.LENGTH_LONG).show();
             }
         }
     }

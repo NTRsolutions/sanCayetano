@@ -46,6 +46,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -133,6 +134,7 @@ public class HomeClientActivity extends AppCompatActivity
     public String TAG = "HOME_CLIENT_ACTIVITY";
     protected PowerManager.WakeLock wakelock;
     public static GlovalVar gloval;
+    int isFleetTravelAssistance = 0;
     public ServicesTravel daoTravel = null;
     public static InfoTravelEntity currentTravel;
     public ServicesLoguin daoLoguin = null;
@@ -186,12 +188,13 @@ public class HomeClientActivity extends AppCompatActivity
     private EditText terminal;
     private EditText airlineCompany;
     private EditText flyNumber;
-    private CheckBox isFly;
+    private CheckBox isFly,isFleetTravel;
 
     public ProgressDialog loading,loadingGloval;
     private Integer idTypeVehicle;
 
 
+    public   NumberPicker np;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -456,6 +459,9 @@ public class HomeClientActivity extends AppCompatActivity
 
         checkPermision();
 
+        isFleetTravel = (CheckBox) findViewById(R.id.isFleetTravel);
+
+
         isFly = (CheckBox) findViewById(R.id.isFly);
         hoursAribo = (EditText) findViewById(R.id.txt_hoursAribo);
         terminal = (EditText) findViewById(R.id.txt_terminalnew);
@@ -468,6 +474,22 @@ public class HomeClientActivity extends AppCompatActivity
 
         this.getCurrentTravelByIdClient();
 
+
+        //Set a value change listener for NumberPicker
+        np = (NumberPicker) findViewById(R.id.isFleetTravelAssistance);
+        np.setMinValue(0);
+        np.setMaxValue(10);
+        np.setWrapSelectorWheel(true);
+
+
+
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                //Display the newly selected value from picker
+               isFleetTravelAssistance = newVal;
+            }
+        });
 
 
 
@@ -532,12 +554,21 @@ public class HomeClientActivity extends AppCompatActivity
                     LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
                     btnTravelNew.setVisibility(View.VISIBLE);
                 }
-                // Put some meat on the sandwich
                 else{
                     LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
                     btnTravelNew.setVisibility(View.GONE);
                 }
-                // Remove the meat
+                break;
+            case R.id.isFleetTravel:
+                if (checked){
+                    LinearLayout btnTravelNew1 = (LinearLayout) findViewById(R.id.content_flete);
+                    btnTravelNew1.setVisibility(View.VISIBLE);
+                }
+                else{
+                    LinearLayout btnTravelNew2 = (LinearLayout) findViewById(R.id.content_flete);
+                    btnTravelNew2.setVisibility(View.GONE);
+                }
+
                 break;
 
         }
@@ -1606,6 +1637,9 @@ public class HomeClientActivity extends AppCompatActivity
                             }
 
 
+                            gloval.setLocationDriverFromClient(null);
+
+
 
 
                     } else if (currentTravel.getIdSatatusTravel() == 7) {
@@ -1808,6 +1842,17 @@ public class HomeClientActivity extends AppCompatActivity
             }
 
 
+            // INFORMACION DEL FLETE ///
+            int _isFleetTravelAssistance = 0;
+            boolean _isFleetTravel = false;
+
+
+            if(isFleetTravel.isChecked()){
+                _isFleetTravelAssistance = isFleetTravelAssistance;
+                _isFleetTravel = true;
+            }
+            //--------------------//
+
 
             // INFORMACION DEL VUELO ///
             String _hoursAribo = "";
@@ -1837,7 +1882,7 @@ public class HomeClientActivity extends AppCompatActivity
                                     this.destination
                             )
                             , this.dateTravel, idTypeVehicle, true, idUserCompany,
-                            _hoursAribo,_terminal,_airlineCompany,_flyNumber
+                            _hoursAribo,_terminal,_airlineCompany,_flyNumber,_isFleetTravelAssistance,_isFleetTravel
                     )
             );
 
@@ -1961,12 +2006,16 @@ public class HomeClientActivity extends AppCompatActivity
                 autoCompView2.setText("");
                 autocompleteFragment.setText("");
                 isFly.setChecked(false);
+                isFleetTravel.setChecked(false);
                 hoursAribo.setText("");
                 terminal.setText("");
                 airlineCompany.setText("");
                 flyNumber.setText("");
-                LinearLayout btnTravelNew = (LinearLayout) findViewById(R.id.content_fly);
-                btnTravelNew.setVisibility(View.GONE);
+                LinearLayout viewFly = (LinearLayout) findViewById(R.id.content_fly);
+                viewFly.setVisibility(View.GONE);
+                np.setValue(0);
+                LinearLayout viewFlete = (LinearLayout) findViewById(R.id.content_flete);
+                viewFlete.setVisibility(View.GONE);
 
 
         }
@@ -2271,42 +2320,45 @@ public class HomeClientActivity extends AppCompatActivity
 
     public void servicesCalificateDriver(int start){
 
+        if(currentTravel != null) {
+
+            if (this.daoTravel == null) {
+                this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
+            }
 
 
-        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+            try {
+                Call<Boolean> call = this.daoTravel.calificateDriver(currentTravel.idTravel, start);
 
 
-        try {
-            Call<Boolean> call = this.daoTravel.calificateDriver(currentTravel.idTravel,start);
+                Log.d("Call request", call.request().toString());
+
+                call.enqueue(new Callback<Boolean>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
 
-            Log.d("Call request", call.request().toString());
+                        Toast.makeText(getApplicationContext(), "Puntuacion Enviada!", Toast.LENGTH_LONG).show();
+                        currentTravel = null;
+                        materialDesignFAM.setVisibility(View.VISIBLE);
+                        gloval.setGv_travel_current(null);
+                        HomeClientFragment.clearInfo();
 
-            call.enqueue(new Callback<Boolean>() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    }
 
-
-                    Toast.makeText(getApplicationContext(), "Puntuacion Enviada!", Toast.LENGTH_LONG).show();
-                    currentTravel = null;
-                    materialDesignFAM.setVisibility(View.VISIBLE);
-                    gloval.setGv_travel_current(null);
-                    HomeClientFragment.clearInfo();
-
-                }
-
-                public void onFailure(Call<Boolean> call, Throwable t) {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-                }
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
 
 
-            });
+                });
 
-        } finally {
-            this.daoTravel = null;
-        }
+            } finally {
+                this.daoTravel = null;
+            }
+}
 
     }
 

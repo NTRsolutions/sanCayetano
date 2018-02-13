@@ -46,6 +46,11 @@ public class TravelBodyEntity {
     public String mflyNumber;
 
 
+    @Expose
+    @SerializedName("isFleetTravelAssistance")
+    public int misFleetTravelAssistance;
+
+
 
     @Expose
     @SerializedName("origin")
@@ -72,6 +77,12 @@ public class TravelBodyEntity {
     @Expose
     @SerializedName("isTravelSendMovil")
     public boolean misTravelSendMovil;
+
+    @Expose
+    @SerializedName("isFleetTravel")
+    public boolean misFleetTravel;
+
+
 
 
     public int getMidUserCompanyKf() {
@@ -132,7 +143,8 @@ public class TravelBodyEntity {
                             int idUserCompanyKf, String hoursAribo,
                                     String   terminal,
                                     String  airlineCompany,
-                                    String flyNumber) {
+                                    String flyNumber,
+                            int isFleetTravelAssistance,boolean isFleetTravel) {
         mIdClientKf = idClientKf;
         mIsTravelComany = isTravelComany;
         mOrigin = origin;
@@ -145,6 +157,8 @@ public class TravelBodyEntity {
         mterminal = terminal;
         mairlineCompany = airlineCompany;
         mflyNumber = flyNumber;
+        misFleetTravelAssistance = isFleetTravelAssistance;
+        misFleetTravel = isFleetTravel;
     }
 
 
@@ -220,4 +234,23 @@ public class TravelBodyEntity {
     public void setMflyNumber(String mflyNumber) {
         this.mflyNumber = mflyNumber;
     }
+
+
+    public int getMisFleetTravelAssistance() {
+        return misFleetTravelAssistance;
+    }
+
+    public void setMisFleetTravelAssistance(int misFleetTravelAssistance) {
+        this.misFleetTravelAssistance = misFleetTravelAssistance;
+    }
+
+    public boolean isMisFleetTravel() {
+        return misFleetTravel;
+    }
+
+    public void setMisFleetTravel(boolean misFleetTravel) {
+        this.misFleetTravel = misFleetTravel;
+    }
 }
+
+

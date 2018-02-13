@@ -137,6 +137,90 @@
                             android:gravity="center"
                             android:padding="0dp"
                             android:tint="@color/mpsdk_argencard"
+                            app:srcCompat="@drawable/ic_local_shipping_black_40dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <CheckBox
+                            android:onClick="onCheckboxClicked"
+                            android:id="@+id/isFleetTravel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¿Es flete?" />
+
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/content_flete"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0">
+
+                        <TextView
+                            android:id="@+id/tv"
+                            android:layout_marginTop="16dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/danger"
+                            android:text="¿Cuántos ayudantes necesita?"
+                            />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                        <NumberPicker
+                            android:scaleX="1.5"
+                            android:scaleY="1.5"
+                            android:id="@+id/isFleetTravelAssistance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="0dp"
+                            android:tint="@color/mpsdk_argencard"
                             app:srcCompat="@drawable/ic_flight_black_24dp"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true" />
