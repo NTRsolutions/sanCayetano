@@ -68,7 +68,7 @@ public interface ServicesDriver {
 
 
     @Headers("Content-Type: application/json")
-    @GET("model/byidBrand//{id}")
+    @GET("model/byidBrand/{id}")
     Call<responseFilterVehicle> getModelDetail(@Path("id") int id);
 
     @Headers("Content-Type: application/json")

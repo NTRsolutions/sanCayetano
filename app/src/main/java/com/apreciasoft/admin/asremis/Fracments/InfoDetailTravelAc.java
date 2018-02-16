@@ -67,6 +67,11 @@ public class InfoDetailTravelAc extends AppCompatActivity {
         final TextView txt_destination_info = (TextView) findViewById(R.id.txt_destination_info);
         final TextView txt_observationFromDriver = (TextView) findViewById(R.id.txt_observationFromDriver);
         final TextView txt_pasajeros_info = (TextView) findViewById(R.id.txt_pasajeros_info);
+        final TextView txt_lote = (TextView) findViewById(R.id.txt_lote);
+        final TextView txt_flete = findViewById(R.id.txt_flete);
+        final TextView txt_piso_dialog = findViewById(R.id.txt_piso_dialog);
+        final TextView txt_dpto_dialog = findViewById(R.id.txt_dpto_dialog);
+
 
 
         // variable global //
@@ -86,6 +91,13 @@ public class InfoDetailTravelAc extends AppCompatActivity {
 
         txt_km_info.setText(travel.getDistanceLabel().toString());
         button1 = (Button) findViewById(R.id.button1);
+
+        txt_lote.setText(travel.getLot());
+        txt_flete.setText(String.valueOf(travel.getIsFleetTravelAssistance()));
+
+
+        txt_dpto_dialog.setText(travel.getDepartment());
+        txt_piso_dialog.setText(travel.getFLOOR());
 
 
 

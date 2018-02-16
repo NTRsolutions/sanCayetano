@@ -87,6 +87,12 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
     private void mostrarNotificacion(String title, String body,Class<?> cls) {
 
+        /* Limpiamos las notificaciones*/
+        NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancelAll();
+
+
+
         Context context = this;
 
         Intent intent;
@@ -98,6 +104,8 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         {
              intent = new Intent(context, HomeActivity.class);
         }
+
+
 
 
 

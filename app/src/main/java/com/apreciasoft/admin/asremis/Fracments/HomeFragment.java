@@ -1143,12 +1143,8 @@ public class HomeFragment extends Fragment implements
 
         HomeFragment.txt_lote.setText(currentTravel.getLot());
         HomeFragment.txt_flete.setText(String.valueOf(currentTravel.getIsFleetTravelAssistance()));
-
-
         HomeFragment.txt_dpto_dialog.setText(currentTravel.getDepartment());
         HomeFragment.txt_piso_dialog.setText(currentTravel.getFLOOR());
-
-
 
         HomeFragment.txt_km_info.setText(currentTravel.getDistanceLabel());
         HomeFragment.txtStatus.setText(currentTravel.getNameStatusTravel());

@@ -13,6 +13,7 @@ import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Http.HttpConexion;
 
+import java.sql.Time;
 import java.util.List;
 
 /**
@@ -41,6 +42,9 @@ import java.util.List;
     private client gv_clientinfo;
     private List<VehicleType> gv_listvehicleType;
     private String gv_nr_driver = "";
+
+    private int gv_hour_init_travel;
+
 
 
     private  String gv_idResourceSocket;
@@ -246,5 +250,13 @@ import java.util.List;
 
     public void setGv_nr_driver(String gv_nr_driver) {
         this.gv_nr_driver = gv_nr_driver;
+    }
+
+    public int getGv_hour_init_travel() {
+        return gv_hour_init_travel;
+    }
+
+    public void setGv_hour_init_travel(int gv_hour_init_travel) {
+        this.gv_hour_init_travel = gv_hour_init_travel;
     }
 }

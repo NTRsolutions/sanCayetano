@@ -68,6 +68,12 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("isProcesCurrentAcount")
     public int isProcesCurrentAcount;
 
+    @Expose
+    @SerializedName("isTravelByHour")
+    public int isTravelByHour;
+
+
+
 
     @Expose
     @SerializedName("phoneNumberDriver")
@@ -275,6 +281,12 @@ public  class InfoTravelEntity implements Serializable {
     @SerializedName("priceHourDriverMultiLan")
     public double priceHourDriverMultiLan;
 
+
+    @Expose
+    @SerializedName("priceHour")
+    public double priceHour;
+
+
     @Expose
     @SerializedName("priceContract")
     public double priceContract;
@@ -371,6 +383,16 @@ public  class InfoTravelEntity implements Serializable {
     @Expose
     @SerializedName("priceMinTravel")
     public double priceMinTravel;
+
+    @Expose
+    @SerializedName("Kmex")
+    public double Kmex;
+
+    @Expose
+    @SerializedName("pricePerKmex")
+    public double pricePerKmex;
+
+
 
     @Expose
     @SerializedName("passenger1")
@@ -1105,5 +1127,37 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setPricePoint(double pricePoint) {
         this.pricePoint = pricePoint;
+    }
+
+    public int getIsTravelByHour() {
+        return isTravelByHour;
+    }
+
+    public void setIsTravelByHour(int isTravelByHour) {
+        this.isTravelByHour = isTravelByHour;
+    }
+
+    public double getPriceHour() {
+        return priceHour;
+    }
+
+    public void setPriceHour(double priceHour) {
+        this.priceHour = priceHour;
+    }
+
+    public double getKmex() {
+        return Kmex;
+    }
+
+    public void setKmex(double kmex) {
+        Kmex = kmex;
+    }
+
+    public double getPricePerKmex() {
+        return pricePerKmex;
+    }
+
+    public void setPricePerKmex(double pricePerKmex) {
+        this.pricePerKmex = pricePerKmex;
     }
 }
