@@ -15,11 +15,11 @@ public class reasonEntity {
     @SerializedName("reason")
     public List<reason> reason;
 
-    public List<com.apreciasoft.admin.asremis.Entity.reason> getReason() {
+    public List<reason> getReason() {
         return reason;
     }
 
-    public void setReason(List<com.apreciasoft.admin.asremis.Entity.reason> reason) {
+    public void setReason(List<reason> reason) {
         this.reason = reason;
     }
 }

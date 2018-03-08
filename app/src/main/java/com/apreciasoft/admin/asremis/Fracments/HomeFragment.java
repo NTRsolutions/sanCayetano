@@ -632,9 +632,9 @@ public class HomeFragment extends Fragment implements
         if(SPCKETMAP != null) {
 
             if (SPCKETMAP.id() != null) {
-                if (this.daoLoguin == null) {
-                    this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
-                }
+
+                this.daoLoguin = HttpConexion.getUri().create(ServicesLoguin.class);
+
 
                 try {
 
@@ -899,12 +899,11 @@ public class HomeFragment extends Fragment implements
                                            .color(Color.TRANSPARENT)
                                            .geodesic(true);
                                    optionReturnActive.add(point);
-                                   Log.d("totalDistance", "'RETORNO ADD");
+                                   //Log.d("totalDistance", "'RETORNO ADD");
 
                                }else {
                                    HomeFragment.options.add(point);
-                                   Log.d("totalDistance", "ADD");
-                                   Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
+                                  // Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
 
 
                                }

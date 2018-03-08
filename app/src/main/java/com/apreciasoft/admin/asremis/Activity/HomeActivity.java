@@ -52,6 +52,7 @@ import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
+import com.apreciasoft.admin.asremis.Entity.resp;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
 import com.apreciasoft.admin.asremis.Fracments.AcountDriver;
@@ -80,6 +81,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -141,6 +145,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     PAGOS DE TARJETA
      */
     public static String mp_jsonPaymentCard = "";
+    public static Long mp_cardIssuerId;
+    public static int mp_installment;
+    public static String mp_cardToken;
+    public static Long  mp_campaignId;
     public static String mp_paymentMethodId = "";
     public static String mp_paymentTypeId = "";
     public static String mp_paymentstatus = "";
@@ -178,6 +186,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     int PARAM_20  = 0;
     public static  int PARAM_39,PARAM_66  = 0; // ACTIVAR BOTON DE VUELTA
     public static  int param25 = 0;
+    public static double PARAM_1 , PARAM_6  = 0;
     public static  int PARAM_68 = 0; // ACTIVAR PAGO CON TARJETA
     public static  String PARAM_69 = ""; // ACTIVAR PAGO CON TARJETA
 
@@ -1076,9 +1085,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final TextView txtMount = (TextView) findViewById(R.id.txt_mount);
         final TextView distance_txt = (TextView) findViewById(R.id.distance_txt);
         final TextView txtTimeslep = (TextView) findViewById(R.id.txtTimeslep);
+        final TextView txtamounFlet = (TextView) findViewById(R.id.amount_flet_txt);
 
         /* VERIFICAMOS METODOS DE PAGO DISPONIBLES */
-        if(currentTravel != null)// EMPRESA
+        if(currentTravel != null)
         {
             if(currentTravel.getIsTravelComany() == 1)// EMPRESA
             {
@@ -1096,17 +1106,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         /* */
 
 
-        double PARAM_1  = Double.parseDouble(gloval.getGv_param().get(0).getValue());// PRECIO DE LISTA
+         PARAM_1  = Double.parseDouble(gloval.getGv_param().get(0).getValue());// PRECIO DE LISTA
         double PARAM_5  = Double.parseDouble(gloval.getGv_param().get(4).getValue());// PRECIO LISTA TIEMPO DE ESPERA
-        double PARAM_6  = Double.parseDouble(gloval.getGv_param().get(5).getValue());// PRECIO LISTA TIEMPO DE VUELTA
+         PARAM_6  = Double.parseDouble(gloval.getGv_param().get(5).getValue());// PRECIO LISTA TIEMPO DE VUELTA
         double PARAM_16  = Double.parseDouble(gloval.getGv_param().get(15).getValue());// VALOR MINIMO DE VIAJE
         int param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
+             int param78 = Integer.parseInt(gloval.getGv_param().get(77).getValue());// BAJADA DE BANDERA
+            double PARAM_74  = Double.parseDouble(gloval.getGv_param().get(73).getValue());// PRECIO POR HORA AYUDANTES
 
-        double hor;
+
+            double hor;
         double min = 0;
 
-        double EXTRA_BENEFICIO;
-        double distance_beneficio;
 
         btPreFinishVisible(false);
 
@@ -1151,9 +1162,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 int hours = new Time(System.currentTimeMillis()).getHours();
                 int newHours = hours - gloval.getGv_hour_init_travel();
 
+                if(newHours <1 || gloval.getGv_hour_init_travel() == 0) {
+                    newHours = 1;
+                }
 
 
-                Log.d("-hours-", String.valueOf(hours));
+                    Log.d("-hours-", String.valueOf(hours));
 
 
                 if(currentTravel.getKmex() >0 && kilometros_total > currentTravel.getKmex()){ // KILOMETROS EXEDENTES
@@ -1172,25 +1186,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             else{
 
             /*VERIFICAMOS SI ESTA ACTIVO EL CAMPO BENEFICIO POR KILOMETRO PARA ESA EMPRESA*/
-                Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getBenefitsPerKm()));
-                if (currentTravel.getBenefitsPerKm() == 1) {
+                Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmList()));
+                if (currentTravel.getIsBenefitKmList() == 1
+                        && currentTravel.getListBeneficio() != null
+                        && currentTravel.getListBeneficio().size() > 0) {
+
                     Log.d("-TRAVEL kilometros_total-", String.valueOf(kilometros_total));
                     Log.d("-TRAVEL BenefitsToKm-", String.valueOf(currentTravel.getBenefitsToKm()));
                     Log.d("-TRAVEL BenefitsFromKm-", String.valueOf(currentTravel.getBenefitsFromKm()));
-                /* VERIFICAMOS I ESTA DENTRO DE EL RANDO DE EL BENEFICIO ESTABLECIDO */
-                    if (kilometros_total >= currentTravel.getBenefitsToKm() && kilometros_total >= currentTravel.getBenefitsFromKm()) {
-                        distance_beneficio = currentTravel.getBenefitsToKm() - currentTravel.getBenefitsFromKm();
 
-                        Log.d("-TRAVEL distance_beneficio-", String.valueOf(distance_beneficio));
-                        EXTRA_BENEFICIO = distance_beneficio * currentTravel.getBenefitsPreceKm();
-                        Log.d("-TRAVEL EXTRA_BENEFICIO-", String.valueOf(EXTRA_BENEFICIO));
 
-                        double KILOMETROS = kilometros_total - distance_beneficio;// CONVERTIMOS LO KILOMETRO A METROS
-                        Log.d("-TRAVEL KILOMETROS-", String.valueOf(KILOMETROS));
-                        amounCalculateGps = (KILOMETROS * currentTravel.getPriceDitanceCompany()) + EXTRA_BENEFICIO;
-                        Log.d("-TRAVEL amounCalculateGps (1)-", String.valueOf(amounCalculateGps));
+                    /* VERIFICAMOS SI ESTA DENTRO DE EL RANGO DE EL BENEFICIO ESTABLECIDO */
+                     amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),km_ida);
 
-                    } else {
+                    // VERIFICAMOS SI HAY RETORNO //
+                    if (isRoundTrip) {
+                        amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
+                    }
+
+                    if(amounCalculateGps <1){
                         amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();
                         Log.d("-TRAVEL amounCalculateGps (2)-", String.valueOf(amounCalculateGps));
                     }
@@ -1220,35 +1234,47 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
             // VERIFICAMOS EL BEMEFICIO POR KM PARA CLIENTES PARTICULARES //
-            Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmClientList()));
 
-            if(currentTravel.getIsBenefitKmClientList() == 1 && currentTravel.getListBeneficio().size() > 0) {
+            if(currentTravel.getIsBenefitKmClientList() == 1
+                    && currentTravel.getListBeneficio() != null
+                    && currentTravel.getListBeneficio().size() > 0) {
 
-                amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_total);
+                amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
 
-            }else {
-                amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
-            }
+                if(isRoundTrip) {
+                    Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
 
-            Log.d("-TRAVEL amounCalculateGps (6)-", String.valueOf(amounCalculateGps));
-            if(isRoundTrip)
-            {
-                Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
+                    if (currentTravel.getIsBenefitKmList() == 1) {
+                        amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(), kilometros_vuelta);
+                    }
+                }
 
-
-                if(currentTravel.getIsBenefitKmClientList() == 1) {
-                    amounCalculateGps = this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
-                }else{
-                    amounCalculateGps = kilometros_ida * PARAM_1;
+                if(amounCalculateGps <1){
+                    amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
 
                 }
 
+            }else {
 
-                Log.d("-TRAVEL amounCalculateGps (8)-", String.valueOf(amounCalculateGps));
-                amounCalculateGps =  amounCalculateGps + kilometros_vuelta * PARAM_6;
-                Log.d("-TRAVEL amounCalculateGps (9)-", String.valueOf(amounCalculateGps));
+
+                Log.d("-TRAVEL amounCalculateGps (6)-", String.valueOf(amounCalculateGps));
+                Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
+
+                if(isRoundTrip)
+                {
+                    amounCalculateGps = kilometros_ida * PARAM_1;
+                    Log.d("-TRAVEL amounCalculateGps (8)-", String.valueOf(amounCalculateGps));
+                    amounCalculateGps =  amounCalculateGps + kilometros_vuelta * PARAM_6;
+                    Log.d("-TRAVEL amounCalculateGps (9)-", String.valueOf(amounCalculateGps));
+
+                }else{
+                    amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
+
+                }
 
             }
+
+
         }
 
 
@@ -1325,6 +1351,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+        double priceFlet = 0;
+        if(currentTravel.getIsFleetTravelAssistance() > 0){
+
+            int hours = new Time(System.currentTimeMillis()).getHours();
+            int newHours = hours - gloval.getGv_hour_init_travel();
+
+            if(newHours <1 || gloval.getGv_hour_init_travel() == 0){
+                newHours = 1;
+            }
+
+            priceFlet = PARAM_74 * newHours;
+            txtamounFlet.setText("$"+df.format(priceFlet));
+        }else {
+            txtamounFlet.setText("$0.0");
+        }
+
+
+
+
 
 
         double myDouble;
@@ -1344,7 +1389,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        totalFinal =  amounCalculateGps + extraTime + myDouble + parkin;
+
+        double bandera = 0;
+        if(param78 == 1) {
+            if(currentTravel.getIsTravelComany() == 1){// EMPRESA
+                bandera = currentTravel.getPriceDitanceCompany();
+            }else{
+                bandera = PARAM_1;
+            }
+
+        }
+
+
+
+
+
+            totalFinal =  amounCalculateGps + extraTime + myDouble + parkin + bandera + priceFlet;
         Log.d("-TRAVEL  totalFinal -", String.valueOf(totalFinal));
 
 
@@ -2172,6 +2232,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+
     }
 
 
@@ -2267,6 +2329,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         call = this.daoTravel.preFinishMobil(travel);
                     }
 
+                        Log.d("Response request", call.request().toString());
+                        Log.d("Response request header", call.request().headers().toString());
 
 
                     call.enqueue(new Callback<InfoTravelEntity>() {
@@ -2274,9 +2338,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
                             loading.dismiss();
-                            Log.d("Response request", call.request().toString());
-                            Log.d("Response request header", call.request().headers().toString());
-                            Log.d("Response raw header", response.headers().toString());
+                           Log.d("Response raw header", response.headers().toString());
                             Log.d("Response raw", String.valueOf(response.raw().body()));
                             Log.d("Response code", String.valueOf(response.code()));
 
@@ -2341,7 +2403,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         notifManager.cancelAll();
     }
 
-    // FIRMAAAA //
+    // FIRMA O TARJETA //
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
 
         switch(requestCode) {
@@ -2374,15 +2436,57 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case CREDIT_CAR_ACTIVITY:
                 super.onActivityResult(requestCode, resultCode, data);
                 if(HomeActivity._PAYCREDITCAR_OK) {
-                    finishTravel();
+                    preFinihMpago();
                 }
                 break;
 
         }
 
+    }
+
+    public void preFinihMpago(){
+        finishTravel();
+
+        /*
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUriMpago().create(ServicesTravel.class); }
+
+        try {
+            loading = ProgressDialog.show(HomeActivity.this, "Enviado pago", "Espere unos Segundos...", true, false);
 
 
 
+
+            Call<resp> call = this.daoTravel.payMpago(HomeActivity.mp_jsonPaymentCard);
+
+
+            call.enqueue(new Callback<resp>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<resp> call, Response<resp> response) {
+                    loading.dismiss();
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
+
+                   // finishTravel();
+
+
+
+                }
+
+                public void onFailure(Call<resp> call, Throwable t) {
+                    loading.dismiss();
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                }
+            });
+
+        } finally {
+            this.daoTravel = null;
+        }
+*/
     }
 
     public void postImageData()
@@ -2548,13 +2652,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public double getPriceReturnBylistBeneficion(List<BeneficioEntity> list,double distance){
         double value = 0;
 
+        int indexBrack = 0;
         for (int i =0;i < list.size();i++){
 
+            indexBrack++;
+
             // EVALUAMOS LOS DISTINTOS BENEFICIOS //
-            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm()) && distance <=  Double.parseDouble(list.get(i).getBenefitsToKm())){
-                value = distance *  Double.parseDouble(list.get(i).getBenefitPreceReturnKm());
-                break;
+            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm())){
+                value = value + Double.parseDouble(list.get(i).getBenefitPreceReturnKm());
             }
+        }
+
+        // VALIDAMOS SI EL TOTAL KM ES MAYOR A //
+        if(distance > Double.parseDouble(list.get(indexBrack-1).getBenefitsFromKm())){
+            double distanceExtraBeneficio = distance - Double.parseDouble(list.get(indexBrack-1).getBenefitsToKm());
+
+
+
+            double amountExtra =0;
+            // ES VIAJE A EMPRESA //
+            if(currentTravel.getIsTravelComany() == 1){// EMPRESA
+                amountExtra =   distanceExtraBeneficio * currentTravel.getPriceReturn();
+            }else{
+                amountExtra = distanceExtraBeneficio * PARAM_6;
+
+            }
+            value = amountExtra + value;
         }
 
         return  value;
@@ -2563,19 +2686,35 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public double getPriceBylistBeneficion(List<BeneficioEntity> list,double distance){
         double value = 0;
 
+        int indexBrack = 0;
         for (int i =0;i < list.size();i++){
 
-            Log.d("-TRAVEL value (*distance)-", String.valueOf(distance));
-            Log.d("-TRAVEL value (*distance)-", String.valueOf(list.get(i).getBenefitsFromKm()));
-            Log.d("-TRAVEL value (*distance)-", String.valueOf(list.get(i).getBenefitsToKm()));
+            indexBrack++;
 
             // EVALUAMOS LOS DISTINTOS BENEFICIOS //
-            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm()) && distance <=  Double.parseDouble(list.get(i).getBenefitsToKm())){
-                value = distance *  Double.parseDouble(list.get(i).getBenefitsPreceKm());
-
-                Log.d("-TRAVEL value (*1)-", String.valueOf(value));
+            if(distance >=  Double.parseDouble(list.get(i).getBenefitsFromKm())){
+                value  = value + Double.parseDouble(list.get(i).getBenefitsPreceKm());
+            }
+            else {
                 break;
             }
+        }
+
+        // VALIDAMOS SI EL TOTAL KM ES MAYOR A //
+        if(distance > Double.parseDouble(list.get(indexBrack-1).getBenefitsToKm())){
+            double distanceExtraBeneficio = distance - Double.parseDouble(list.get(indexBrack-1).getBenefitsToKm());
+
+
+            double amountExtra =0;
+            // ES VIAJE A EMPRESA //
+            if(currentTravel.getIsTravelComany() == 1){// EMPRESA
+                amountExtra = distanceExtraBeneficio * currentTravel.getPriceDitanceCompany();
+            }else{
+                amountExtra = distanceExtraBeneficio * PARAM_1;
+
+            }
+
+            value = amountExtra + value;
         }
 
         return  value;

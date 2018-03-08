@@ -10,6 +10,8 @@ import com.apreciasoft.admin.asremis.Entity.reason;
 import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.resp;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -80,6 +82,11 @@ public interface ServicesTravel {
     @Headers("Content-Type: application/json")
     @POST("travel/finishMobil")
     Call<InfoTravelEntity> finishPost(@Body  TraveInfoSendEntity travel);
+
+    @Headers("Content-Type: application/json")
+    @POST("index.php")
+    Call<resp> payMpago(@Body String pay);
+
 
     @Headers("Content-Type: application/json")
     @POST("travel/preFinishMobil")

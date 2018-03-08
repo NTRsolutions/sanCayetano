@@ -12,10 +12,13 @@ import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mercadopago.constants.PaymentTypes;
 import com.mercadopago.constants.Sites;
 import com.mercadopago.core.MercadoPagoCheckout;
+import com.mercadopago.model.Issuer;
 import com.mercadopago.model.Item;
 import com.mercadopago.model.PaymentData;
+import com.mercadopago.model.Token;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.util.JsonUtil;
 
@@ -78,7 +81,6 @@ public class PaymentCreditCar extends AppCompatActivity {
         CheckoutPreference checkoutPreference = new CheckoutPreference.Builder()
                 .addItem(new Item("PAGO REMIS ASREMIS", new BigDecimal(HomeActivity.totalFinal)))
                 .setSite(Sites.ARGENTINA)
-                .setMaxInstallments(1) //Limit the amount of installments
                 .build();
         startMercadoPagoCheckout(checkoutPreference);
 
@@ -91,25 +93,36 @@ public class PaymentCreditCar extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
 
         if (requestCode == MercadoPagoCheckout.CHECKOUT_REQUEST_CODE) {
             if (resultCode == MercadoPagoCheckout.PAYMENT_DATA_RESULT_CODE) {
                 PaymentData paymentData = JsonUtil.getInstance().fromJson(data.getStringExtra("paymentData"), PaymentData.class);
                 //Done!
                // if(paymentData.getStatus().contains("approved")){
+
+
+
+
                     GsonBuilder builder = new GsonBuilder();
                     Gson gson = builder.create();
                     Log.d("paymentData",gson.toJson(paymentData));
-
 
                     HomeActivity.mp_jsonPaymentCard = gson.toJson(paymentData);
                     HomeActivity.mp_paymentMethodId = paymentData.getPaymentMethod().getId();
                     HomeActivity.mp_paymentTypeId = paymentData.getPaymentMethod().getPaymentTypeId();
                     HomeActivity.mp_paymentstatus = paymentData.getTransactionAmount().toEngineeringString();
+                    HomeActivity.mp_cardIssuerId = paymentData.getIssuer() == null ? null : paymentData.getIssuer().getId();
+                    HomeActivity.mp_installment  = paymentData.getPayerCost() == null ? null : paymentData.getPayerCost().getInstallments();
+                    HomeActivity.mp_cardToken = paymentData.getToken() == null ? null : paymentData.getToken().getId();
+                    HomeActivity.mp_campaignId = paymentData.getDiscount() == null ? null : paymentData.getDiscount().getId();
                     HomeActivity._PAYCREDITCAR_OK = true;
+
+                    Log.d("mp_cardToken",HomeActivity.mp_cardToken);
+
+
                     this.finish();
+
 
 
 
@@ -125,9 +138,9 @@ public class PaymentCreditCar extends AppCompatActivity {
         }
 
 
-
-
     }
+
+
 
 
 

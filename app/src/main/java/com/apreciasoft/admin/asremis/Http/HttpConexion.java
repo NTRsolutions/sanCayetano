@@ -30,22 +30,21 @@ public class HttpConexion {
             HttpConexion.base =  folder;
         }
 
-   /* public static  String getBase()
-    {
-       return HttpConexion.base;
-    }*/
-
-        public static Retrofit getUri() {
-
-
+    public static Retrofit getUri() {
             retrofit = new Retrofit.Builder()
                         .baseUrl(BASE_URL+base+"/Api/index.php/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-
-
-
             return retrofit;
-        }
+    }
+
+    public static Retrofit getUriMpago() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL+"as_mpago/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit;
+    }
 }

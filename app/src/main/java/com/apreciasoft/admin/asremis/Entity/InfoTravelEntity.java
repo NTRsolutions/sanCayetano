@@ -22,6 +22,16 @@ public  class InfoTravelEntity implements Serializable {
     public int idTravel;
 
 
+    @Expose
+    @SerializedName("isBenefitKmList")
+    public int isBenefitKmList;
+
+    @Expose
+    @SerializedName("isBenefitKmClientList")
+    public int isBenefitKmClientList;
+
+
+
 
 
     @Expose
@@ -341,9 +351,7 @@ public  class InfoTravelEntity implements Serializable {
     public int isPaymentCash;
 
 
-    @Expose
-    @SerializedName("isBenefitKmClientList")
-    public int isBenefitKmClientList;
+
 
     @Expose
     @SerializedName("idBenefitKmClientKf")
@@ -957,13 +965,7 @@ public  class InfoTravelEntity implements Serializable {
     }
 
 
-    public int getIsBenefitKmClientList() {
-        return isBenefitKmClientList;
-    }
 
-    public void setIsBenefitKmClientList(int isBenefitKmClientList) {
-        this.isBenefitKmClientList = isBenefitKmClientList;
-    }
 
     public int getIdBenefitKmClientKf() {
         return idBenefitKmClientKf;
@@ -1159,5 +1161,21 @@ public  class InfoTravelEntity implements Serializable {
 
     public void setPricePerKmex(double pricePerKmex) {
         this.pricePerKmex = pricePerKmex;
+    }
+
+    public int getIsBenefitKmList() {
+        return isBenefitKmList;
+    }
+
+    public void setIsBenefitKmList(int isBenefitKmList) {
+        this.isBenefitKmList = isBenefitKmList;
+    }
+
+    public int getIsBenefitKmClientList() {
+        return isBenefitKmClientList;
+    }
+
+    public void setIsBenefitKmClientList(int isBenefitKmClientList) {
+        this.isBenefitKmClientList = isBenefitKmClientList;
     }
 }
