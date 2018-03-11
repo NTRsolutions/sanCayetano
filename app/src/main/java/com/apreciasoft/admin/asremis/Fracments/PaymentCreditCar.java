@@ -1,13 +1,23 @@
 package com.apreciasoft.admin.asremis.Fracments;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.R;
 import com.google.gson.Gson;
@@ -22,6 +32,7 @@ import com.mercadopago.model.Token;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.util.JsonUtil;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +49,8 @@ public class PaymentCreditCar extends AppCompatActivity {
 
     // Set the supported payment method types
     protected List<String> mSupportedPaymentTypes;
+    private WebView mWebview ;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +60,33 @@ public class PaymentCreditCar extends AppCompatActivity {
         setTitle("Pago Con Tarjeta");
 
 
+        mWebview  = new WebView(this);
 
+        mWebview.getSettings().setJavaScriptEnabled(true); // enable javascript
+
+        final Activity activity = this;
+
+        mWebview.setWebViewClient(new WebViewClient() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
+            }
+            @TargetApi(android.os.Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
+                // Redirect to deprecated method, so you can use it in all SDK versions
+                onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
+            }
+        });
+
+        mWebview .loadUrl(HomeActivity.mp_jsonPaymentCard);
+        setContentView(mWebview );
+        
+
+
+
+                        /*
 
         mSupportedPaymentTypes =  new ArrayList<String>();
         mSupportedPaymentTypes.add("credit_card");
@@ -57,7 +96,7 @@ public class PaymentCreditCar extends AppCompatActivity {
         final TextView txt_mount2 = (TextView) findViewById(R.id.txt_mount2);
 
         txt_mount2.setText("$"+Double.toString(round(HomeActivity.totalFinal,2)));
-
+                                    */
 
 
 
@@ -148,19 +187,40 @@ public class PaymentCreditCar extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                HomeActivity._PAYCREDITCAR_OK = false;
-                this.finish();
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Si tu operacion fue exitosa presiona continuar")
+                        .setCancelable(false)
+                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                HomeActivity._PAYCREDITCAR_OK = true;
+                                finish();
+
+                            }
+                        })
+                        .setNegativeButton("Intentar con otro metodo de Pago", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                HomeActivity._PAYCREDITCAR_OK = false;
+                                finish();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+
     @Override
     public void onBackPressed() {
 
-        Log.d("va","va");
-       // finish();
+
+
     }
 
 

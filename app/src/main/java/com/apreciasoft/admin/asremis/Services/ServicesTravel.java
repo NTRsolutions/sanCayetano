@@ -1,12 +1,13 @@
 package com.apreciasoft.admin.asremis.Services;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+import com.apreciasoft.admin.asremis.Entity.PagoEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
+import com.apreciasoft.admin.asremis.Entity.ResponsePHP;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
-import com.apreciasoft.admin.asremis.Entity.reason;
 import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.resp;
 
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -82,11 +84,6 @@ public interface ServicesTravel {
     @Headers("Content-Type: application/json")
     @POST("travel/finishMobil")
     Call<InfoTravelEntity> finishPost(@Body  TraveInfoSendEntity travel);
-
-    @Headers("Content-Type: application/json")
-    @POST("index.php")
-    Call<resp> payMpago(@Body String pay);
-
 
     @Headers("Content-Type: application/json")
     @POST("travel/preFinishMobil")

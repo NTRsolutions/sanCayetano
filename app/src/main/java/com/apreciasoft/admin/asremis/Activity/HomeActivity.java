@@ -47,7 +47,9 @@ import android.widget.Toast;
 import com.apreciasoft.admin.asremis.Dialog.TravelDialog;
 import com.apreciasoft.admin.asremis.Entity.BeneficioEntity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+import com.apreciasoft.admin.asremis.Entity.PagoEntity;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
+import com.apreciasoft.admin.asremis.Entity.ResponsePHP;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.notification;
@@ -85,18 +87,30 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -189,6 +203,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static double PARAM_1 , PARAM_6  = 0;
     public static  int PARAM_68 = 0; // ACTIVAR PAGO CON TARJETA
     public static  String PARAM_69 = ""; // ACTIVAR PAGO CON TARJETA
+    public static  String PARAM_79 = ""; // ACTIVAR PAGO CON TARJETA
 
 
     /*DIALOG*/
@@ -495,9 +510,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         try {
             PARAM_69 = gloval.getGv_param().get(68).getValue();//
+            PARAM_79 = gloval.getGv_param().get(78).getValue();//
 
         } catch ( IndexOutOfBoundsException e ) {
             PARAM_69 = "";
+            PARAM_79 = "";
         }
         PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
         PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
@@ -1444,6 +1461,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
        // if(timer != null) {
         //    timer.cancel();
         //}
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Confirma para salir de la App?")
+                .setCancelable(false)
+                .setPositiveButton("Salir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            fn_exit();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 
 
@@ -2222,14 +2261,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void finishTravelCreditCar()
     {
 
-        idPaymentFormKf = 3;
-        //finishTravel();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Presiona continuar para realizar el pago con Tarjetas")
+                .setCancelable(false)
+                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        idPaymentFormKf = 3;
+                        //finishTravel();
 
-        Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
-        intent.putExtra("TotalAmount",this.totalFinal);
+                        //   Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
+                        // intent.putExtra("TotalAmount",this.totalFinal);
 
-        startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+                        //startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
 
+
+                        preFinihMpago();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
 
 
@@ -2246,151 +2301,142 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             loading = ProgressDialog.show(HomeActivity.this, "Finalizando Viaje", "Espere unos Segundos...", true, false);
 
 
-            String lat = "";
+            if(currentTravel != null) {
+
+                String lat = "";
                 String lon = "";
                 String add = "";
 
-                if(HomeFragment.getmLastLocation() != null)
-                {
+                if (HomeFragment.getmLastLocation() != null) {
                     lat = String.valueOf(HomeFragment.getmLastLocation().getLatitude());
                     lon = String.valueOf(HomeFragment.getmLastLocation().getLongitude());
                     add = HomeFragment.nameLocation;
                 }
 
-                   // BUSCAMOS EL VALOR DE EL PEAJE //
+                // BUSCAMOS EL VALOR DE EL PEAJE //
 
-                    double myDouble;
-                    String myString = ((EditText) findViewById(R.id.peajes_txt)).getText().toString();
-                    if (myString != null && !myString.equals("")) {
-                        myDouble = Double.valueOf(myString);
-                    } else {
-                        myDouble = 0;
-                    }
-                    ((EditText) findViewById(R.id.peajes_txt)).setText("");
+                double myDouble;
+                String myString = ((EditText) findViewById(R.id.peajes_txt)).getText().toString();
+                if (myString != null && !myString.equals("")) {
+                    myDouble = Double.valueOf(myString);
+                } else {
+                    myDouble = 0;
+                }
+                ((EditText) findViewById(R.id.peajes_txt)).setText("");
 
-                    double parkin;
-                    String parkin_txt = ((EditText) findViewById(R.id.parkin_txt)).getText().toString();
-                    if (parkin_txt != null && !parkin_txt.equals("")) {
-                        parkin = Double.valueOf(parkin_txt);
-                    } else {
-                        parkin = 0;
-                    }
-                    ((EditText) findViewById(R.id.parkin_txt)).setText("");
-
-
+                double parkin;
+                String parkin_txt = ((EditText) findViewById(R.id.parkin_txt)).getText().toString();
+                if (parkin_txt != null && !parkin_txt.equals("")) {
+                    parkin = Double.valueOf(parkin_txt);
+                } else {
+                    parkin = 0;
+                }
+                ((EditText) findViewById(R.id.parkin_txt)).setText("");
 
 
-                    double _RECORIDO_TOTAL = 0;
-                    if(kilometros_total > 0) {
-                        _RECORIDO_TOTAL =  Utils.round(kilometros_total,2);
-                    }
+                double _RECORIDO_TOTAL = 0;
+                if (kilometros_total > 0) {
+                    _RECORIDO_TOTAL = Utils.round(kilometros_total, 2);
+                }
 
 
+                TraveInfoSendEntity travel =
+                        new TraveInfoSendEntity(new
+                                TravelLocationEntity
+                                (
+                                        currentTravel.getIdTravel(),
+                                        amounCalculateGps,
+                                        //Double.parseDouble(val),
+                                        _RECORIDO_TOTAL,
+                                        df.format(kilometros_total),
+                                        add,
+                                        lon,
+                                        lat,
+                                        myDouble,
+                                        parkin,
+                                        extraTime,
+                                        tiempoTxt + " Segundos",
+                                        idPaymentFormKf,
+                                        mp_jsonPaymentCard,
+                                        mp_paymentMethodId,
+                                        mp_paymentTypeId,
+                                        mp_paymentstatus
 
-                    TraveInfoSendEntity travel =
-                            new TraveInfoSendEntity(new
-                                    TravelLocationEntity
-                                    (
-                                            currentTravel.getIdTravel(),
-                                            amounCalculateGps,
-                                            //Double.parseDouble(val),
-                                            _RECORIDO_TOTAL,
-                                            df.format(kilometros_total),
-                                            add,
-                                            lon,
-                                            lat,
-                                            myDouble,
-                                            parkin,
-                                            extraTime,
-                                            tiempoTxt+" Segundos",
-                                            idPaymentFormKf,
-                                            mp_jsonPaymentCard,
-                                            mp_paymentMethodId,
-                                            mp_paymentTypeId,
-                                            mp_paymentstatus
-
-                                    )
-                            );
-
-
-                    GsonBuilder builder = new GsonBuilder();
-                    Gson gson = builder.create();
+                                )
+                        );
 
 
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
 
-                    Call<InfoTravelEntity> call = null;
+
+                Call<InfoTravelEntity> call = null;
 
                     /* VERIFICAMOS I ESTA HABILITADO EL CIERRE DE VIAJES DEDE LA APP O NO*/
-                    if(PARAM_20 == 1)
-                    {
-                        call = this.daoTravel.finishPost(travel);
-                    }else
-                    {
-                        call = this.daoTravel.preFinishMobil(travel);
+                if (PARAM_20 == 1) {
+                    call = this.daoTravel.finishPost(travel);
+                } else {
+                    call = this.daoTravel.preFinishMobil(travel);
+                }
+
+                Log.d("Response request", call.request().toString());
+                Log.d("Response request header", call.request().headers().toString());
+
+
+                call.enqueue(new Callback<InfoTravelEntity>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
+                        loading.dismiss();
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                        Log.d("Response code", String.valueOf(response.code()));
+
+                        if (PARAM_20 == 1) {
+                            Toast.makeText(HomeActivity.this, "VIAJE  FINALIZADO", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(HomeActivity.this, "VIAJE ENVIADO PARA SU APROBACION", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                        btInitVisible(false);
+                        btCancelVisible(false);
+                        btPreFinishVisible(false);
+                        btnFlotingVisible(true);
+
+
+                        currentTravel = null;
+                        HomeFragment.MarkerPoints = null;
+                        if (HomeFragment.options != null) {
+                            HomeFragment.options.getPoints().clear();
+                        }
+                        gloval.setGv_travel_current(null);
+                        setInfoTravel();
+                        viewAlert = false;
+
+
+                        tiempoTxt = 0;
+                        textTiempo = (TextView) findViewById(R.id.textTiempo);
+                        textTiempo.setVisibility(View.INVISIBLE);
+
+
+                        final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
+                        lg.setVisibility(View.INVISIBLE);
+
+                        gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
+
+
                     }
 
-                        Log.d("Response request", call.request().toString());
-                        Log.d("Response request header", call.request().headers().toString());
-
-
-                    call.enqueue(new Callback<InfoTravelEntity>() {
-                        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                        @Override
-                        public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
-                            loading.dismiss();
-                           Log.d("Response raw header", response.headers().toString());
-                            Log.d("Response raw", String.valueOf(response.raw().body()));
-                            Log.d("Response code", String.valueOf(response.code()));
-
-                            if(PARAM_20 == 1) {
-                                Toast.makeText(HomeActivity.this, "VIAJE  FINALIZADO", Toast.LENGTH_SHORT).show();
-                            }else
-                            {
-                                Toast.makeText(HomeActivity.this, "VIAJE ENVIADO PARA SU APROBACION", Toast.LENGTH_SHORT).show();
-                            }
-
-
-                            btInitVisible(false);
-                            btCancelVisible(false);
-                            btPreFinishVisible(false);
-                            btnFlotingVisible(true);
-
-
-
-
-
-                            currentTravel = null;
-                            HomeFragment.MarkerPoints = null;
-                            if(HomeFragment.options != null){
-                                HomeFragment.options.getPoints().clear();
-                            }
-                            gloval.setGv_travel_current(null);
-                            setInfoTravel();
-                            viewAlert = false;
-
-
-
-                            tiempoTxt = 0;
-                            textTiempo = (TextView) findViewById(R.id.textTiempo);
-                            textTiempo.setVisibility(View.INVISIBLE);
-
-
-                            final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
-                            lg.setVisibility(View.INVISIBLE);
-
-                            gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
-
-
-
-                        }
-
-                        public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                           loading.dismiss();
-                            Snackbar.make(findViewById(android.R.id.content),
-                                    "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
-
+                    public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                        loading.dismiss();
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }else {
+                this.getCurrentTravelByIdDriver();
+            }
         } finally {
             this.daoTravel = null;
         }
@@ -2436,7 +2482,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case CREDIT_CAR_ACTIVITY:
                 super.onActivityResult(requestCode, resultCode, data);
                 if(HomeActivity._PAYCREDITCAR_OK) {
-                    preFinihMpago();
+                    finishTravel();
                 }
                 break;
 
@@ -2445,53 +2491,161 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void preFinihMpago(){
-        finishTravel();
 
-        /*
+        loading = ProgressDialog.show(HomeActivity.this, "Cargando pago", "Espere unos Segundos...", true, false);
+        new SendPostRequest().execute();
+
+
+/*
+
         if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUriMpago().create(ServicesTravel.class); }
 
         try {
-            loading = ProgressDialog.show(HomeActivity.this, "Enviado pago", "Espere unos Segundos...", true, false);
+            loading = ProgressDialog.show(HomeActivity.this, "Enviando pago", "Espere unos Segundos...", true, false);
 
 
+            PagoEntity PAGO = new PagoEntity(
+                    "6182935257674284",
+                    "R6nTqEiH4GO0p5b8Z68rUyD7FmQgeAh7",
+                    "ARG",
+                    totalFinal
+            );
 
 
-            Call<resp> call = this.daoTravel.payMpago(HomeActivity.mp_jsonPaymentCard);
+            Call<ResponseBody> call = this.daoTravel.payMpago(PAGO);
+            Log.d("Response request", call.request().toString());
+            Log.d("Response request header", call.request().headers().toString());
 
-
-            call.enqueue(new Callback<resp>() {
+            call.enqueue(new Callback<ResponseBody>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
-                public void onResponse(Call<resp> call, Response<resp> response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     loading.dismiss();
-                    Log.d("Response request", call.request().toString());
-                    Log.d("Response request header", call.request().headers().toString());
-                    Log.d("Response raw header", response.headers().toString());
-                    Log.d("Response raw", String.valueOf(response.raw().body()));
-                    Log.d("Response code", String.valueOf(response.code()));
 
-                   // finishTravel();
+                      GsonBuilder builder = new GsonBuilder();
+                     Gson gson = builder.create();
+                     System.out.println(gson.toJson(response));
 
-
+                    ResponseBody result  = (ResponseBody) response.body();
+                    HomeActivity.URL_MPAGO = String.valueOf(result);
+                    Log.d("URL_MPAGO",HomeActivity.URL_MPAGO);
 
                 }
 
-                public void onFailure(Call<resp> call, Throwable t) {
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                     loading.dismiss();
+
+                    Log.d("ERROR", t.getMessage());
+                    Log.d("ERROR", t.getLocalizedMessage());
+                    Log.d("ERROR", String.valueOf(call));
+
                     Snackbar.make(findViewById(android.R.id.content),
-                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                            "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
                 }
             });
 
-        } finally {
+        }finally {
             this.daoTravel = null;
         }
-*/
+        */
+
     }
+
+
+    public class SendPostRequest extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute(){}
+
+        protected String doInBackground(String... arg0) {
+
+            try {
+
+                URL url = new URL(HttpConexion.BASE_URL+"as_mpago/index.php"); // here is your URL path
+
+                JSONObject postDataParams = new JSONObject();
+                postDataParams.put("clienteid", HomeActivity.PARAM_69);
+                postDataParams.put("clientesecret", HomeActivity.PARAM_79);
+                postDataParams.put("currency_id", HttpConexion.COUNTRY);
+                postDataParams.put("unit_price", totalFinal);
+                postDataParams.put("agency", gloval.getGv_base_intance());
+                postDataParams.put("idTravel", currentTravel.getIdTravel());
+
+
+                Log.d("postDataParams", String.valueOf(postDataParams));
+
+
+
+                String message = postDataParams.toString();
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setFixedLengthStreamingMode(message.getBytes().length);
+
+
+
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+
+                writer.write(message);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode=conn.getResponseCode();
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+
+
+                    InputStream inputStream = conn.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    String response = "";
+                    String line = "";
+                    while ((line = bufferedReader.readLine())!=null){
+                        response+= line;
+                    }
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    conn.disconnect();
+                    os.close();
+                    return response.toString();
+
+                }
+                else {
+                    return new String("false : "+responseCode);
+                }
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+              loading.dismiss();
+              Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
+              HomeActivity.mp_jsonPaymentCard = result;
+              startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+
+
+        }
+    }
+
+
+
 
     public void postImageData()
     {
-
         uploadImage();
     }
 
@@ -2864,9 +3018,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void  refreshButomPermision(){
-        Log.d("PARAM_69",PARAM_69);
+        Log.d("PARAM_79", String.valueOf(PARAM_69.isEmpty()));
+        Log.d("PARAM_79", String.valueOf(PARAM_79.isEmpty()));
 
-        if(PARAM_69.length() < 1){
+
+        if(PARAM_69.isEmpty()  && PARAM_79.isEmpty()){
             Snackbar.make(findViewById(android.R.id.content),
                     "MERCADO PAGO NO CONFIGURADO, LA AGENCIA DEBE CONFIGURAR EL MOTOR DE PAGO!",
                     Snackbar.LENGTH_LONG)
