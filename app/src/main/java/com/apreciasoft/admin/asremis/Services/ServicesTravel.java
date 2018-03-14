@@ -2,6 +2,7 @@ package com.apreciasoft.admin.asremis.Services;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.PagoEntity;
+import com.apreciasoft.admin.asremis.Entity.PreviewTravel;
 import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
 import com.apreciasoft.admin.asremis.Entity.ResponsePHP;
 import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
@@ -10,6 +11,7 @@ import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.paramEntity;
 import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.resp;
+import com.apreciasoft.admin.asremis.Entity.valuesTravelPreview;
 
 import org.json.JSONObject;
 
@@ -126,6 +128,11 @@ public interface ServicesTravel {
     @Headers("Content-Type: application/json")
     @GET("config/param")
     Call<List<paramEntity>> getparam();
+
+
+    @Headers("Content-Type: application/json")
+    @POST("travel/amountStimate")
+    Call<Double> amountStimate(@Body valuesTravelPreview travel);
 
 
 

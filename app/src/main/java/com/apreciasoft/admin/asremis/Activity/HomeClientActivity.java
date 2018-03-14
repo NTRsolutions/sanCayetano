@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -59,16 +60,22 @@ import android.widget.Toast;
 import com.apreciasoft.admin.asremis.Entity.DestinationEntity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.OriginEntity;
+import com.apreciasoft.admin.asremis.Entity.PreviewTravel;
+import com.apreciasoft.admin.asremis.Entity.RemisSocketInfo;
+import com.apreciasoft.admin.asremis.Entity.TraveInfoSendEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelBodyEntity;
 import com.apreciasoft.admin.asremis.Entity.TravelEntity;
+import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.reason;
 import com.apreciasoft.admin.asremis.Entity.reasonEntity;
 import com.apreciasoft.admin.asremis.Entity.reporte;
 import com.apreciasoft.admin.asremis.Entity.resp;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
+import com.apreciasoft.admin.asremis.Entity.valuesTravelPreview;
 import com.apreciasoft.admin.asremis.Fracments.HistoryTravelDriver;
 import com.apreciasoft.admin.asremis.Fracments.HomeClientFragment;
+import com.apreciasoft.admin.asremis.Fracments.HomeFragment;
 import com.apreciasoft.admin.asremis.Fracments.ListTypeCarLayout;
 import com.apreciasoft.admin.asremis.Fracments.NotificationsFrangment;
 import com.apreciasoft.admin.asremis.Fracments.PaymentFormClient;
@@ -81,6 +88,7 @@ import com.apreciasoft.admin.asremis.Services.ServicesTravel;
 import com.apreciasoft.admin.asremis.Util.CallbackActivity;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.GooglePlacesAutocompleteAdapter;
+import com.apreciasoft.admin.asremis.Util.Utils;
 import com.apreciasoft.admin.asremis.Util.WsTravel;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -192,6 +200,11 @@ public class HomeClientActivity extends AppCompatActivity
 
     public ProgressDialog loading,loadingGloval;
     private Integer idTypeVehicle;
+
+
+    public  static  double distanceTravel = 0;
+    public  static  double amountStimate = 0;
+    public  static  double distanceLabel = 0;
 
 
     public   NumberPicker np;
@@ -596,6 +609,8 @@ public class HomeClientActivity extends AppCompatActivity
                 HomeClientActivity.destination = (String) place.getName();
                 HomeClientActivity.latDestination = String.valueOf(place.getLatLng().latitude);
                 HomeClientActivity.lonDestination = String.valueOf(place.getLatLng().longitude);
+
+                getPriceTrave();
             }
 
             @Override
@@ -605,6 +620,112 @@ public class HomeClientActivity extends AppCompatActivity
             }
         });
     }
+
+
+    // CALCULAMOS EL PRECIO ESTIMADO DEL VIAJE //
+    public  void getPriceTrave(){
+
+
+        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+
+        try {
+
+
+
+            distanceTravel = this.checkDistanceSucces();
+
+            PreviewTravel ptravel =   new PreviewTravel();
+            ptravel.setDistance(distanceTravel);
+            ptravel.setIdUser(gloval.getGv_user_id());
+
+            valuesTravelPreview travel = new valuesTravelPreview();
+            travel.setValues(ptravel);
+
+
+
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                System.out.println(gson.toJson(travel));
+
+                Call<Double> call = null;
+                call = this.daoTravel.amountStimate(travel);
+
+
+                Log.d("Response request", call.request().toString());
+                Log.d("Response request header", call.request().headers().toString());
+
+
+                call.enqueue(new Callback<Double>() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onResponse(Call<Double> call, Response<Double> response) {
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                        Log.d("Response code", String.valueOf(response.code()));
+
+                        TextView  txtdistanceTravel= (TextView) findViewById(R.id.distanceTravel);
+                        txtdistanceTravel.setText(String.valueOf(distanceTravel)+"Km");
+
+                        TextView  txtamountEstimate= (TextView) findViewById(R.id.amountEstimate);
+                        amountStimate = (Double) response.body();
+                        txtamountEstimate.setText(String.valueOf(amountStimate));
+
+
+
+
+                    }
+
+                    public void onFailure(Call<Double> call, Throwable t) {
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+
+        } finally {
+            this.daoTravel = null;
+        }
+
+
+    }
+
+
+    public double checkDistanceSucces() {
+
+        try {
+
+
+            Location locationA = new Location(HomeClientFragment.nameLocation);
+            locationA.setLatitude(HomeClientFragment.getmLastLocation().getLatitude());
+            locationA.setLongitude(HomeClientFragment.getmLastLocation().getLongitude());
+
+            Location locationB = new Location(HomeClientActivity.destination);
+            locationB.setLatitude(Double.parseDouble(HomeClientActivity.latDestination));
+            locationB.setLongitude(Double.parseDouble(HomeClientActivity.lonDestination));
+
+            float distance = locationA.distanceTo(locationB) / 1000;
+            Log.d("distance", String.valueOf(distance));
+
+            return round(distance,2);
+
+        } catch (Exception e) {
+
+            Log.d("ERROR", e.getMessage());
+            return 0;
+
+        }
+
+
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
 
     private void findViewsById() {
         fromDateEtxt = (EditText) findViewById(R.id.txtdateReervation);
@@ -1882,7 +2003,9 @@ public class HomeClientActivity extends AppCompatActivity
                                     this.destination
                             )
                             , this.dateTravel, idTypeVehicle, true, idUserCompany,
-                            _hoursAribo,_terminal,_airlineCompany,_flyNumber,_isFleetTravelAssistance,_isFleetTravel
+                            _hoursAribo,_terminal,_airlineCompany,_flyNumber,_isFleetTravelAssistance,_isFleetTravel,
+                            this.distanceLabel,
+                            this.distanceTravel
                     )
             );
 

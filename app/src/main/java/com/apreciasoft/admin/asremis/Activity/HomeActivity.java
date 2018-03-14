@@ -1408,11 +1408,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         double bandera = 0;
-        if(param78 == 1) {
+        if(param78 > 0) {
             if(currentTravel.getIsTravelComany() == 1){// EMPRESA
-                bandera = currentTravel.getPriceDitanceCompany();
+               if(param78 == 1){
+                   bandera = currentTravel.getPriceMinTravel();
+               }else if(param78 == 2) {
+                   if(amounCalculateGps <  currentTravel.getPriceMinTravel()) {
+                       bandera = currentTravel.getPriceMinTravel();
+
+                   }
+               }
+
             }else{
-                bandera = PARAM_1;
+                if(param78 == 1) {
+                    bandera = PARAM_16;
+                }
+                else if(param78 == 2) {
+                    if(amounCalculateGps <  PARAM_16) {
+                        bandera = PARAM_16;
+                    }
+                }
             }
 
         }

@@ -82,8 +82,30 @@ public class TravelBodyEntity {
     @SerializedName("isFleetTravel")
     public boolean misFleetTravel;
 
+    @Expose
+    @SerializedName("distanceLabel")
+    public double mdistanceLabel;
 
 
+    @Expose
+    @SerializedName("distance")
+    public double mdistance;
+
+    public double getMdistanceLabel() {
+        return mdistanceLabel;
+    }
+
+    public void setMdistanceLabel(double mdistanceLabel) {
+        this.mdistanceLabel = mdistanceLabel;
+    }
+
+    public double getMdistance() {
+        return mdistance;
+    }
+
+    public void setMdistance(double mdistance) {
+        this.mdistance = mdistance;
+    }
 
     public int getMidUserCompanyKf() {
         return midUserCompanyKf;
@@ -144,7 +166,9 @@ public class TravelBodyEntity {
                                     String   terminal,
                                     String  airlineCompany,
                                     String flyNumber,
-                            int isFleetTravelAssistance,boolean isFleetTravel) {
+                            int isFleetTravelAssistance,boolean isFleetTravel,
+                            double distanceLabel,
+                            double distance) {
         mIdClientKf = idClientKf;
         mIsTravelComany = isTravelComany;
         mOrigin = origin;
@@ -159,6 +183,8 @@ public class TravelBodyEntity {
         mflyNumber = flyNumber;
         misFleetTravelAssistance = isFleetTravelAssistance;
         misFleetTravel = isFleetTravel;
+        mdistanceLabel = distanceLabel;
+        mdistance = distance;
     }
 
 
