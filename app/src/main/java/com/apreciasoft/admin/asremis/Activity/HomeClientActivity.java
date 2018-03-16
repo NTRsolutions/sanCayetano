@@ -668,7 +668,7 @@ public class HomeClientActivity extends AppCompatActivity
 
                         TextView  txtamountEstimate= (TextView) findViewById(R.id.amountEstimate);
                         amountStimate = (Double) response.body();
-                        txtamountEstimate.setText(String.valueOf(amountStimate));
+                        txtamountEstimate.setText("$"+String.valueOf(amountStimate));
 
 
 
@@ -2151,6 +2151,14 @@ public class HomeClientActivity extends AppCompatActivity
 
     public  void  contetRequestTravelVisible(boolean visible)
     {
+
+        TextView  txtdistanceTravel= (TextView) findViewById(R.id.distanceTravel);
+        txtdistanceTravel.setText("0Km");
+
+        TextView  txtamountEstimate= (TextView) findViewById(R.id.amountEstimate);
+        txtamountEstimate.setText("$0");
+
+
 
         isReervation = false;
         if(visible)
