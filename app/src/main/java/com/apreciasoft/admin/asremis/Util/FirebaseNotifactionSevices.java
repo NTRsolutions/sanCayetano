@@ -19,7 +19,10 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -55,7 +58,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
 
                 gloval = ((GlovalVar) getApplicationContext());
 
-                System.out.println(gson.toJson(remoteMessage.getData()));
+
                 gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
 
 
