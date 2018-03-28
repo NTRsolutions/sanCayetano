@@ -673,7 +673,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="0dp"
+                android:padding="5dp"
                 android:tint="@color/colorPrimary"
                 app:srcCompat="@drawable/mpsdk_cash_sign" />
 
@@ -715,6 +715,58 @@
         android:textStyle="bold"
         android:textColor="@color/mpsdk_black_info_background"
         android:textSize="16dp" />
+
+
+
+    <LinearLayout
+        android:id="@+id/content_ditance_real"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical">
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:paddingTop="0dp"
+                android:background="#129565"
+                android:text="Distancia recorrida"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/blanco"
+                android:textSize="20dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txt_distance_real"
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:background="#129565"
+                android:text="0.0Km"
+                android:paddingBottom="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/blanco"
+                android:textSize="63dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
 
 
 

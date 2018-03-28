@@ -85,10 +85,10 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.form_steps_client);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Nuevo Cliente!");
+        setTitle("Nuevo Cliente");
 
 
-        String[] mySteps = {"Nombre ","Apellido","Telefono","Email", "Contraseña","CUETA/C.COSTO"};
+        String[] mySteps = {"Nombre ","Apellido","Telefono","Email", "Contraseña","CUENTA/C.COSTO"};
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
 
@@ -103,10 +103,10 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
                 .displayBottomNavigation(true) // It is true by default, so in this case this line is not necessary
                 .init();
 
+
         spinner0 = (Spinner) findViewById(R.id.spinner_company);
         spinner1 = (Spinner) findViewById(R.id.spinner_cuenta);
         spinner2 = (Spinner) findViewById(R.id.spinner_ccosto);
-
 
 
     }
@@ -483,7 +483,7 @@ public class NewFormClient extends AppCompatActivity implements VerticalStepperF
             verticalStepperForm.setActiveStepAsCompleted();
         } else {
             // This error message is optional (use null if you don't want to display an error message)
-            String errorMessage = "El Mail no puede estar Vacio";
+            String errorMessage = "El email no puede estar Vacio";
             verticalStepperForm.setActiveStepAsUncompleted(errorMessage);
         }
 

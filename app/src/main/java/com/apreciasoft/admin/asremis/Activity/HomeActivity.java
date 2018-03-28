@@ -128,6 +128,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public ProgressDialog loading;
     public static double totalFinal = 0;
+    public static double priceFlet = 0;
 
     boolean _NOCONEXION = false;
 
@@ -1114,8 +1115,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     btnFinishCash.setEnabled(true);
                 }
+                btnFinishVo.setEnabled(true);
+
             }else {
                 btnFinishCash.setEnabled(true);
+                btnFinishVo.setEnabled(false);
+
             }
         }else {
             btnFinishCash.setEnabled(true);
@@ -1123,17 +1128,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         /* */
 
 
-         PARAM_1  = Double.parseDouble(gloval.getGv_param().get(0).getValue());// PRECIO DE LISTA
-        double PARAM_5  = Double.parseDouble(gloval.getGv_param().get(4).getValue());// PRECIO LISTA TIEMPO DE ESPERA
-         PARAM_6  = Double.parseDouble(gloval.getGv_param().get(5).getValue());// PRECIO LISTA TIEMPO DE VUELTA
-        double PARAM_16  = Double.parseDouble(gloval.getGv_param().get(15).getValue());// VALOR MINIMO DE VIAJE
-        int param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
-             int param78 = Integer.parseInt(gloval.getGv_param().get(77).getValue());// BAJADA DE BANDERA
+            PARAM_1  = Double.parseDouble(gloval.getGv_param().get(0).getValue());// PRECIO DE LISTA
+            double PARAM_5  = Double.parseDouble(gloval.getGv_param().get(4).getValue());// PRECIO LISTA TIEMPO DE ESPERA
+            PARAM_6  = Double.parseDouble(gloval.getGv_param().get(5).getValue());// PRECIO LISTA TIEMPO DE VUELTA
+            double PARAM_16  = Double.parseDouble(gloval.getGv_param().get(15).getValue());// VALOR MINIMO DE VIAJE
+            int param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
+            int param78 = Integer.parseInt(gloval.getGv_param().get(77).getValue());// BAJADA DE BANDERA
             double PARAM_74  = Double.parseDouble(gloval.getGv_param().get(73).getValue());// PRECIO POR HORA AYUDANTES
-
-
+            double numAsiste  = currentTravel.isFleetTravelAssistance;//   AYUDANTES
             double hor;
-        double min = 0;
+            double min = 0;
 
 
         btPreFinishVisible(false);
@@ -1368,7 +1372,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        double priceFlet = 0;
+         priceFlet = 0;
         if(currentTravel.getIsFleetTravelAssistance() > 0){
 
             int hours = new Time(System.currentTimeMillis()).getHours();
@@ -1378,7 +1382,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 newHours = 1;
             }
 
-            priceFlet = PARAM_74 * newHours;
+            priceFlet = (PARAM_74 * newHours) * numAsiste;
             txtamounFlet.setText("$"+df.format(priceFlet));
         }else {
             txtamounFlet.setText("$0.0");
@@ -2375,7 +2379,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                         mp_jsonPaymentCard,
                                         mp_paymentMethodId,
                                         mp_paymentTypeId,
-                                        mp_paymentstatus
+                                        mp_paymentstatus,
+                                        priceFlet
 
                                 )
                         );

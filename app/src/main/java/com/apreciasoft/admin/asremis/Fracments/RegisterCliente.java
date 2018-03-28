@@ -17,7 +17,7 @@ public class RegisterCliente extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.form_steps_driver);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Registro de Usuario!");
+        setTitle("Registro de Usuario");
     }
 
 

@@ -104,6 +104,10 @@ public class TravelLocationEntity {
     @SerializedName("mp_paymentstatus")
     public String mp_paymentstatus;
 
+    @Expose
+    @SerializedName("amountFleet")
+    public Double amountFleet;
+
 
 
     public TravelLocationEntity(int idUser,int idTravelKf, String location, String longLocation,
@@ -184,7 +188,7 @@ public class TravelLocationEntity {
     public TravelLocationEntity(int idTravelKf, Double totalAmount, Double distanceGps, String distanceGpsLabel,
                                 String location, String longLocation, String latLocation,
                                 double amounttoll,double amountParking,double amountTiemeSlepp,String timeSleppGps,int idPaymentFormKf,
-                                String mp_jsonPaymentCard,String mp_paymentMethodId,String mp_paymentTypeId,String mp_paymentstatus) {
+                                String mp_jsonPaymentCard,String mp_paymentMethodId,String mp_paymentTypeId,String mp_paymentstatus,double amountFleet) {
         this.idTravelKf = idTravelKf;
         this.totalAmount = totalAmount;
         this.distanceGps = distanceGps;
@@ -204,6 +208,8 @@ public class TravelLocationEntity {
         this.mp_paymentMethodId = mp_paymentMethodId;
         this.mp_paymentTypeId = mp_paymentTypeId;
         this.mp_paymentstatus = mp_paymentstatus;
+
+        this.amountFleet =amountFleet;
 
 
 
@@ -324,5 +330,13 @@ public class TravelLocationEntity {
 
     public void setMp_paymentstatus(String mp_paymentstatus) {
         this.mp_paymentstatus = mp_paymentstatus;
+    }
+
+    public Double getAmountFleet() {
+        return amountFleet;
+    }
+
+    public void setAmountFleet(Double amountFleet) {
+        this.amountFleet = amountFleet;
     }
 }
