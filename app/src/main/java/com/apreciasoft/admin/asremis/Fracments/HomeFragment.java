@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,7 +146,12 @@ public class HomeFragment extends Fragment implements
         public static TextView txt_flete = null;
         public static TextView txt_piso_dialog = null;
         public static TextView txt_dpto_dialog = null;
-        public MapFragment  mMap;
+        public static TextView txt_distance_real = null;
+        //public static LinearLayout content_ditanceReal = null;
+
+
+
+    public MapFragment  mMap;
         public static int PARAM_26  = 0;
 
 
@@ -230,6 +236,8 @@ public class HomeFragment extends Fragment implements
 
         HomeFragment.txt_pasajeros_info = (TextView) getActivity().findViewById(R.id.txt_pasajeros_info);
 
+        HomeFragment.txt_distance_real = (TextView) getActivity().findViewById(R.id.txt_distance_real);
+
 
 
         txtStatus.setText("SERVICIO ACTIVO");
@@ -238,6 +246,11 @@ public class HomeFragment extends Fragment implements
 
         infoGneral = (TextView) getActivity().findViewById(R.id.infoGneral);
         infoGneral.setVisibility(View.INVISIBLE);
+
+       // content_ditanceReal = (LinearLayout) getActivity().findViewById(R.id.content_ditance_real);
+       // content_ditanceReal.setVisibility(View.INVISIBLE);
+
+
 
     }
 
@@ -903,7 +916,7 @@ public class HomeFragment extends Fragment implements
 
                                }else {
                                    HomeFragment.options.add(point);
-                                  // Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
+                                   Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
 
 
                                }
@@ -920,9 +933,12 @@ public class HomeFragment extends Fragment implements
                             }
 
 
+                       HomeFragment.txt_distance_real.setText(round(HomeFragment.calculateMiles()[0]* 0.001, 2)+"Km");
 
                        //Polyline line = mGoogleMap.addPolyline(options);
                        //line.setColor(Color.parseColor("#579ea8"));
+                       //content_ditanceReal.setVisibility(View.VISIBLE);
+
                    }else
                    {
                        if(HomeFragment.options != null){
@@ -933,6 +949,9 @@ public class HomeFragment extends Fragment implements
                        HomeFragment.listPosition = new ArrayList<>();
 
                        Log.d("CODUCE NO", String.valueOf(HomeFragment.listPosition.size()));
+                       //content_ditanceReal.setVisibility(View.INVISIBLE);
+                       HomeFragment.txt_distance_real.setText(0.0+"Km");
+
 
                    }
 
@@ -949,6 +968,16 @@ public class HomeFragment extends Fragment implements
             }
         }
     }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -1074,7 +1103,7 @@ public class HomeFragment extends Fragment implements
 
         if(currentTravel.isFleetTravelAssistance > 0) {
             infoGneral.setVisibility(View.VISIBLE);
-            infoGneral.setText("Necesita ("+currentTravel.isFleetTravelAssistance+") Ayudantes!");
+            infoGneral.setText("Necesitas ("+currentTravel.isFleetTravelAssistance+") Ayudantes!");
         }else {
             infoGneral.setVisibility(View.INVISIBLE);
         }
@@ -1185,10 +1214,6 @@ public class HomeFragment extends Fragment implements
                 HomeFragment.txt_amount_info.setText("$0");
             }
         }
-
-
-
-
 
 
     }
