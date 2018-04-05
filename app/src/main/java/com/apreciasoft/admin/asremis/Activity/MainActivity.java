@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "NOTICIAS";
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     protected PowerManager.WakeLock wakelock;
-    public static String version = "2.2.7";
+    public static String version = "2.3.1";
     public ProgressDialog loading;
     ServicesLoguin apiService = null;
     public  GlovalVar gloval = null;
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         this.gloval = ((GlovalVar) getApplicationContext());
+
         pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
 
 
@@ -320,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
             loading = ProgressDialog.show(MainActivity.this, "Autentificando", "Espere unos Segundos...", true, false);
 
 
-
+            HttpConexion.setBase(HttpConexion.instance);
             Call<Boolean> call = this.apiService.checkVersion(version);
             Log.d("Call request", call.request().toString());
             Log.d("Call request header", call.request().headers().toString());

@@ -2401,6 +2401,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 Log.d("Response request", call.request().toString());
                 Log.d("Response request header", call.request().headers().toString());
+                //System.out.println(gson.toJson(travel));
 
 
                 call.enqueue(new Callback<InfoTravelEntity>() {
@@ -2899,7 +2900,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
+             HttpConexion.setBase(HttpConexion.instance);
             if (this.daoTravel == null) {
                 this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
             }
