@@ -587,17 +587,19 @@ public class HomeFragment extends Fragment implements
 
 
 
-                SPCKETMAP.emit(HomeFragment.MY_EVENT_MAP, obj, new Ack() {
+
+                //SPCKETMAP.emit(HomeFragment.MY_EVENT_MAP, obj, new Ack() {
 
 
 
-                    @Override
-                    public void call(Object... args) {
+                   // @Override
+                   // public void call(Object... args) {
              /* Our code */
 
-                        Log.d("SOCK MAP","EMITIO EVENTO");
-                    }
-                });
+                    //    Log.d("SOCK MAP","EMITIO EVENTO");
+                 //   }
+               // });
+
 
                 SPCKETMAP.connect();
 
@@ -699,6 +701,8 @@ public class HomeFragment extends Fragment implements
     {
 
 
+
+
         Log.d("onLocationChanged","onLocationChanged");
 
 
@@ -749,11 +753,17 @@ public class HomeFragment extends Fragment implements
 
                 if(SPCKETMAP != null) {
 
-                    JSONObject obj = new JSONObject();
 
-                    double[] latLong = new double[2];
+                    try {
+                        JSONObject location_ = new JSONObject();
+                        location_.put("log", addresses.get(0).getLatitude());
+                        location_.put("lat", addresses.get(0).getLongitude());
+
+
+                    /*double[] latLong = new double[2];
                     latLong[0] = addresses.get(0).getLatitude();
                     latLong[1] = addresses.get(0).getLongitude();
+
 
                     JSONArray jsonAraay = null;
 
@@ -766,23 +776,35 @@ public class HomeFragment extends Fragment implements
 
                     Log.d("SOCK MAP", String.valueOf(jsonAraay));
 
-                    try {
-                        obj.put("isDriver", "true");
-                        obj.put("latLong", jsonAraay);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    */
+                    JSONObject obj = new JSONObject();
+                    obj.put("location", location_);
+                    obj.put("fullNameDriver", gloval.getGv_user_name());
+                    obj.put("nrDriver",  gloval.getGv_nr_driver());
+
+                        Gson gson = new Gson();
+                        String json = gson.toJson(HomeActivity.currentTravel);
+
+                    if(HomeActivity.currentTravel != null) {
+                        obj.put("currentTravel",json );
                     }
 
-                    SPCKETMAP.emit("locChanged", obj, new Ack() {
+
+
+                        SPCKETMAP.emit("newlocation", obj, new Ack() {
 
 
                         @Override
                         public void call(Object... args) {
                      /* Our code */
 
-                            Log.d("SOCK MAP", "locChanged ACTIVE");
+                            Log.d("SOCK MAP", "newlocation ACTIVE");
                         }
                     });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
