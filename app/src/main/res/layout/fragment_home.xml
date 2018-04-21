@@ -35,7 +35,7 @@
 <RelativeLayout
     android:id="@+id/contentSildePanel"
     android:layout_width="match_parent"
-    android:layout_height="385dp">
+    android:layout_height="500dp">
     <include layout="@layout/panel_top_info"/>
 
 

@@ -198,7 +198,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public View parentLayout =  null;
 
-    int PARAM_20  = 0;
+    //int PARAM_20  = 0; // CIERRE DE VIAJE EMPRESA EN WEB
+    int PARAM_3  = 0; // CIERRE DE VIAJE EMPRESA EN WEB
+    int PARAM_67  = 0; // CIERRE DE VIAJE PARTICULARES Y EXPRESSS EN WEB
     public static  int PARAM_39,PARAM_66  = 0; // ACTIVAR BOTON DE VUELTA
     public static  int param25 = 0;
     public static double PARAM_1 , PARAM_6  = 0;
@@ -517,9 +519,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             PARAM_69 = "";
             PARAM_79 = "";
         }
-        PARAM_20 =  Integer.parseInt(gloval.getGv_param().get(19).getValue());// PRECIO DE LISTA
+        PARAM_3 =  Integer.parseInt(gloval.getGv_param().get(2).getValue());
         PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
-
+        PARAM_67 =  Integer.parseInt(gloval.getGv_param().get(66).getValue());
 
 
     }
@@ -1188,7 +1190,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
 
-                    Log.d("-hours-", String.valueOf(hours));
+                    Log.d("-hours- vehicleMinHourService", String.valueOf(hours));
 
 
                 if(currentTravel.getKmex() >0 && kilometros_total > currentTravel.getKmex()){ // KILOMETROS EXEDENTES
@@ -2391,9 +2393,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
                 Call<InfoTravelEntity> call = null;
+                /* VERIFICAMOS I ESTA HABILITADO EL CIERRE DE VIAJES DEDE LA APP O NO*/
 
-                    /* VERIFICAMOS I ESTA HABILITADO EL CIERRE DE VIAJES DEDE LA APP O NO*/
-                if (PARAM_20 == 1) {
+
+                int evaluationOperator;
+                final int isTravelComany = currentTravel.isTravelComany;
+                if(isTravelComany == 1) {
+                    evaluationOperator = PARAM_3;
+                }else {
+                    evaluationOperator = PARAM_67;
+                }
+
+                if (evaluationOperator == 0) {
                     call = this.daoTravel.finishPost(travel);
                 } else {
                     call = this.daoTravel.preFinishMobil(travel);
@@ -2401,6 +2412,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 Log.d("Response request", call.request().toString());
                 Log.d("Response request header", call.request().headers().toString());
+                //System.out.println(gson.toJson(travel));
 
 
                 call.enqueue(new Callback<InfoTravelEntity>() {
@@ -2412,7 +2424,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("Response raw", String.valueOf(response.raw().body()));
                         Log.d("Response code", String.valueOf(response.code()));
 
-                        if (PARAM_20 == 1) {
+
+
+                        int evaluationOperator;
+                        if(isTravelComany == 1) {
+                            evaluationOperator = PARAM_3;
+                        }else {
+                            evaluationOperator = PARAM_67;
+                        }
+
+
+                        if (evaluationOperator == 0) {
                             Toast.makeText(HomeActivity.this, "VIAJE  FINALIZADO", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(HomeActivity.this, "VIAJE ENVIADO PARA SU APROBACION", Toast.LENGTH_SHORT).show();
@@ -2899,7 +2921,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
+             HttpConexion.setBase(HttpConexion.instance);
             if (this.daoTravel == null) {
                 this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
             }

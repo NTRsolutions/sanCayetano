@@ -91,8 +91,6 @@ public class ReservationsAdapter
 
     public interface OnItemClickListener {
         void onItemClick(InfoTravelEntity item);
-
-
     }
 
 
