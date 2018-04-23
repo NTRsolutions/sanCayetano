@@ -2920,7 +2920,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
 
 
-
              HttpConexion.setBase(HttpConexion.instance);
             if (this.daoTravel == null) {
                 this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
