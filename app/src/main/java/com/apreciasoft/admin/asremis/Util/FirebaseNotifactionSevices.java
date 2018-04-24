@@ -14,6 +14,7 @@ import android.util.Log;
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
 import com.apreciasoft.admin.asremis.Activity.HomeClientActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+import com.apreciasoft.admin.asremis.Entity.InfoTravelEntityLite;
 import com.apreciasoft.admin.asremis.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -59,7 +60,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
                 gloval = ((GlovalVar) getApplicationContext());
 
 
-                gloval.setGv_travel_current(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntity.class));
+                gloval.setGv_travel_current_lite(gson.fromJson(gson.toJson(remoteMessage.getData()), InfoTravelEntityLite.class));
 
 
                 Intent intent = new Intent("update-message");
@@ -126,7 +127,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
           //  e.printStackTrace();
         //}
 
-        if(gloval.getGv_travel_current().getSound() != null) {
+        if(gloval.getGv_travel_current_lite().getSound() != null) {
             switch (gloval.getGv_travel_current().getSound()) {
                 case "nuevareserva":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevareserva);//Here is FILE_NAME is the name of file that you want to play

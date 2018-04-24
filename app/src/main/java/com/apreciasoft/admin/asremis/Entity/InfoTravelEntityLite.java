@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
  */
 
 @Nullable
-public  class InfoTravelEntity implements Serializable {
+public  class InfoTravelEntityLite implements Serializable {
 
 
 
@@ -358,12 +358,6 @@ public  class InfoTravelEntity implements Serializable {
     public int idBenefitKmClientKf;
 
 
-    @Nullable
-    @Expose
-    @SerializedName("listBeneficio")
-    public List<BeneficioEntity> listBeneficio;
-
-
 
 
     @Expose
@@ -450,13 +444,7 @@ public  class InfoTravelEntity implements Serializable {
         this.obsertavtionFlight = obsertavtionFlight;
     }
 
-    public List<BeneficioEntity> getListBeneficio() {
-        return listBeneficio;
-    }
 
-    public void setListBeneficio(List<BeneficioEntity> listBeneficio) {
-        this.listBeneficio = listBeneficio;
-    }
 
     public String getReason() {
         return reason;

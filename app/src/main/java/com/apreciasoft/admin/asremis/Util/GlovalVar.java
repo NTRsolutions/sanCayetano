@@ -6,6 +6,7 @@ import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
+import com.apreciasoft.admin.asremis.Entity.InfoTravelEntityLite;
 import com.apreciasoft.admin.asremis.Entity.TravelLocationEntity;
 import com.apreciasoft.admin.asremis.Entity.VehicleType;
 import com.apreciasoft.admin.asremis.Entity.client;
@@ -32,6 +33,8 @@ import java.util.List;
     private  int gv_id_vehichle;
     private  String gv_uri;
     private InfoTravelEntity gv_travel_current;
+    private InfoTravelEntityLite gv_travel_current_lite;
+
     private List<paramEntity> gv_param;
     private Boolean gv_logeed;
     private int gv_srviceActive;
@@ -258,5 +261,13 @@ import java.util.List;
 
     public void setGv_hour_init_travel(int gv_hour_init_travel) {
         this.gv_hour_init_travel = gv_hour_init_travel;
+    }
+
+    public InfoTravelEntityLite getGv_travel_current_lite() {
+        return gv_travel_current_lite;
+    }
+
+    public void setGv_travel_current_lite(InfoTravelEntityLite gv_travel_current_lite) {
+        this.gv_travel_current_lite = gv_travel_current_lite;
     }
 }
