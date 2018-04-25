@@ -488,7 +488,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         // WEB SOCKET //
         ws = new WsTravel();
-        ws.connectWebSocket(gloval.getGv_user_id());
+        ws.connectWebSocket(pref.getInt("user_id", 0));
 
         btPreFinishVisible(false);
         btInitVisible(false);
