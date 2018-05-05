@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -147,8 +148,10 @@ public class HomeFragment extends Fragment implements
         public static TextView txt_piso_dialog = null;
         public static TextView txt_dpto_dialog = null;
         public static TextView txt_distance_real = null;
-        //public static LinearLayout content_ditanceReal = null;
 
+
+        public static   SharedPreferences.Editor editor;
+        public static    SharedPreferences pref;
 
 
     public MapFragment  mMap;
@@ -185,6 +188,7 @@ public class HomeFragment extends Fragment implements
 
 
 
+
         return view;
     }
 
@@ -194,7 +198,9 @@ public class HomeFragment extends Fragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.d("YA","3");
+        pref = getActivity().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+        editor = pref.edit();
+
 
         MapFragment fr = (MapFragment)getChildFragmentManager().findFragmentById(R.id.gmap);
 
@@ -203,7 +209,6 @@ public class HomeFragment extends Fragment implements
         {
             mMap = ((MapFragment) this.getFragmentManager().findFragmentById(R.id.gmap));
             mMap.getMapAsync(this);
-            Log.d("YA","4");
 
 
         }
@@ -789,18 +794,19 @@ public class HomeFragment extends Fragment implements
                         obj.put("currentTravel",json );
                     }
 
+                        if(SPCKETMAP != null) {
+
+                            SPCKETMAP.emit("newlocation", obj, new Ack() {
 
 
-                        SPCKETMAP.emit("newlocation", obj, new Ack() {
+                                @Override
+                                public void call(Object... args) {
+                                    /* Our code */
 
-
-                        @Override
-                        public void call(Object... args) {
-                     /* Our code */
-
-                            Log.d("SOCK MAP", "newlocation ACTIVE");
+                                    Log.d("SOCK MAP", "newlocation ACTIVE");
+                                }
+                            });
                         }
-                    });
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -938,7 +944,7 @@ public class HomeFragment extends Fragment implements
 
                                }else {
                                    HomeFragment.options.add(point);
-                                   Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
+                                  // Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
 
 
                                }
@@ -954,8 +960,9 @@ public class HomeFragment extends Fragment implements
                                 HomeFragment.listPosition = new ArrayList<>();
                             }
 
-
-                       HomeFragment.txt_distance_real.setText(round(HomeFragment.calculateMiles()[0]* 0.001, 2)+"Km");
+                       float  DistanceSave  = pref.getFloat("distanceTravel", 0);
+                       //HomeFragment.txt_distance_real.setText(round(HomeFragment.calculateMiles()[0]* 0.001, 2)+"Km");
+                       HomeFragment.txt_distance_real.setText(DistanceSave+"Km");
 
                        //Polyline line = mGoogleMap.addPolyline(options);
                        //line.setColor(Color.parseColor("#579ea8"));
@@ -1113,7 +1120,16 @@ public class HomeFragment extends Fragment implements
         }
 
 
-        Log.d("totalDistance 3", String.valueOf(totalDistance));
+        Log.d("DistanceSave *", String.valueOf(Utils.round((totalDistance * 0.001),2)));
+        // GUARDAMOS LA UBICACION LOCAL  //
+        float  DistanceSave  = pref.getFloat("distanceTravel", 0);
+        Log.d("DistanceSave *-*", String.valueOf(DistanceSave));
+        double distance =  ((DistanceSave) + Utils.round((totalDistance * 0.001),2));
+        editor.putFloat("distanceTravel", (float)Utils.round(distance,2));
+        Log.d("DistanceSave *--*", String.valueOf(Utils.round(distance,2)));
+        editor.commit();
+
+        //*********************************//
 
         return  new float[]{totalDistance, totalDistanceVuelta};
     }

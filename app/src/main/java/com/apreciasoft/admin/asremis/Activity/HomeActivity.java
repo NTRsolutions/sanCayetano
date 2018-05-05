@@ -220,7 +220,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public  Button btnFinishVo;
     public  Button btnFinishCash;
     public  SharedPreferences.Editor editor;
-
+    public static  SharedPreferences pref;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -232,7 +232,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         checkVersion(); // VERIFICAMOS LA VERSION
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
+        pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0); // 0 - for private mode
         editor = pref.edit();
 
         //evitar que la pantalla se apague
@@ -1144,22 +1144,31 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         btPreFinishVisible(false);
 
-        Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
+       // Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
 
 
         /* DITANCIA TOTAL RECORRIDA */
-        m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
+       // m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
 
-        Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
+       // Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
 
        /// if(m_total > 0){
-            kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+          //  kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
        /* }else {
             kilometros_total = (currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
 
         }*/
 
-        //**************************//
+            m_total  = pref.getFloat("distanceTravel", 0);
+            Log.d("-TRAVEL DistanceSave-", String.valueOf(m_total));
+
+           // if(DistanceSave > 0) {
+            kilometros_total = (m_total) ;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+
+           // }
+
+
+            //**************************//
 
         /* DITANCIA TOTAL VULETA */
         m_vuelta  = HomeFragment.calculateMiles()[1];//BUSCAMOS LA DISTANCIA VUELTA
@@ -1727,6 +1736,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         public void run() {
                             Log.d("TIMER","TIMER 1");
                             setLocationVehicheDriver();
+                            if(currentTravel == null) {
+                                editor.putFloat("distanceTravel", 0);
+                            }
 
                         }
                     });
@@ -2466,6 +2478,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         lg.setVisibility(View.INVISIBLE);
 
                         gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
+
+                        editor.putFloat("distanceTravel", 0);
+                        editor.commit();
 
 
                     }
