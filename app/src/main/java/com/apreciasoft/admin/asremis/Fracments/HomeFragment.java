@@ -960,9 +960,10 @@ public class HomeFragment extends Fragment implements
                                 HomeFragment.listPosition = new ArrayList<>();
                             }
 
-                       float  DistanceSave  = pref.getFloat("distanceTravel", 0);
+                       //float  DistanceSave  = pref.getFloat("distanceTravel", 0);
                        //HomeFragment.txt_distance_real.setText(round(HomeFragment.calculateMiles()[0]* 0.001, 2)+"Km");
-                       HomeFragment.txt_distance_real.setText(DistanceSave+"Km");
+                       HomeFragment.calculateMiles();
+                      // HomeFragment.txt_distance_real.setText(DistanceSave+"Km");
 
                        //Polyline line = mGoogleMap.addPolyline(options);
                        //line.setColor(Color.parseColor("#579ea8"));
@@ -1092,6 +1093,9 @@ public class HomeFragment extends Fragment implements
         if(HomeFragment.options != null)
         {
             for(int i = 1; i < HomeFragment.options.getPoints().size(); i++) {
+
+
+
                 Location currLocation = new Location("this");
                 currLocation.setLatitude(HomeFragment.options.getPoints().get(i).latitude);
                 currLocation.setLongitude(HomeFragment.options.getPoints().get(i).longitude);
@@ -1101,6 +1105,8 @@ public class HomeFragment extends Fragment implements
                 lastLocation.setLongitude(HomeFragment.options.getPoints().get(i-1).longitude);
 
                 totalDistance += lastLocation.distanceTo(currLocation);
+
+
 
                 // VERIFICAMOS SI ACTIVO EL RETORNO PARA LA IDA Y VUELTA //
                 if(HomeActivity.isRoundTrip) {
@@ -1120,14 +1126,39 @@ public class HomeFragment extends Fragment implements
         }
 
 
-        Log.d("DistanceSave *", String.valueOf(Utils.round((totalDistance * 0.001),2)));
-        // GUARDAMOS LA UBICACION LOCAL  //
-        float  DistanceSave  = pref.getFloat("distanceTravel", 0);
-        Log.d("DistanceSave *-*", String.valueOf(DistanceSave));
-        double distance =  ((DistanceSave) + Utils.round((totalDistance * 0.001),2));
-        editor.putFloat("distanceTravel", (float)Utils.round(distance,2));
-        Log.d("DistanceSave *--*", String.valueOf(Utils.round(distance,2)));
-        editor.commit();
+
+
+        if (HomeActivity.currentTravel != null) {
+            if (HomeActivity.currentTravel.getIdSatatusTravel() == 5) {
+
+                if(HomeActivity._STOPDISTANCE == false) {
+
+                    Log.d("DistanceSave *", String.valueOf(Utils.round((totalDistance * 0.001), 2)));
+                    // GUARDAMOS LA UBICACION LOCAL  //
+                    float DistanceSave = pref.getFloat("distanceTravel", 0);
+                    Log.d("DistanceSave *-*", String.valueOf(DistanceSave));
+
+
+                    double distance = 0;
+                    if(DistanceSave < Utils.round((totalDistance * 0.001), 2)){// si es menor la guardada
+                        double newDistance = Utils.round((totalDistance * 0.001) - DistanceSave  ,2);
+                        distance = newDistance + DistanceSave;
+                    }
+
+                    if(DistanceSave > Utils.round((totalDistance * 0.001), 2)){// si es menor la guardada
+                        distance  = Utils.round(DistanceSave + (totalDistance * 0.001) ,2);
+                    }
+
+
+
+                    //double distance = ((DistanceSave) + Utils.round((totalDistance * 0.001), 2));
+                    editor.putFloat("distanceTravel", (float) Utils.round(distance, 2));
+                    Log.d("DistanceSave *--*", String.valueOf(Utils.round(distance, 2)));
+                    editor.commit();
+                    HomeFragment.txt_distance_real.setText(Utils.round(distance, 2) + "Km");
+                }
+            }
+        }
 
         //*********************************//
 

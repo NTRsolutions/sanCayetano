@@ -168,6 +168,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static String mp_paymentTypeId = "";
     public static String mp_paymentstatus = "";
     public static  boolean _PAYCREDITCAR_OK = false;
+    public static boolean _STOPDISTANCE = false;
 
 
     public DecimalFormat df = new DecimalFormat("####0.00");
@@ -1090,7 +1091,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         pay();
         final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
         lg.setVisibility(View.VISIBLE);
-
+        HomeActivity._STOPDISTANCE = true;
 
 
 
@@ -1163,7 +1164,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Log.d("-TRAVEL DistanceSave-", String.valueOf(m_total));
 
            // if(DistanceSave > 0) {
-            kilometros_total = (m_total) ;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+            kilometros_total = m_total ;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
 
            // }
 
@@ -1802,6 +1803,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     idClientKf = currentTravel.getIdClientKf();
                 }
 
+                float DistanceSave = pref.getFloat("distanceTravel", 0);
+
+
                 TraveInfoSendEntity travel =
                         new TraveInfoSendEntity(new
                                 TravelLocationEntity(
@@ -1813,7 +1817,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 gloval.getGv_id_driver(),
                                 gloval.getGv_id_vehichle(),
                                 idClientKf,
-                                HomeFragment.calculateMiles()[0]
+                                DistanceSave
+                                //HomeFragment.calculateMiles()[0]
 
 
                         )
@@ -1889,7 +1894,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public  void intiTravel()
+   /* public  void intiTravel()
     {
 
 
@@ -1927,7 +1932,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         }
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setNotification(final InfoTravelEntity travel)
@@ -2478,9 +2483,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         lg.setVisibility(View.INVISIBLE);
 
                         gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
-
                         editor.putFloat("distanceTravel", 0);
                         editor.commit();
+                        HomeActivity._STOPDISTANCE = false;
+
 
 
                     }
