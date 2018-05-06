@@ -583,33 +583,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0">
-
-            <TextView
-                android:id="@+id/txtStatus"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/cardview_dark_background"
-                android:paddingTop="10dp"
-                android:textAlignment="center"
-                android:textColor="@color/cast_expanded_controller_text_color"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -701,20 +675,6 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/infoGneral"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:paddingTop="0dp"
-        android:background="@color/yelow"
-        android:text=""
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:textColor="@color/mpsdk_black_info_background"
-        android:textSize="16dp" />
 
 
 
@@ -736,7 +696,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:paddingTop="0dp"
+                android:paddingTop="2dp"
                 android:background="#129565"
                 android:text="Distancia recorrida"
                 android:textAlignment="center"
@@ -756,7 +716,7 @@
             <TextView
                 android:id="@+id/txt_distance_real"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
@@ -765,7 +725,39 @@
                 android:textAlignment="center"
                 android:textColor="@color/blanco"
                 android:textSize="45dp" />
+
+
+
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+
+            <TextView
+                android:id="@+id/infoGneral"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:paddingTop="0dp"
+                android:background="@color/cardview_dark_background"
+                android:text=""
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/whithe"
+                android:textSize="16dp" />
+
+
+
+
+        </RelativeLayout>
+
+
 
 
         <RelativeLayout

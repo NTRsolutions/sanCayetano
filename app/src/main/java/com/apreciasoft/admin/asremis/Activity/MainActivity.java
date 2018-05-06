@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+
+
         this.gloval = ((GlovalVar) getApplicationContext());
         pref = getApplicationContext().getSharedPreferences(HttpConexion.instance, 0);
 
