@@ -168,7 +168,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static String mp_paymentTypeId = "";
     public static String mp_paymentstatus = "";
     public static  boolean _PAYCREDITCAR_OK = false;
-    public static boolean _STOPDISTANCE = false;
 
 
     public DecimalFormat df = new DecimalFormat("####0.00");
@@ -1091,7 +1090,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         pay();
         final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
         lg.setVisibility(View.VISIBLE);
-        HomeActivity._STOPDISTANCE = true;
+
 
 
 
@@ -1145,34 +1144,31 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         btPreFinishVisible(false);
 
-       // Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
+        Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
 
 
         /* DITANCIA TOTAL RECORRIDA */
-       // m_total  = HomeFragment.calculateMiles()[0];//BUSCAMOS LA DISTANCIA TOTLA
+        m_total  = HomeFragment.calculateMiles(false)[0];//BUSCAMOS LA DISTANCIA TOTLA
 
-       // Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
+        Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
 
        /// if(m_total > 0){
-          //  kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+            kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
        /* }else {
             kilometros_total = (currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
 
         }*/
 
-            m_total  = pref.getFloat("distanceTravel", 0);
-            Log.d("-TRAVEL DistanceSave-", String.valueOf(m_total));
+          /*  float  DistanceSave  = pref.getFloat("distanceTravel", 0);
 
-           // if(DistanceSave > 0) {
-            kilometros_total = m_total ;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
-
-           // }
-
+            if(DistanceSave > 0) {
+                kilometros_total = kilometros_total DistanceSave * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
+            }*/
 
             //**************************//
 
         /* DITANCIA TOTAL VULETA */
-        m_vuelta  = HomeFragment.calculateMiles()[1];//BUSCAMOS LA DISTANCIA VUELTA
+        m_vuelta  = HomeFragment.calculateMiles(false)[1];//BUSCAMOS LA DISTANCIA VUELTA
         kilometros_vuelta = m_vuelta * 0.001;//LO CONVERTIMOS A KILOMETRO
         //**************************//
 
@@ -1618,7 +1614,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if(_NOCONEXION == false) {
 
                 final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                alertDialog.setTitle("Sin Conexion a Internet,  Verifica tu Conexion!");
+                alertDialog.setTitle("Sin Conexion a Internet,  cerifica tu Conexion");
                 alertDialog.setCancelable(false);
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Verificar",
                         new DialogInterface.OnClickListener() {
@@ -1626,9 +1622,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 dialog.dismiss();
 
                                 startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
-                                finish();
+                                //finish();
                                 alertDialog.dismiss();
-                                System.exit(0);
+                               // System.exit(0);
 
 
                             }
@@ -1737,9 +1733,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         public void run() {
                             Log.d("TIMER","TIMER 1");
                             setLocationVehicheDriver();
-                            if(currentTravel == null) {
-                                editor.putFloat("distanceTravel", 0);
-                            }
 
                         }
                     });
@@ -1803,9 +1796,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     idClientKf = currentTravel.getIdClientKf();
                 }
 
-                float DistanceSave = pref.getFloat("distanceTravel", 0);
-
-
                 TraveInfoSendEntity travel =
                         new TraveInfoSendEntity(new
                                 TravelLocationEntity(
@@ -1817,8 +1807,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 gloval.getGv_id_driver(),
                                 gloval.getGv_id_vehichle(),
                                 idClientKf,
-                                DistanceSave
-                                //HomeFragment.calculateMiles()[0]
+                                HomeFragment.calculateMiles(false)[0]
 
 
                         )
@@ -1894,7 +1883,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-   /* public  void intiTravel()
+    public  void intiTravel()
     {
 
 
@@ -1921,7 +1910,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 0,
                  0,
                  currentTravel.getIdClientKf(),
-                    HomeFragment.calculateMiles()[0]
+                    HomeFragment.calculateMiles(false)[0]
             );
 
             DatabaseReference locationRef = databaseReference.child("Travel");
@@ -1932,7 +1921,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         }
-    }*/
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setNotification(final InfoTravelEntity travel)
@@ -2483,11 +2472,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         lg.setVisibility(View.INVISIBLE);
 
                         gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
-                        editor.putFloat("distanceTravel", 0);
-                        editor.commit();
-                        HomeActivity._STOPDISTANCE = false;
-
-
+                       // editor.putFloat("distanceTravel", 0);
+                        //editor.commit();
 
                     }
 
