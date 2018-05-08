@@ -115,8 +115,8 @@ public class HomeFragment extends Fragment implements
     /*++++++++++++*/
 
     private static View view;
-    int _COUNT_CHANGUE = 0;
-    public  boolean CONEXION_MAP_ERROR = false;
+    //int _COUNT_CHANGUE = 0;
+    //public  boolean CONEXION_MAP_ERROR = false;
     public ServicesLoguin daoLoguin = null;
     public String TAG = "HomeFragment";
     public static List<LatLng> listPosition = new ArrayList<>();
@@ -504,45 +504,47 @@ public class HomeFragment extends Fragment implements
             /* Instance object socket */
             // SPCKETMAP = IO.socket(URL_SOCKET_MAP);
 
+            Log.d("SOCK MAP","conexionSocketMap");
 
 
 
-            if(HttpConexion.PROTOCOL == "https")
-            {
-                SSLContext sc = SSLContext.getInstance("TLS");
-                sc.init(null, trustAllCerts, new SecureRandom());
-                IO.setDefaultSSLContext(sc);
-                //  HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
+            if(SPCKETMAP == null) {
+
+                    if (HttpConexion.PROTOCOL == "https") {
+                        SSLContext sc = SSLContext.getInstance("TLS");
+                        sc.init(null, trustAllCerts, new SecureRandom());
+                        IO.setDefaultSSLContext(sc);
+                        //  HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
 
 
-                IO.Options options = new IO.Options();
-                options.sslContext = sc;
-                options.secure = true;
-                options.port = HttpConexion.portWsWeb;
+                        IO.Options options = new IO.Options();
+                        options.sslContext = sc;
+                        options.secure = true;
+                        options.port = HttpConexion.portWsWeb;
 
 
-                if(SPCKETMAP == null) {
-                    SPCKETMAP = IO.socket(URL_SOCKET_MAP, options);
-                }
+                        SPCKETMAP = IO.socket(URL_SOCKET_MAP, options);
+
+                    } else {
+                        SPCKETMAP = IO.socket(URL_SOCKET_MAP);
+
+                    }
+
+
+                Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
+
             }
-            else
-            {
-                if(SPCKETMAP == null) {
-                    SPCKETMAP = IO.socket(URL_SOCKET_MAP);
-                }
-            }
 
-            Log.d("SOCK MAP","va a conectar: "+URL_SOCKET_MAP);
 
             SPCKETMAP.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
                 @Override
                 public void call(Object... args) {
                     /* Our code */
                     Log.d("SOCK MAP","CONECT");
-                    _COUNT_CHANGUE = 1;
+                  //  _COUNT_CHANGUE = 1;
 
                     sendSocketId();
-                    CONEXION_MAP_ERROR = false;
+                   // CONEXION_MAP_ERROR = false;
 
 
                 }
@@ -551,9 +553,10 @@ public class HomeFragment extends Fragment implements
                 public void call(Object... args) {
                     /* Our code */
                     Log.d("SOCK MAP","DISCONESCT");
-                    _COUNT_CHANGUE = 0;
-                    CONEXION_MAP_ERROR = true;
-                    SPCKETMAP = null;
+                  //  _COUNT_CHANGUE = 0;
+                  //  CONEXION_MAP_ERROR = true;
+                   // SPCKETMAP.disconnect();
+                   // SPCKETMAP = null;
 
                 }
             })
@@ -562,9 +565,10 @@ public class HomeFragment extends Fragment implements
                         public void call(Object... args) {
                             /* Our code */
                             Log.d("SOCK MAP","EVENT_RECONNECT_ERROR");
-                            _COUNT_CHANGUE = 0;
-                            CONEXION_MAP_ERROR = true;
-                            SPCKETMAP = null;
+                           // _COUNT_CHANGUE = 0;
+                            //CONEXION_MAP_ERROR = true;
+                           // SPCKETMAP.disconnect();
+                            //SPCKETMAP = null;
 
                         }
                     });
@@ -611,8 +615,11 @@ public class HomeFragment extends Fragment implements
             //   }
             // });
 
-
-            SPCKETMAP.connect();
+            if(SPCKETMAP != null){
+                if(!SPCKETMAP.connected()) {
+                    SPCKETMAP.connect();
+                }
+            }
 
 
 
@@ -738,8 +745,8 @@ public class HomeFragment extends Fragment implements
                 if(this.getActivity().getApplicationContext() != null){
                     if( Utils.verificaConexion(this.getActivity().getApplicationContext()) == false){
                         if(SPCKETMAP != null){
-                            SPCKETMAP.disconnect();
-                            _COUNT_CHANGUE = 0;
+                           // SPCKETMAP.disconnect();
+                          //  _COUNT_CHANGUE = 0;
 
                         }
                     }
@@ -749,7 +756,7 @@ public class HomeFragment extends Fragment implements
 
                 if(this.getActivity().getApplicationContext() != null) {
 
-                    if (_COUNT_CHANGUE == 0 &&
+                    if (/*_COUNT_CHANGUE == 0 &&*/
                             Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
                         if(SPCKETMAP == null){
                             if(addresses.size() > 0) {
@@ -801,17 +808,18 @@ public class HomeFragment extends Fragment implements
                         }
 
 
+                        if(SPCKETMAP != null) {
+                            SPCKETMAP.emit("newlocation", obj, new Ack() {
 
-                        SPCKETMAP.emit("newlocation", obj, new Ack() {
 
+                                @Override
+                                public void call(Object... args) {
+                                    /* Our code */
 
-                            @Override
-                            public void call(Object... args) {
-                                /* Our code */
-
-                                Log.d("SOCK MAP", "newlocation ACTIVE");
-                            }
-                        });
+                                    Log.d("SOCK MAP", "newlocation ACTIVE");
+                                }
+                            });
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
