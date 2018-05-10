@@ -486,9 +486,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        // WEB SOCKET //
+
         ws = new WsTravel();
         ws.connectWebSocket(pref.getInt("user_id", 0));
+
+
 
         btPreFinishVisible(false);
         btInitVisible(false);
@@ -1738,7 +1740,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     });
 
                 }
-            }, 0, 300000);
+            }, 0, 120000);
 
 
         timerConexion = new Timer();
