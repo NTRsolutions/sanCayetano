@@ -1738,7 +1738,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     });
 
                 }
-            }, 0, 60000);
+            }, 0, 300000);
 
 
         timerConexion = new Timer();
@@ -1756,7 +1756,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 });
 
             }
-        }, 0, 10000);
+        }, 0, 30000);
 
     }
 
@@ -2139,7 +2139,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         try {
-            Call<InfoTravelEntity> call = this.daoTravel.getCurrentTravelByIdDriver(gloval.getGv_id_driver());
+
+            int idDriver = gloval.getGv_id_driver();
+
+            if(idDriver == 0){
+                idDriver =  pref.getInt("driver_id", 0);
+                gloval.setGv_id_driver(idDriver);
+            }
+            Call<InfoTravelEntity> call = this.daoTravel.getCurrentTravelByIdDriver(idDriver);
 
             Log.d("fatal", call.request().toString());
 

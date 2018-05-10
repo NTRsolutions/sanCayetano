@@ -52,6 +52,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -150,7 +151,7 @@ public class HomeFragment extends Fragment implements
     //public static LinearLayout content_ditanceReal = null;
     public static  SharedPreferences.Editor editor;
     public static  SharedPreferences pref;
-
+    public  BitmapDrawable bitmapdraw;
 
 
     public MapFragment  mMap;
@@ -180,7 +181,6 @@ public class HomeFragment extends Fragment implements
 
         try {
             view = inflater.inflate(R.layout.fragment_home,container,false);
-            Log.d("YA","2.1");
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
@@ -206,6 +206,7 @@ public class HomeFragment extends Fragment implements
         {
             mMap = ((MapFragment) this.getFragmentManager().findFragmentById(R.id.gmap));
             mMap.getMapAsync(this);
+
             Log.d("YA","4");
 
 
@@ -242,6 +243,7 @@ public class HomeFragment extends Fragment implements
 
 
 
+        bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.auto);
 
 
 
@@ -318,8 +320,11 @@ public class HomeFragment extends Fragment implements
     {
 
         mGoogleMap=googleMap;
-        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
+
+        MapStyleOptions style = MapStyleOptions.loadRawResourceStyle(getActivity().getApplicationContext(), R.raw.map_style);
+        mGoogleMap.setMapStyle(style);
 
         Log.d(TAG,"T-0");
 
@@ -739,25 +744,8 @@ public class HomeFragment extends Fragment implements
                  * SOCKET MAPA
                  * NODE JS
                  * */
-
-
-
-                if(this.getActivity().getApplicationContext() != null){
-                    if( Utils.verificaConexion(this.getActivity().getApplicationContext()) == false){
-                        if(SPCKETMAP != null){
-                           // SPCKETMAP.disconnect();
-                          //  _COUNT_CHANGUE = 0;
-
-                        }
-                    }
-
-                }
-
-
                 if(this.getActivity().getApplicationContext() != null) {
-
-                    if (/*_COUNT_CHANGUE == 0 &&*/
-                            Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
+                    if (Utils.verificaConexion(this.getActivity().getApplicationContext()) == true) {
                         if(SPCKETMAP == null){
                             if(addresses.size() > 0) {
                                 conexionSocketMap(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
@@ -895,7 +883,6 @@ public class HomeFragment extends Fragment implements
 
                     int height = 45;
                     int width = 40;
-                    BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.auto);
                     Bitmap b = bitmapdraw.getBitmap();
                     Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
