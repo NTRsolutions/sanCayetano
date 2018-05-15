@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -70,6 +71,7 @@ import com.apreciasoft.admin.asremis.R;
 import com.apreciasoft.admin.asremis.Services.ServicesDriver;
 import com.apreciasoft.admin.asremis.Services.ServicesLoguin;
 import com.apreciasoft.admin.asremis.Services.ServicesTravel;
+import com.apreciasoft.admin.asremis.Util.FloatingWidgetService;
 import com.apreciasoft.admin.asremis.Util.GlovalVar;
 import com.apreciasoft.admin.asremis.Util.RequestHandler;
 import com.apreciasoft.admin.asremis.Util.Signature;
@@ -118,7 +120,7 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    public static final String UPLOAD_URL =  HttpConexion.BASE_URL+HttpConexion.base+"/Frond/safeimg.php";
+    public static final String UPLOAD_URL = HttpConexion.BASE_URL + HttpConexion.base + "/Frond/safeimg.php";
     public static final String UPLOAD_KEY = "image";
 
     public GlovalVar gloval;
@@ -133,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     boolean _NOCONEXION = false;
 
 
-    public Timer timer,timerConexion;
+    public Timer timer, timerConexion;
     public ProgressDialog loadingCronometro;
     public static final int SIGNATURE_ACTIVITY = 1;
     public static final int PROFILE_DRIVER_ACTIVITY = 2;
@@ -141,19 +143,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     ServicesLoguin apiService = null;
 
-    public static  InfoTravelEntity currentTravel;
+    public static InfoTravelEntity currentTravel;
 
-    public double km_total =  0.001;
-    public double m_total  = 0;
-    public double kilometros_total = m_total*km_total;
+    public double km_total = 0.001;
+    public double m_total = 0;
+    public double kilometros_total = m_total * km_total;
 
-    public double km_vuelta =  0.001;
-    public double m_vuelta  = 0;
-    public double kilometros_vuelta = m_vuelta*km_vuelta;
+    public double km_vuelta = 0.001;
+    public double m_vuelta = 0;
+    public double kilometros_vuelta = m_vuelta * km_vuelta;
 
-    public double km_ida =  0.001;
-    public double m_ida  = 0;
-    public double kilometros_ida = m_vuelta*km_vuelta;
+    public double km_ida = 0.001;
+    public double m_ida = 0;
+    public double kilometros_ida = m_vuelta * km_vuelta;
 
 
     /*
@@ -163,11 +165,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static Long mp_cardIssuerId;
     public static int mp_installment;
     public static String mp_cardToken;
-    public static Long  mp_campaignId;
+    public static Long mp_campaignId;
     public static String mp_paymentMethodId = "";
     public static String mp_paymentTypeId = "";
     public static String mp_paymentstatus = "";
-    public static  boolean _PAYCREDITCAR_OK = false;
+    public static boolean _PAYCREDITCAR_OK = false;
 
 
     public DecimalFormat df = new DecimalFormat("####0.00");
@@ -176,7 +178,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     public boolean viewAlert = false;
-
 
 
     private DatabaseReference databaseReference;//defining a database reference
@@ -188,45 +189,65 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public int tiempoTxt = 0;
     public int idPaymentFormKf = 0;
 
-    public  Button btnPreFinish;
-    public  Button btnReturn;
-    public static boolean isRoundTrip =  false;
-    double extraTime  = 0;
+    public Button btnPreFinish;
+    public Button btnReturn;
+    public static boolean isRoundTrip = false;
+    double extraTime = 0;
 
-    public  TextView textTiempo;
-    public FloatingActionButton fab =  null;
+    public TextView textTiempo;
+    public FloatingActionButton fab = null;
 
-    public View parentLayout =  null;
+    public View parentLayout = null;
 
-    //int PARAM_20  = 0; // CIERRE DE VIAJE EMPRESA EN WEB
-    int PARAM_3  = 0; // CIERRE DE VIAJE EMPRESA EN WEB
-    int PARAM_67  = 0; // CIERRE DE VIAJE PARTICULARES Y EXPRESSS EN WEB
-    public static  int PARAM_39,PARAM_66  = 0; // ACTIVAR BOTON DE VUELTA
-    public static  int param25 = 0;
-    public static double PARAM_1 , PARAM_6  = 0;
-    public static  int PARAM_68 = 0; // ACTIVAR PAGO CON TARJETA
-    public static  String PARAM_69 = ""; // ACTIVAR PAGO CON TARJETA
-    public static  String PARAM_79 = ""; // ACTIVAR PAGO CON TARJETA
+    int PARAM_3 = 0; // CIERRE DE VIAJE EMPRESA EN WEB
+    int PARAM_67 = 0; // CIERRE DE VIAJE PARTICULARES Y EXPRESSS EN WEB
+    public static int PARAM_39, PARAM_66 = 0; // ACTIVAR BOTON DE VUELTA
+    public static int param25 = 0;
+    public static double PARAM_1, PARAM_6 = 0;
+    public static int PARAM_68 = 0; // ACTIVAR PAGO CON TARJETA
+    public static String PARAM_69 = ""; // ACTIVAR PAGO CON TARJETA
+    public static String PARAM_79 = ""; // ACTIVAR PAGO CON TARJETA
 
 
     /*DIALOG*/
     public TravelDialog dialogTravel = null;
 
-    /* CONSTATES PARA PERMISOS */
-    private static final int ACCESS_FINE_LOCATION_PERMISSIONS = 123;
+
+    public Button btnFinishCar;
+    public Button btnFinishVo;
+    public Button btnFinishCash;
+    public SharedPreferences.Editor editor;
+    public static SharedPreferences pref;
 
 
-    public  Button btnFinishCar;
-    public  Button btnFinishVo;
-    public  Button btnFinishCash;
-    public  SharedPreferences.Editor editor;
-    public static  SharedPreferences pref;
+    public DrawerLayout drawer;
+
+
+    public CircleImageView your_imageView;
+
+    public Button btnLogin;
+    public Button btnInitSplep;
+    public Button btn_return;
+    public Button btn_init;
+    public Button btn_cancel;
+    public EditText peajes_txt;
+
+
+    public TextView txtMount;
+    public TextView distance_txt;
+    public TextView txtTimeslep;
+    public TextView txtamounFlet;
+
+
+    /*  Permission request code to draw over other apps  */
+    private static final int DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE = 1222;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverLoadTodays, new IntentFilter("update-message"));
 
@@ -236,35 +257,61 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         editor = pref.edit();
 
         //evitar que la pantalla se apague
-        final PowerManager pm=(PowerManager)getSystemService(Context.POWER_SERVICE);
-        this.wakelock=pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.wakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
         wakelock.acquire();
 
         setContentView(R.layout.activity_home);
-         parentLayout = findViewById(R.id.content_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        parentLayout = findViewById(R.id.content_home);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-
-
         // variable global //
-        gloval = ((GlovalVar)getApplicationContext());
+        gloval = ((GlovalVar) getApplicationContext());
+
+        gloval.setGv_user_id(pref.getInt("user_id", 0));
+        gloval.setGv_idResourceSocket(pref.getString("is_resourceSocket", ""));
+        gloval.setGv_id_cliet(pref.getInt("client_id", 0));
+        gloval.setGv_id_profile(pref.getInt("profile_id", 0));
+        gloval.setGv_id_driver(pref.getInt("driver_id", 0));
+        gloval.setGv_user_mail(pref.getString("user_mail", ""));
+        gloval.setGv_user_name(pref.getString("user_name", ""));
+        gloval.setGv_base_intance(pref.getString("instance", ""));
+        gloval.setGv_nr_driver(pref.getString("nrDriver", ""));
 
 
+        // UI INICIALIZACION //
+        this.your_imageView = findViewById(R.id.imageViewUser);
+        this.drawer = findViewById(R.id.drawer_layout);
+        this.btnLogin = findViewById(R.id.btn_pre_finish);
+        this.btnInitSplep = findViewById(R.id.btn_iniTimeSlep);
+        this.btn_return = findViewById(R.id.btn_return);
+        this.btn_init = findViewById(R.id.btn_init);
+        this.btn_cancel = findViewById(R.id.btn_cancel);
 
-        TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>(){};
+        this.txtMount = findViewById(R.id.txt_mount);
+        this.distance_txt = findViewById(R.id.distance_txt);
+        this.txtTimeslep = findViewById(R.id.txtTimeslep);
+        this.txtamounFlet = findViewById(R.id.amount_flet_txt);
+
+        this.peajes_txt = findViewById(R.id.peajes_txt);
+
+
+        //
+
+
+        TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>() {};
         Gson gson = new Gson();
-        List<paramEntity> listParam = gson.fromJson(pref.getString("param",""), token3.getType());
+        List<paramEntity> listParam = gson.fromJson(pref.getString("param", ""), token3.getType());
 
         gloval.setGv_param(listParam);
 
         setParamLocal();
 
 
-
         // BOTON PARA PRE FINALIZAR UN VIAJE //
-        btnPreFinish = (Button) findViewById(R.id.btn_pre_finish);
+        btnPreFinish = findViewById(R.id.btn_pre_finish);
         btnPreFinish.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -277,10 +324,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
         // BOTON PARA PONER RETORNO DE  UN VIAJE //
-        btnReturn = (Button) findViewById(R.id.btn_return);
+        btnReturn = findViewById(R.id.btn_return);
 
-        if(PARAM_39 == 1)
-        {
+        if (PARAM_39 == 1) {
             btnReturn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // Perform action on click
@@ -303,21 +349,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             });
-        }else
-        {
+        } else {
             btnReturn.setEnabled(false);
         }
 
 
-
-
-
         // BOTON PARA FINALIZAR UN VIAJE TARJETA //
-        btnFinishCar = (Button) findViewById(R.id.bnt_pay_car);
+        btnFinishCar = findViewById(R.id.bnt_pay_car);
 
 
         // BOTON PARA FINALIZAR UN VIAJE VOUCHER //
-        btnFinishVo = (Button) findViewById(R.id.btn_firm_voucher);
+        btnFinishVo = findViewById(R.id.btn_firm_voucher);
         btnFinishVo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -327,9 +369,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-
         // BOTON PARA FINALIZAR UN VIAJE CASH //
-        btnFinishCash = (Button) findViewById(R.id.btn_pay_cash);
+        btnFinishCash = findViewById(R.id.btn_pay_cash);
         btnFinishCash.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -339,7 +380,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
         // BOTON PARA INICIAR UN VIAJE //
-        final Button btnInit = (Button) findViewById(R.id.btn_init);
+        final Button btnInit = findViewById(R.id.btn_init);
         btnInit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -348,7 +389,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
         // BOTON PARA CANCELAR UN VIAJE //
-        final Button btnCancel = (Button) findViewById(R.id.btn_cancel);
+        final Button btnCancel = findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -357,10 +398,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-
-
         // BOTON PARA INICIAR TIEMPO DE ESPERA DE UN VIAJE //
-        final Button btnIniTimeSlep = (Button) findViewById(R.id.btn_iniTimeSlep);
+        final Button btnIniTimeSlep = findViewById(R.id.btn_iniTimeSlep);
         btnIniTimeSlep.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -371,25 +410,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         /* KEY UP PEAJE  */
-        final EditText peajes_txt = (EditText) findViewById(R.id.peajes_txt);
         TextWatcher fieldValidatorTextWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("afterTextChanged","afterTextChanged");
+                Log.d("afterTextChanged", "afterTextChanged");
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("beforeTextChanged","beforeTextChanged");
+                Log.d("beforeTextChanged", "beforeTextChanged");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("onTextChanged","onTextChanged");
+                Log.d("onTextChanged", "onTextChanged");
                 try {
                     pay();
-                }catch (Exception e){
-                    Log.d("ERRROR",e.getMessage());
+                } catch (Exception e) {
+                    Log.d("ERRROR", e.getMessage());
                 }
 
             }
@@ -402,22 +440,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-         /* KEY UP ESTACIONAMIENTO   */
-        final  EditText parkin_txt = (EditText) findViewById(R.id.parkin_txt);
+        /* KEY UP ESTACIONAMIENTO   */
+        final EditText parkin_txt = findViewById(R.id.parkin_txt);
         TextWatcher fieldValidatorTextWatcher2 = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("afterTextChanged","afterTextChanged");
+                Log.d("afterTextChanged", "afterTextChanged");
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("beforeTextChanged","beforeTextChanged");
+                Log.d("beforeTextChanged", "beforeTextChanged");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("onTextChanged","onTextChanged");
+                Log.d("onTextChanged", "onTextChanged");
                 pay();
 
             }
@@ -429,53 +467,49 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         parkin_txt.addTextChangedListener(fieldValidatorTextWatcher2);
 
 
-
         //getting the database reference
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        android.app.FragmentManager fr =  getFragmentManager();
+        android.app.FragmentManager fr = getFragmentManager();
         fr.beginTransaction().replace(R.id.content_frame, new HomeFragment()).commit();
 
 
-
-        final LinearLayout lg = (LinearLayout) findViewById(R.id.payment);
+        final LinearLayout lg = findViewById(R.id.payment);
         lg.setVisibility(View.INVISIBLE);
 
         // HEADER MENU //
         View header = navigationView.getHeaderView(0);
-        TextView name = (TextView)header.findViewById(R.id.username);
-        TextView email = (TextView)header.findViewById(R.id.email);
+        TextView name = header.findViewById(R.id.username);
+        TextView email = header.findViewById(R.id.email);
+
+
         name.setText(gloval.getGv_user_name());
         email.setText(gloval.getGv_user_mail());
 
         //btFinishVisible(false);
 
 
-
-
-       // Llamamos que control si tenemos un viaje //
-      //  controlVieTravel();
+        // Llamamos que control si tenemos un viaje //
+        //  controlVieTravel();
 
         //ACTIVAMOS EL TOkEN FIRE BASE//
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d("Token: ", token);
-        enviarTokenAlServidor(token,gloval.getGv_user_id());
+        enviarTokenAlServidor(token, gloval.getGv_user_id());
 
 
-        textTiempo = (TextView) findViewById(R.id.textTiempo);
+        textTiempo = findViewById(R.id.textTiempo);
         textTiempo.setVisibility(View.INVISIBLE);
-
-
 
 
         //LLAMAMOS A EL METODO PARA HABILITAR PERMISOS//
@@ -485,18 +519,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         getPick(gloval.getGv_user_id());
 
 
-
-
         ws = new WsTravel();
         ws.connectWebSocket(pref.getInt("user_id", 0));
-
 
 
         btPreFinishVisible(false);
         btInitVisible(false);
         btCancelVisible(false);
 
-        refreshButomPermision();
 
         setTitle(gloval.getGv_nr_driver());
         toolbar.setLogo(R.drawable.ic_directions_car_black_24dp);
@@ -508,6 +538,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+
+
+
+    /*  start floating widget service  */
+    public void createFloatingWidget(View view) {
+        //Check if the application has draw over other apps permission or not?
+        //This permission is by default available for API<23. But for API > 23
+        //you have to ask for the permission in runtime.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE);
+        } else{
+            //If permission is granted start floating widget service
+            startFloatingWidgetService();
+        }
+
+    }
+
+    /*  Start Floating widget service and finish current activity */
+    private void startFloatingWidgetService() {
+        startService(new Intent(HomeActivity.this, FloatingWidgetService.class));
+        finish();
+    }
+
+
     private void setParamLocal() {
         param25 = Integer.parseInt(gloval.getGv_param().get(25).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
         PARAM_66 = Integer.parseInt(gloval.getGv_param().get(65).getValue());// SE PUEDE VER PRECIO EN VIAJE EN APP
@@ -517,13 +575,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             PARAM_69 = gloval.getGv_param().get(68).getValue();//
             PARAM_79 = gloval.getGv_param().get(78).getValue();//
 
-        } catch ( IndexOutOfBoundsException e ) {
+        } catch (IndexOutOfBoundsException e) {
             PARAM_69 = "";
             PARAM_79 = "";
         }
-        PARAM_3 =  Integer.parseInt(gloval.getGv_param().get(2).getValue());
+        PARAM_3 = Integer.parseInt(gloval.getGv_param().get(2).getValue());
         PARAM_39 = Integer.parseInt(gloval.getGv_param().get(38).getValue());
-        PARAM_67 =  Integer.parseInt(gloval.getGv_param().get(66).getValue());
+        PARAM_67 = Integer.parseInt(gloval.getGv_param().get(66).getValue());
 
 
     }
@@ -531,181 +589,162 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public boolean checkDistanceSucces() {
 
-        try{
+        try {
 
 
-        int param30 = Integer.parseInt(gloval.getGv_param().get(29).getValue());
-        if(param30 > 0){
+            int param30 = Integer.parseInt(gloval.getGv_param().get(29).getValue());
+            if (param30 > 0) {
 
-            Location locationA = new Location(HomeFragment.nameLocation);
-            locationA.setLatitude(HomeFragment.getmLastLocation().getLatitude());
-            locationA.setLongitude(HomeFragment.getmLastLocation().getLongitude());
+                Location locationA = new Location(HomeFragment.nameLocation);
+                locationA.setLatitude(HomeFragment.getmLastLocation().getLatitude());
+                locationA.setLongitude(HomeFragment.getmLastLocation().getLongitude());
 
-            Location locationB = new Location(currentTravel.getNameOrigin());
-            locationB.setLatitude(Double.parseDouble(currentTravel.getLatOrigin()));
-            locationB.setLongitude(Double.parseDouble(currentTravel.getLonOrigin()));
+                Location locationB = new Location(currentTravel.getNameOrigin());
+                locationB.setLatitude(Double.parseDouble(currentTravel.getLatOrigin()));
+                locationB.setLongitude(Double.parseDouble(currentTravel.getLonOrigin()));
 
-            float distance = locationA.distanceTo(locationB)/1000;;
-
-
-
-            Log.d("distance", String.valueOf(distance));
-            Log.d("distance", String.valueOf(param30));
+                float distance = locationA.distanceTo(locationB) / 1000;
+                ;
 
 
-            if(distance <= param30){
-
-                return true;
-
-            }else {
-                return false;
-            }
+                Log.d("distance", String.valueOf(distance));
+                Log.d("distance", String.valueOf(param30));
 
 
-        }
-            return false;
+                if (distance <= param30) {
 
-
-
-
-        }catch (Exception e){
-
-            Log.d("ERROR",e.getMessage());
-            return  false;
-
-        }
-
-
-
-    }
-
-    public boolean checkPermision()
-    {
-        try{
-                LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-                // Comprobamos si está disponible el proveedor GPS.
-                if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                {
-
-                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                    alertDialog.setTitle("GPS INACTIVO!");
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setCancelable(false);
-                    alertDialog.setMessage("Active el GPS para continuar!");
-
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ACTIVAR",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-
-                                }
-                            });
-                    alertDialog.show();
-
-                    return false;
-
-                }else {
                     return true;
+
+                } else {
+                    return false;
                 }
 
-        }catch (Exception e){
-             Toast.makeText(getApplicationContext(), "GPS ERROR:"+e.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+            return false;
+
+
+        } catch (Exception e) {
+
+            Log.d("ERROR", e.getMessage());
+            return false;
+
+        }
+
+
+    }
+
+    public boolean checkPermision() {
+        try {
+            LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            // Comprobamos si está disponible el proveedor GPS.
+            if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                alertDialog.setTitle("GPS INACTIVO!");
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setCancelable(false);
+                alertDialog.setMessage("Active el GPS para continuar!");
+
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ACTIVAR",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+                            }
+                        });
+                alertDialog.show();
+
+                return false;
+
+            } else {
+                return true;
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "GPS ERROR:" + e.getMessage(), Toast.LENGTH_LONG).show();
             return false;
 
         }
     }
 
-    public  void  showDialogTravel()
-    {
-        try
-        {
+    public void showDialogTravel() {
+        try {
 
-            Log.d("currentTravel", String.valueOf(currentTravel.isResignet));
-            Log.d("currentTravel", String.valueOf(currentTravel.getIdSatatusTravel()));
-            Log.d("currentTravel", String.valueOf(viewAlert));
 
-            if(dialogTravel != null){
+            if (dialogTravel != null) {
                 dialogTravel.dismiss();
             }
 
 
+            if (currentTravel.getIdSatatusTravel() == 0) {
 
-                if (currentTravel.getIdSatatusTravel() == 0) {
+                Toast.makeText(getApplicationContext(), "Viaje Cancelado!", Toast.LENGTH_LONG).show();
+                btPreFinishVisible(false);
 
-                    Toast.makeText(getApplicationContext(), "VIAJE Cancelado!", Toast.LENGTH_LONG).show();
-                    btPreFinishVisible(false);
-                    btnFlotingVisible(true);
+                btInitVisible(false);
+                btCancelVisible(false);
 
-                    btInitVisible(false);
-                    btCancelVisible(false);
+                viewAlert = false;
+                currentTravel = null;
+                HomeFragment.MarkerPoints = null;
+                gloval.setGv_travel_current(null);
+                setInfoTravel();
 
-                    viewAlert = false;
-                    currentTravel = null;
-                    HomeFragment.MarkerPoints = null;
-                    gloval.setGv_travel_current(null);
-                    setInfoTravel();
+                tiempoTxt = 0;
+                textTiempo.setVisibility(View.INVISIBLE);
 
-                    tiempoTxt = 0;
-                    textTiempo = (TextView) findViewById(R.id.textTiempo);
-                    textTiempo.setVisibility(View.INVISIBLE);
+                // _activeTimer();
+            } else if (currentTravel.getIdSatatusTravel() == 8) {
+                Toast.makeText(getApplicationContext(), "Viaje Cancelado por Cliente!", Toast.LENGTH_LONG).show();
+                btPreFinishVisible(false);
 
-                    // _activeTimer();
-                } else if (currentTravel.getIdSatatusTravel() == 8) {
-                    Toast.makeText(getApplicationContext(), "VIAJE Cancelado por Cliente!", Toast.LENGTH_LONG).show();
-                    btPreFinishVisible(false);
-                    btnFlotingVisible(true);
+                btInitVisible(false);
+                btCancelVisible(false);
 
-                    btInitVisible(false);
-                    btCancelVisible(false);
+                viewAlert = false;
+                currentTravel = null;
+                HomeFragment.MarkerPoints = null;
+                gloval.setGv_travel_current(null);
+                setInfoTravel();
 
-                    viewAlert = false;
-                    currentTravel = null;
-                    HomeFragment.MarkerPoints = null;
-                    gloval.setGv_travel_current(null);
-                    setInfoTravel();
+                tiempoTxt = 0;
+                textTiempo.setVisibility(View.INVISIBLE);
 
-                    tiempoTxt = 0;
-                    textTiempo = (TextView) findViewById(R.id.textTiempo);
-                    textTiempo.setVisibility(View.INVISIBLE);
+                //  _activeTimer();
+            } else if (currentTravel.getIdSatatusTravel() == 6) {
+                Toast.makeText(getApplicationContext(), "Viaje Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
 
-                    //  _activeTimer();
-                } else if (currentTravel.getIdSatatusTravel() == 6) {
-                    Toast.makeText(getApplicationContext(), "VIAJE Finalizado desde la Web, por el Operador!", Toast.LENGTH_LONG).show();
+                btPreFinishVisible(false);
+                viewAlert = false;
 
-                    btPreFinishVisible(false);
-                    btnFlotingVisible(true);
-                    viewAlert = false;
+                currentTravel = null;
+                HomeFragment.MarkerPoints = null;
+                gloval.setGv_travel_current(null);
+                setInfoTravel();
 
-                    currentTravel = null;
-                    HomeFragment.MarkerPoints = null;
-                    gloval.setGv_travel_current(null);
-                    setInfoTravel();
+                tiempoTxt = 0;
+                textTiempo.setVisibility(View.INVISIBLE);
 
-                    tiempoTxt = 0;
-                    textTiempo = (TextView) findViewById(R.id.textTiempo);
-                    textTiempo.setVisibility(View.INVISIBLE);
+                //_activeTimer();
+            } else {
 
-                    //_activeTimer();
-                } else {
-
-                    if(viewAlert == false) {
-                        if (currentTravel.getIdSatatusTravel() == 2) {
-                            viewAlert = true;
+                if (viewAlert == false) {
+                    if (currentTravel.getIdSatatusTravel() == 2) {
+                        viewAlert = true;
 
 
+                        FragmentManager fm = getFragmentManager();
+                        dialogTravel = new TravelDialog();
+                        dialogTravel.show(fm, "Sample Fragment");
+                        dialogTravel.setCancelable(false);
 
-                           FragmentManager fm = getFragmentManager();
-                            dialogTravel = new TravelDialog();
-                            dialogTravel.show(fm, "Sample Fragment");
-                            dialogTravel.setCancelable(false);
-
-                           // this.cliaerNotificationAndoid();
-                        }
+                        // this.cliaerNotificationAndoid();
                     }
                 }
-
+            }
 
 
         } catch (Exception e) {
@@ -714,37 +753,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     public void fn_exit() throws IOException {
         // LAMAMOS A EL MAIN ACTIVITY//
-
-        Log.d("Websocket","closee");
 
         currentTravel = null;
         gloval.setGv_logeed(false);
         new GlovalVar();
 
-        enviarTokenAlServidor("",gloval.getGv_user_id());
+        enviarTokenAlServidor("", gloval.getGv_user_id());
 
-        if(ws != null) {
+        if (ws != null) {
             ws.coseWebSocket();
         }
 
-        if(timer != null)
-        {
+        if (timer != null) {
             timer.cancel();
         }
 
-        if(timerConexion != null)
-        {
+        if (timerConexion != null) {
             timerConexion.cancel();
         }
 
 
-
-
-
-        if(HomeFragment.SPCKETMAP != null){
+        if (HomeFragment.SPCKETMAP != null) {
             HomeFragment.SPCKETMAP.disconnect();
             HomeFragment.SPCKETMAP.close();
             HomeFragment.SPCKETMAP = null;
@@ -766,133 +797,116 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void controlVieTravel()
-    {
+    public void controlVieTravel() {
         try {
-
 
 
             Log.d("currentTravel", "CONTROL");
 
 
-            if(currentTravel == null){
+            if (currentTravel == null) {
                 currentTravel = gloval.getGv_travel_current();
             }
             Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel));
 
 
-                if (currentTravel != null) {
+            if (currentTravel != null) {
 
 
-
-                    Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel.getIdSatatusTravel()));
-
+                Log.d("VIAJE ESTATUS ", String.valueOf(currentTravel.getIdSatatusTravel()));
 
 
-                        // CHOFER BUSQUEDA DE CLIENTE //
-                        if (currentTravel.getIdSatatusTravel() == 4) {
-                            btInitVisible(true);
-                            btCancelVisible(true);
-                            btPreFinishVisible(false);
-                            btnFlotingVisible(false);
-                            setInfoTravel();
+                // CHOFER BUSQUEDA DE CLIENTE //
+                if (currentTravel.getIdSatatusTravel() == 4) {
+                    btInitVisible(true);
+                    btCancelVisible(true);
+                    btPreFinishVisible(false);
+                    setInfoTravel();
 
 
-                            Log.d("VIAJE ESTATUS ", "1");
+                    Log.d("VIAJE ESTATUS ", "1");
 
 
-                            // EN CURSO //
-                        } else if (currentTravel.getIdSatatusTravel() == 5) {
-                            //activeTimerInit();
-                            btPreFinishVisible(true);
-                            btInitVisible(false);
-                            btCancelVisible(false);
-                            btnFlotingVisible(false);
-                            setInfoTravel();
+                    // EN CURSO //
+                } else if (currentTravel.getIdSatatusTravel() == 5) {
+                    //activeTimerInit();
+                    btPreFinishVisible(true);
+                    btInitVisible(false);
+                    btCancelVisible(false);
+                    setInfoTravel();
 
-                            // POR ACEPTAR//
-                        } else if (currentTravel.getIdSatatusTravel() == 2) {
+                    // POR ACEPTAR//
+                } else if (currentTravel.getIdSatatusTravel() == 2) {
 
-                            viewAlert = false;
-                            setNotification(currentTravel);
-                            btInitVisible(false);
-                            btCancelVisible(false);
-                            btnFlotingVisible(false);
-                            btPreFinishVisible(false);
-                            textTiempo = (TextView) findViewById(R.id.textTiempo);
-                            textTiempo.setVisibility(View.INVISIBLE);
-                            // POR RECHAZADO POR OTRO CHOFER//
-                        } else if (currentTravel.getIdSatatusTravel() == 7) {
-                            setNotification(currentTravel);
-                            btInitVisible(false);
-                            btCancelVisible(false);
-                            btnFlotingVisible(false);
-                            btPreFinishVisible(false);
-                            textTiempo = (TextView) findViewById(R.id.textTiempo);
-                            textTiempo.setVisibility(View.INVISIBLE);
-
-                        } else if (currentTravel.getIdSatatusTravel() == 0) {
-
-
-                            final int idTravel = currentTravel.getIdTravel();
-
-                            AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                            alertDialog.setTitle("Viaje Cancelado! " + currentTravel.getCodTravel());
-                            alertDialog.setMessage(currentTravel.getReason());
-                            alertDialog.setCancelable(false);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            confirmCancelByDriver(idTravel);
-                                        }
-                                    });
-                            alertDialog.show();
-
-                            btInitVisible(false);
-                            btCancelVisible(false);
-                            btPreFinishVisible(false);
-
-
-                        }
-
-
-
-                } else {
-
-
-                    //Toast.makeText(getApplicationContext(), "Sin Viajes Asignados!", Toast.LENGTH_LONG).show();
-
-                if(dialogTravel != null){
-                    dialogTravel.dismiss();
-                }
+                    viewAlert = false;
+                    setNotification(currentTravel);
                     btInitVisible(false);
                     btCancelVisible(false);
                     btPreFinishVisible(false);
-                    btnFlotingVisible(true);
-                    textTiempo = (TextView) findViewById(R.id.textTiempo);
                     textTiempo.setVisibility(View.INVISIBLE);
-                    currentTravel = null;
-                   // _activeTimer();
+                    // POR RECHAZADO POR OTRO CHOFER//
+                } else if (currentTravel.getIdSatatusTravel() == 7) {
+                    setNotification(currentTravel);
+                    btInitVisible(false);
+                    btCancelVisible(false);
+                    btPreFinishVisible(false);
+                    textTiempo.setVisibility(View.INVISIBLE);
+
+                } else if (currentTravel.getIdSatatusTravel() == 0) {
+
+
+                    final int idTravel = currentTravel.getIdTravel();
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                    alertDialog.setTitle("Viaje Cancelado! " + currentTravel.getCodTravel());
+                    alertDialog.setMessage(currentTravel.getReason());
+                    alertDialog.setCancelable(false);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    confirmCancelByDriver(idTravel);
+                                }
+                            });
+                    alertDialog.show();
+
+                    btInitVisible(false);
+                    btCancelVisible(false);
+                    btPreFinishVisible(false);
+
+
                 }
 
 
-        }catch (Exception e) {
+            } else {
+
+
+                if (dialogTravel != null) {
+                    dialogTravel.dismiss();
+                }
+                btInitVisible(false);
+                btCancelVisible(false);
+                btPreFinishVisible(false);
+                textTiempo.setVisibility(View.INVISIBLE);
+                currentTravel = null;
+                // _activeTimer();
+            }
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public  void  confirmCancelByDriver(int idTravel)
-    {
+    public void confirmCancelByDriver(int idTravel) {
 
-        if (this.daoTravel == null) { this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class); }
+        if (this.daoTravel == null) {
+            this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
+        }
 
 
         try {
             Call<Boolean> call = this.daoTravel.confirmCancelByDriver(idTravel);
-
-            Log.d("fatal", call.request().toString());
-            Log.d("fatal", call.request().headers().toString());
 
             call.enqueue(new Callback<Boolean>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -907,7 +921,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 public void onFailure(Call<Boolean> call, Throwable t) {
                     Snackbar.make(findViewById(android.R.id.content),
-                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                            "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
                 }
 
 
@@ -919,10 +933,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     // Enviar token al servidor //
-    private void enviarTokenAlServidor(String str_token,int idUser) {
+    private void enviarTokenAlServidor(String str_token, int idUser) {
 
 
-        if(idUser > 0) {
+        if (idUser > 0) {
 
 
             if (this.daoLoguin == null) {
@@ -931,7 +945,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             try {
                 token T = new token();
-                T.setToken(new tokenFull(str_token, idUser, gloval.getGv_id_driver(),MainActivity.version));
+                T.setToken(new tokenFull(str_token, idUser, gloval.getGv_id_driver(), MainActivity.version));
 
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.create();
@@ -966,8 +980,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void iniTimeSlep()
-    {
+    public void iniTimeSlep() {
         isWait(1);
 
         loadingCronometro = new ProgressDialog(HomeActivity.this);
@@ -987,16 +1000,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         btnPreFinish.setEnabled(false);
     }
 
-    public void stopTime()
-    {
+    public void stopTime() {
         loadingCronometro.dismiss();
         tiempo.Detener();
         tiempoTxt = tiempoTxt + tiempo.getSegundos();
         btnPreFinish.setEnabled(true);
 
-        textTiempo = (TextView) findViewById(R.id.textTiempo);
         textTiempo.setVisibility(View.VISIBLE);
-        textTiempo.setText(tiempoTxt+"s");
+        textTiempo.setText(tiempoTxt + "s");
 
         isWait(0);
 
@@ -1008,19 +1019,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         this.getParam();
 
-        if(dialogTravel != null){
+        if (dialogTravel != null) {
             dialogTravel.dismiss();
         }
 
         super.onResume();
 
 
-        if(currentTravel !=  null) {
-            Log.d("currentTravel", "onResume"+String.valueOf(currentTravel.getIdSatatusTravel()));
+        if (currentTravel != null) {
+            Log.d("currentTravel", "onResume" + String.valueOf(currentTravel.getIdSatatusTravel()));
 
             controlVieTravel();
 
-        }else {
+        } else {
 
             getCurrentTravelByIdDriver();
         }
@@ -1028,12 +1039,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
 
-        if(HomeFragment.SPCKETMAP !=null) {
-            HomeFragment.SPCKETMAP.disconnect();
-        }
+
+        //  if(HomeFragment.SPCKETMAP !=null) {
+        //    HomeFragment.SPCKETMAP.disconnect();
+        //}
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d("onStop", "onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //createFloatingWidget(parentLayout);
+
+
+    }
+
+
+
+
+
 
     private BroadcastReceiver broadcastReceiverLoadTodays = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -1071,11 +1104,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 dialogTravel.dismiss();
             }
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
     }
 
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        Log.d("onRestart", "onRestart");
+
+    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -1104,32 +1144,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         try{
 
-        final TextView txtMount = (TextView) findViewById(R.id.txt_mount);
-        final TextView distance_txt = (TextView) findViewById(R.id.distance_txt);
-        final TextView txtTimeslep = (TextView) findViewById(R.id.txtTimeslep);
-        final TextView txtamounFlet = (TextView) findViewById(R.id.amount_flet_txt);
 
-        /* VERIFICAMOS METODOS DE PAGO DISPONIBLES */
-        if(currentTravel != null)
-        {
-            if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+
+            /* VERIFICAMOS METODOS DE PAGO DISPONIBLES */
+            if(currentTravel != null)
             {
-                if (currentTravel.isPaymentCash != 1) {
-                    btnFinishCash.setEnabled(false);
-                } else {
-                    btnFinishCash.setEnabled(true);
-                }
-                btnFinishVo.setEnabled(true);
+                if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+                {
+                    if (currentTravel.isPaymentCash != 1) {
+                        btnFinishCash.setEnabled(false);
+                    } else {
+                        btnFinishCash.setEnabled(true);
+                    }
+                    btnFinishVo.setEnabled(true);
 
+                }else {
+                    btnFinishCash.setEnabled(true);
+                    btnFinishVo.setEnabled(false);
+
+                }
             }else {
                 btnFinishCash.setEnabled(true);
-                btnFinishVo.setEnabled(false);
-
             }
-        }else {
-            btnFinishCash.setEnabled(true);
-        }
-        /* */
+            /* */
 
 
             PARAM_1  = Double.parseDouble(gloval.getGv_param().get(0).getValue());// PRECIO DE LISTA
@@ -1144,17 +1181,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             double min = 0;
 
 
-        btPreFinishVisible(false);
+            btPreFinishVisible(false);
 
-        Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
+            Log.d("-TRAVEL DistanceSave-", String.valueOf( currentTravel.getDistanceSave()));
 
 
-        /* DITANCIA TOTAL RECORRIDA */
-        m_total  = HomeFragment.calculateMiles(false)[0];//BUSCAMOS LA DISTANCIA TOTLA
+            /* DITANCIA TOTAL RECORRIDA */
+            m_total  = HomeFragment.calculateMiles(false)[0];//BUSCAMOS LA DISTANCIA TOTLA
 
-        Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
+            Log.d("-TRAVEL totalDistance-", String.valueOf( m_total));
 
-       /// if(m_total > 0){
+            /// if(m_total > 0){
             kilometros_total = (m_total) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
        /* }else {
             kilometros_total = (currentTravel.getDistanceSave()) * 0.001;//LO CONVERTIMOS A KILOMETRO y sumamos la distancia salvada
@@ -1169,153 +1206,153 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             //**************************//
 
-        /* DITANCIA TOTAL VULETA */
-        m_vuelta  = HomeFragment.calculateMiles(false)[1];//BUSCAMOS LA DISTANCIA VUELTA
-        kilometros_vuelta = m_vuelta * 0.001;//LO CONVERTIMOS A KILOMETRO
-        //**************************//
+            /* DITANCIA TOTAL VULETA */
+            m_vuelta  = HomeFragment.calculateMiles(false)[1];//BUSCAMOS LA DISTANCIA VUELTA
+            kilometros_vuelta = m_vuelta * 0.001;//LO CONVERTIMOS A KILOMETRO
+            //**************************//
 
-        /* DITANCIA TOTAL IDA */
-        km_ida = kilometros_total - kilometros_vuelta;
-        m_ida  = m_total - m_vuelta;//BUSCAMOS LA DISTANCIA IDA
-        kilometros_ida = m_ida * 0.001;//LO CONVERTIMOS A KILOMETRO
-        //**************************//
-
-
+            /* DITANCIA TOTAL IDA */
+            km_ida = kilometros_total - kilometros_vuelta;
+            m_ida  = m_total - m_vuelta;//BUSCAMOS LA DISTANCIA IDA
+            kilometros_ida = m_ida * 0.001;//LO CONVERTIMOS A KILOMETRO
+            //**************************//
 
 
-        /* DIFERENCIAR TIPO DE CLIENTE */
-        Log.d("-TRAVEL isCompany-", String.valueOf(currentTravel.getIsTravelComany()));
-        if(currentTravel.getIsTravelComany() == 1)// EMPRESA
-        {
 
-            /*VERIFICAMOS SI ES VIAJE POR HORA*/
-            if(currentTravel.getIsTravelByHour() == 1) {
-                int hours = new Time(System.currentTimeMillis()).getHours();
-                int newHours = hours - gloval.getGv_hour_init_travel();
 
-                if(newHours <1 || gloval.getGv_hour_init_travel() == 0) {
-                    newHours = 1;
-                }
+            /* DIFERENCIAR TIPO DE CLIENTE */
+            Log.d("-TRAVEL isCompany-", String.valueOf(currentTravel.getIsTravelComany()));
+            if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+            {
+
+                /*VERIFICAMOS SI ES VIAJE POR HORA*/
+                if(currentTravel.getIsTravelByHour() == 1) {
+                    int hours = new Time(System.currentTimeMillis()).getHours();
+                    int newHours = hours - gloval.getGv_hour_init_travel();
+
+                    if(newHours <1 || gloval.getGv_hour_init_travel() == 0) {
+                        newHours = 1;
+                    }
 
 
                     Log.d("-hours- vehicleMinHourService", String.valueOf(hours));
 
 
-                if(currentTravel.getKmex() >0 && kilometros_total > currentTravel.getKmex()){ // KILOMETROS EXEDENTES
+                    if(currentTravel.getKmex() >0 && kilometros_total > currentTravel.getKmex()){ // KILOMETROS EXEDENTES
 
-                    double kilometros_extra = currentTravel.getKmex() - kilometros_total;
-                    amounCalculateGps = (newHours * currentTravel.getPriceHour()) +  (kilometros_extra * currentTravel.getPricePerKmex());
+                        double kilometros_extra = currentTravel.getKmex() - kilometros_total;
+                        amounCalculateGps = (newHours * currentTravel.getPriceHour()) +  (kilometros_extra * currentTravel.getPricePerKmex());
 
-                }else {
-                    amounCalculateGps = newHours * currentTravel.getPriceHour();
+                    }else {
+                        amounCalculateGps = newHours * currentTravel.getPriceHour();
 
+                    }
+
+
+
+                }
+                else{
+
+                    /*VERIFICAMOS SI ESTA ACTIVO EL CAMPO BENEFICIO POR KILOMETRO PARA ESA EMPRESA*/
+                    Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmList()));
+                    if (currentTravel.getIsBenefitKmList() == 1
+                            && currentTravel.getListBeneficio() != null
+                            && currentTravel.getListBeneficio().size() > 0) {
+
+                        Log.d("-TRAVEL kilometros_total-", String.valueOf(kilometros_total));
+                        Log.d("-TRAVEL BenefitsToKm-", String.valueOf(currentTravel.getBenefitsToKm()));
+                        Log.d("-TRAVEL BenefitsFromKm-", String.valueOf(currentTravel.getBenefitsFromKm()));
+
+
+                        /* VERIFICAMOS SI ESTA DENTRO DE EL RANGO DE EL BENEFICIO ESTABLECIDO */
+                        amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),km_ida);
+
+                        // VERIFICAMOS SI HAY RETORNO //
+                        if (isRoundTrip) {
+                            amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
+                        }
+
+                        if(amounCalculateGps <1){
+                            amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();
+                            Log.d("-TRAVEL amounCalculateGps (2)-", String.valueOf(amounCalculateGps));
+                        }
+
+
+                    } else {
+                        amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();// PARA CLIENTES EMPREA BUSCAMOS EL PRECIO DE ESA EMPRESA
+
+                        Log.d("-TRAVEL amounCalculateGps (3)-", String.valueOf(amounCalculateGps));
+
+                        if (isRoundTrip) {
+                            Log.d("-TRAVEL isRoundTrip -", String.valueOf(isRoundTrip));
+                            amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();
+                            Log.d("-TRAVEL amounCalculateGps (4)-", String.valueOf(amounCalculateGps));
+                            amounCalculateGps = amounCalculateGps + kilometros_vuelta * currentTravel.getPriceReturn();
+                            Log.d("-TRAVEL amounCalculateGps (5)-", String.valueOf(amounCalculateGps));
+                        }
+                    }
                 }
 
 
 
             }
-            else{
+            else // PARTICULARES
+            {
 
-            /*VERIFICAMOS SI ESTA ACTIVO EL CAMPO BENEFICIO POR KILOMETRO PARA ESA EMPRESA*/
-                Log.d("-TRAVEL Beneficio-", String.valueOf(currentTravel.getIsBenefitKmList()));
-                if (currentTravel.getIsBenefitKmList() == 1
+
+
+                // VERIFICAMOS EL BEMEFICIO POR KM PARA CLIENTES PARTICULARES //
+
+                if(currentTravel.getIsBenefitKmClientList() == 1
                         && currentTravel.getListBeneficio() != null
                         && currentTravel.getListBeneficio().size() > 0) {
 
-                    Log.d("-TRAVEL kilometros_total-", String.valueOf(kilometros_total));
-                    Log.d("-TRAVEL BenefitsToKm-", String.valueOf(currentTravel.getBenefitsToKm()));
-                    Log.d("-TRAVEL BenefitsFromKm-", String.valueOf(currentTravel.getBenefitsFromKm()));
+                    amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
 
+                    if(isRoundTrip) {
+                        Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
 
-                    /* VERIFICAMOS SI ESTA DENTRO DE EL RANGO DE EL BENEFICIO ESTABLECIDO */
-                     amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),km_ida);
-
-                    // VERIFICAMOS SI HAY RETORNO //
-                    if (isRoundTrip) {
-                        amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
+                        if (currentTravel.getIsBenefitKmList() == 1) {
+                            amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(), kilometros_vuelta);
+                        }
                     }
 
                     if(amounCalculateGps <1){
-                        amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();
-                        Log.d("-TRAVEL amounCalculateGps (2)-", String.valueOf(amounCalculateGps));
+                        amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
+
                     }
 
-
-                } else {
-                    amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();// PARA CLIENTES EMPREA BUSCAMOS EL PRECIO DE ESA EMPRESA
-
-                    Log.d("-TRAVEL amounCalculateGps (3)-", String.valueOf(amounCalculateGps));
-
-                    if (isRoundTrip) {
-                        Log.d("-TRAVEL isRoundTrip -", String.valueOf(isRoundTrip));
-                        amounCalculateGps = kilometros_total * currentTravel.getPriceDitanceCompany();
-                        Log.d("-TRAVEL amounCalculateGps (4)-", String.valueOf(amounCalculateGps));
-                        amounCalculateGps = amounCalculateGps + kilometros_vuelta * currentTravel.getPriceReturn();
-                        Log.d("-TRAVEL amounCalculateGps (5)-", String.valueOf(amounCalculateGps));
-                    }
-                }
-            }
+                }else {
 
 
-
-        }
-        else // PARTICULARES
-        {
-
-
-
-            // VERIFICAMOS EL BEMEFICIO POR KM PARA CLIENTES PARTICULARES //
-
-            if(currentTravel.getIsBenefitKmClientList() == 1
-                    && currentTravel.getListBeneficio() != null
-                    && currentTravel.getListBeneficio().size() > 0) {
-
-                amounCalculateGps = this.getPriceBylistBeneficion(currentTravel.getListBeneficio(),kilometros_ida);
-
-                if(isRoundTrip) {
+                    Log.d("-TRAVEL amounCalculateGps (6)-", String.valueOf(amounCalculateGps));
                     Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
 
-                    if (currentTravel.getIsBenefitKmList() == 1) {
-                        amounCalculateGps = amounCalculateGps + this.getPriceReturnBylistBeneficion(currentTravel.getListBeneficio(), kilometros_vuelta);
+                    if(isRoundTrip)
+                    {
+                        amounCalculateGps = kilometros_ida * PARAM_1;
+                        Log.d("-TRAVEL amounCalculateGps (8)-", String.valueOf(amounCalculateGps));
+                        amounCalculateGps =  amounCalculateGps + kilometros_vuelta * PARAM_6;
+                        Log.d("-TRAVEL amounCalculateGps (9)-", String.valueOf(amounCalculateGps));
+
+                    }else{
+                        amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
+
                     }
-                }
-
-                if(amounCalculateGps <1){
-                    amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
 
                 }
 
-            }else {
-
-
-                Log.d("-TRAVEL amounCalculateGps (6)-", String.valueOf(amounCalculateGps));
-                Log.d("-TRAVEL amounCalculateGps (7)-", String.valueOf(isRoundTrip));
-
-                if(isRoundTrip)
-                {
-                    amounCalculateGps = kilometros_ida * PARAM_1;
-                    Log.d("-TRAVEL amounCalculateGps (8)-", String.valueOf(amounCalculateGps));
-                    amounCalculateGps =  amounCalculateGps + kilometros_vuelta * PARAM_6;
-                    Log.d("-TRAVEL amounCalculateGps (9)-", String.valueOf(amounCalculateGps));
-
-                }else{
-                    amounCalculateGps = kilometros_total * PARAM_1;// PARA CLIENTES PARTICULARES BUSCAMOS EL PRECIO DE LISTA
-
-                }
 
             }
 
 
-        }
-
-
-        // SUMA EL ORIGEN PACTADO //
-        amounCalculateGps =  amounCalculateGps + currentTravel.getAmountOriginPac();
-        Log.d("-TRAVEL amounCalculateGps (10)-", String.valueOf(amounCalculateGps));
+            // SUMA EL ORIGEN PACTADO //
+            amounCalculateGps =  amounCalculateGps + currentTravel.getAmountOriginPac();
+            Log.d("-TRAVEL amounCalculateGps (10)-", String.valueOf(amounCalculateGps));
 
 
 
-        // VALIDAMOS VIAJES PUTO A PUNTO
+            // VALIDAMOS VIAJES PUTO A PUNTO
             if(currentTravel.getIsPointToPoint() == 1){
                 Log.d("getIsPointToPoint", String.valueOf(currentTravel.getIsPointToPoint()));
                 amounCalculateGps = currentTravel.pricePoint; // sumamos el precio del punto a punto
@@ -1323,147 +1360,147 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
 
 
-        //VALIDAMOS SI EL VIAJE NO SUPERA EL MINUMO//
-        if(currentTravel.getIsTravelComany() == 1)// PARA EMPRESA
-        {
-            if(amounCalculateGps <  currentTravel.getPriceMinTravel()){
-                amounCalculateGps = currentTravel.getPriceMinTravel();
-                Log.d("-TRAVEL amounCalculateGps (11)-", String.valueOf(amounCalculateGps));
-            }
-        }else {// PARA PARTICULARES
-          if(amounCalculateGps <  PARAM_16){
-              amounCalculateGps = PARAM_16;
-              Log.d("-TRAVEL amounCalculateGps (12)-", String.valueOf(amounCalculateGps));
-          }
-
-        }
-
-
-
-        hor=min/3600;
-        min=(tiempoTxt-(3600*hor))/60;//  BUSCAMOS SI REALIZO ESPERA
-
-        Log.d("-TRAVEL min espera -", String.valueOf(min));
-
-
-         /* DIFERENCIAR TIPO DE CLIENTE */
-        if(currentTravel.getIsTravelComany() == 1)// EMPRESA
-        {
-            if(min > 0) {
-                extraTime = min * currentTravel.getPriceMinSleepCompany();
-            }else if(min > 0.1) {
-                extraTime = 1 * currentTravel.getPriceMinSleepCompany();
-            }
-
-            Log.d("-TRAVEL min extraTime -", String.valueOf(extraTime));
-        }
-        else // PARTICULARES
-        {
-            if(min > 0) {
-                extraTime = min * PARAM_5;
-            }else if(min > 0.1) {
-                extraTime = 1 * PARAM_5;
-            }
-        }
-
-        if(param25 == 1) {
-            txtTimeslep.setText(tiempoTxt + " Seg - $" + Double.toString(round(extraTime, 2)));
-        }else {
-            txtTimeslep.setText(tiempoTxt + " Seg");
-        }
-
-
-        if(param25 == 1) {
-            distance_txt.setText(df.format(kilometros_total) + " Km - $"+Double.toString(round(amounCalculateGps,2)));
-
-        }else {
-            distance_txt.setText(df.format(kilometros_total) + " Km ");
-
-        }
-
-
-         priceFlet = 0;
-        if(currentTravel.getIsFleetTravelAssistance() > 0){
-
-            int hours = new Time(System.currentTimeMillis()).getHours();
-            int newHours = hours - gloval.getGv_hour_init_travel();
-
-            if(newHours <1 || gloval.getGv_hour_init_travel() == 0){
-                newHours = 1;
-            }
-
-            priceFlet = (PARAM_74 * newHours) * numAsiste;
-            txtamounFlet.setText("$"+df.format(priceFlet));
-        }else {
-            txtamounFlet.setText("$0.0");
-        }
-
-
-
-
-
-
-        double myDouble;
-        String myString = ((EditText) findViewById(R.id.peajes_txt)).getText().toString();
-        if (myString != null && !myString.equals("")) {
-            myDouble = Double.valueOf(myString);
-        } else {
-            myDouble = 0;
-        }
-
-        double parkin;
-        String parkin_txt = ((EditText) findViewById(R.id.parkin_txt)).getText().toString();
-        if (parkin_txt != null && !parkin_txt.equals("")) {
-            parkin = Double.valueOf(parkin_txt);
-        } else {
-            parkin = 0;
-        }
-
-
-
-        double bandera = 0;
-        if(param78 > 0) {
-            if(currentTravel.getIsTravelComany() == 1){// EMPRESA
-               if(param78 == 1){
-                   bandera = currentTravel.getPriceMinTravel();
-               }else if(param78 == 2) {
-                   if(amounCalculateGps <  currentTravel.getPriceMinTravel()) {
-                       bandera = currentTravel.getPriceMinTravel();
-
-                   }
-               }
-
-            }else{
-                if(param78 == 1) {
-                    bandera = PARAM_16;
+            //VALIDAMOS SI EL VIAJE NO SUPERA EL MINUMO//
+            if(currentTravel.getIsTravelComany() == 1)// PARA EMPRESA
+            {
+                if(amounCalculateGps <  currentTravel.getPriceMinTravel()){
+                    amounCalculateGps = currentTravel.getPriceMinTravel();
+                    Log.d("-TRAVEL amounCalculateGps (11)-", String.valueOf(amounCalculateGps));
                 }
-                else if(param78 == 2) {
-                    if(amounCalculateGps <  PARAM_16) {
+            }else {// PARA PARTICULARES
+                if(amounCalculateGps <  PARAM_16){
+                    amounCalculateGps = PARAM_16;
+                    Log.d("-TRAVEL amounCalculateGps (12)-", String.valueOf(amounCalculateGps));
+                }
+
+            }
+
+
+
+            hor=min/3600;
+            min=(tiempoTxt-(3600*hor))/60;//  BUSCAMOS SI REALIZO ESPERA
+
+            Log.d("-TRAVEL min espera -", String.valueOf(min));
+
+
+            /* DIFERENCIAR TIPO DE CLIENTE */
+            if(currentTravel.getIsTravelComany() == 1)// EMPRESA
+            {
+                if(min > 0) {
+                    extraTime = min * currentTravel.getPriceMinSleepCompany();
+                }else if(min > 0.1) {
+                    extraTime = 1 * currentTravel.getPriceMinSleepCompany();
+                }
+
+                Log.d("-TRAVEL min extraTime -", String.valueOf(extraTime));
+            }
+            else // PARTICULARES
+            {
+                if(min > 0) {
+                    extraTime = min * PARAM_5;
+                }else if(min > 0.1) {
+                    extraTime = 1 * PARAM_5;
+                }
+            }
+
+            if(param25 == 1) {
+                txtTimeslep.setText(tiempoTxt + " Seg - $" + Double.toString(round(extraTime, 2)));
+            }else {
+                txtTimeslep.setText(tiempoTxt + " Seg");
+            }
+
+
+            if(param25 == 1) {
+                distance_txt.setText(df.format(kilometros_total) + " Km - $"+Double.toString(round(amounCalculateGps,2)));
+
+            }else {
+                distance_txt.setText(df.format(kilometros_total) + " Km ");
+
+            }
+
+
+            priceFlet = 0;
+            if(currentTravel.getIsFleetTravelAssistance() > 0){
+
+                int hours = new Time(System.currentTimeMillis()).getHours();
+                int newHours = hours - gloval.getGv_hour_init_travel();
+
+                if(newHours <1 || gloval.getGv_hour_init_travel() == 0){
+                    newHours = 1;
+                }
+
+                priceFlet = (PARAM_74 * newHours) * numAsiste;
+                txtamounFlet.setText("$"+df.format(priceFlet));
+            }else {
+                txtamounFlet.setText("$0.0");
+            }
+
+
+
+
+
+
+            double myDouble;
+            String myString = peajes_txt.getText().toString();
+            if (myString != null && !myString.equals("")) {
+                myDouble = Double.valueOf(myString);
+            } else {
+                myDouble = 0;
+            }
+
+            double parkin;
+            String parkin_txt = ((EditText) findViewById(R.id.parkin_txt)).getText().toString();
+            if (parkin_txt != null && !parkin_txt.equals("")) {
+                parkin = Double.valueOf(parkin_txt);
+            } else {
+                parkin = 0;
+            }
+
+
+
+            double bandera = 0;
+            if(param78 > 0) {
+                if(currentTravel.getIsTravelComany() == 1){// EMPRESA
+                    if(param78 == 1){
+                        bandera = currentTravel.getPriceMinTravel();
+                    }else if(param78 == 2) {
+                        if(amounCalculateGps <  currentTravel.getPriceMinTravel()) {
+                            bandera = currentTravel.getPriceMinTravel();
+
+                        }
+                    }
+
+                }else{
+                    if(param78 == 1) {
                         bandera = PARAM_16;
                     }
+                    else if(param78 == 2) {
+                        if(amounCalculateGps <  PARAM_16) {
+                            bandera = PARAM_16;
+                        }
+                    }
                 }
-            }
 
-        }
+            }
 
 
 
 
 
             totalFinal =  amounCalculateGps + extraTime + myDouble + parkin + bandera + priceFlet;
-        Log.d("-TRAVEL  totalFinal -", String.valueOf(totalFinal));
+            Log.d("-TRAVEL  totalFinal -", String.valueOf(totalFinal));
 
 
-        if(param25 == 1){
-            txtMount.setText("$"+Double.toString(round(totalFinal,2)));
+            if(param25 == 1){
+                txtMount.setText("$"+Double.toString(round(totalFinal,2)));
+            }
+            else {
+                txtMount.setText("---");
+            }
+
+        }catch (Exception e){
+            Log.d("ERRROR",e.getMessage());
         }
-        else {
-            txtMount.setText("---");
-        }
-
-    }catch (Exception e){
-        Log.d("ERRROR",e.getMessage());
-    }
 
     }
 
@@ -1478,18 +1515,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-
-      /*  DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }*/
-
-
-       // if(timer != null) {
-        //    timer.cancel();
-        //}
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1574,28 +1599,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.action_notifications) {
 
             fn_gotonotification();
-            btnFlotingVisible(false);
 
             return true;
         }
         else if (id == R.id.action_reervations) {
 
             fn_gotoreservation();
-            btnFlotingVisible(false);
 
             return true;
         }
         else if (id == R.id.action_refhesh) {
 
             fn_refhesh();
-            btnFlotingVisible(false);
 
             return true;
         }
         else if (id == R.id.action_profile) {
 
             fn_gotoprofile();
-            btnFlotingVisible(false);
             return true;
         }
 
@@ -1626,7 +1647,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                                 //finish();
                                 alertDialog.dismiss();
-                               // System.exit(0);
+                                // System.exit(0);
 
 
                             }
@@ -1642,14 +1663,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void fn_refhesh() {
 
-            getParam();
-            getCurrentTravelByIdDriver();
+        getParam();
+        getCurrentTravelByIdDriver();
 
     }
 
     public  void  fn_gotoprofile()
     {
-        btnFlotingVisible(false);
         FragmentManager fm = getFragmentManager();
 
         // VERIFICAMO SI E UN CHOFER //
@@ -1660,7 +1680,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // VERIFICAMO SI E UN CLIENTE PÁRTICULAR//
         else if(gloval.getGv_id_profile() == 2)
         {
-            Log.d("paso","pao");
             fm.beginTransaction().replace(R.id.content_frame,new ProfileClientFr()).commit();
         }
     }
@@ -1669,7 +1688,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void fn_gotonotification()
     {
 
-        btnFlotingVisible(false);
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame,new NotificationsFrangment()).commit();
     }
@@ -1677,7 +1695,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void fn_gotoreservation()
     {
 
-        btnFlotingVisible(false);
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame,new ReservationsFrangment()).commit();
     }
@@ -1694,27 +1711,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().replace(R.id.content_frame,new HomeFragment()).commit();
 
         } else if (id == R.id.nav_gallery) {
-            btnFlotingVisible(false);
             fm.beginTransaction().replace(R.id.content_frame,new HistoryTravelDriver()).commit();
 
         } else if (id == R.id.nav_slideshow) {
-            btnFlotingVisible(false);
             fm.beginTransaction().replace(R.id.content_frame,new AcountDriver()).commit();
 
 
         } else if (id == R.id.nav_manage) {
-            btnFlotingVisible(false);
             fm.beginTransaction().replace(R.id.content_frame,new NotificationsFrangment()).commit();
 
         } else if (id == R.id.nav_reservations) {
-            btnFlotingVisible(false);
             fn_gotoreservation();
 
         } else if (id == R.id.nav_send) {
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -1724,23 +1736,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
 
 
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TIMER","TIMER 1");
+                        setLocationVehicheDriver();
 
+                    }
+                });
 
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("TIMER","TIMER 1");
-                            setLocationVehicheDriver();
-
-                        }
-                    });
-
-                }
-            }, 0, 120000);
+            }
+        }, 0, 120000);
 
 
         timerConexion = new Timer();
@@ -1749,13 +1759,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void run() {
                 runOnUiThread(
                         new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("TIMER","TIMER 2");
-                        fn_verificateConexion();
+                            @Override
+                            public void run() {
+                                Log.d("TIMER","TIMER 2");
+                                fn_verificateConexion();
 
-                    }
-                });
+                            }
+                        });
 
             }
         }, 0, 30000);
@@ -1784,12 +1794,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 add = HomeFragment.nameLocation;
             }
 
-           Log.d("setLocationVehicheDriver 00", String.valueOf(HomeFragment.nameLocation));
+            Log.d("setLocationVehicheDriver 00", String.valueOf(HomeFragment.nameLocation));
             Log.d("setLocationVehicheDriver  01", "**"+add);
 
             if(add != "") {
 
-               // Log.d("setLocationVehicheDriver  ", "PASO 1");
+                // Log.d("setLocationVehicheDriver  ", "PASO 1");
                 int idTrave = 0;
                 int idClientKf = 0;
 
@@ -1885,50 +1895,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public  void intiTravel()
-    {
 
-
-        // GUARDAMOS LA UBICACION EN EL  FIREBASE //
-        if(currentTravel != null) {
-            String lat = "";
-            String lon = "";
-            String add = "";
-
-            if (HomeFragment.getmLastLocation() != null) {
-                lat = String.valueOf(HomeFragment.getmLastLocation().getLatitude());
-                lon = String.valueOf(HomeFragment.getmLastLocation().getLongitude());
-                add = HomeFragment.nameLocation;
-            }
-
-
-
-            TravelLocationEntity travel = new  TravelLocationEntity(
-                gloval.getGv_user_id(),
-                currentTravel.getIdTravel(),
-                add,
-                lon,
-                lat,
-                0,
-                 0,
-                 currentTravel.getIdClientKf(),
-                    HomeFragment.calculateMiles(false)[0]
-            );
-
-            DatabaseReference locationRef = databaseReference.child("Travel");
-            locationRef.push().setValue(travel);
-
-
-
-
-
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setNotification(final InfoTravelEntity travel)
     {
-            Log.d("currentTravel  full", String.valueOf(viewAlert));
+        Log.d("currentTravel  full", String.valueOf(viewAlert));
 
         if(viewAlert == false)
         {
@@ -1961,8 +1933,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             Call<InfoTravelEntity> call = this.daoTravel.refuse(idTravel);
 
-            Log.d("fatal", call.request().toString());
-            Log.d("fatal", call.request().headers().toString());
+
 
             call.enqueue(new Callback<InfoTravelEntity>() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -1971,9 +1942,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     loading.dismiss();
                     Toast.makeText(getApplicationContext(), "VIAJE RECHAZADO!", Toast.LENGTH_LONG).show();
-//                    Log.d("fatal",response.body().toString());
 
-                    // cerramo el dialog //
 
                     if(dialogTravel != null)
                     {
@@ -1981,11 +1950,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     cliaerNotificationAndoid();
-                   // viewAlert = false;
+                    // viewAlert = false;
                     gloval.setGv_travel_current(null);
                     currentTravel = null;
                     btCancelVisible(false);
-                    btnFlotingVisible(true);
                     btInitVisible(false);
                     HomeFragment.clearInfo();
                     viewAlert = false;
@@ -2010,54 +1978,45 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public  void btCancelVisible(boolean b)
     {
-        final Button btn = (Button) findViewById(R.id.btn_cancel);
 
-        Log.d("PARAM_66 2", String.valueOf(PARAM_66));
 
         if(b)
         {
-            btn.setVisibility(View.VISIBLE);
+            btn_cancel.setVisibility(View.VISIBLE);
             if(PARAM_66 == 1){
-                btn.setEnabled(true);
+                btn_cancel.setEnabled(true);
             }else {
-                btn.setEnabled(false);
+                btn_cancel.setEnabled(false);
             }
 
         }else {
-            btn.setVisibility(View.INVISIBLE);
+            btn_cancel.setVisibility(View.INVISIBLE);
         }
     }
 
     public  void btInitVisible(boolean b)
     {
-        final Button btn = (Button) findViewById(R.id.btn_init);
 
         if(b)
         {
-            btn.setVisibility(View.VISIBLE);
+            btn_init.setVisibility(View.VISIBLE);
         }else {
-            btn.setVisibility(View.INVISIBLE);
+            btn_init.setVisibility(View.INVISIBLE);
         }
     }
 
     public  void btPreFinishVisible(boolean b)
     {
 
-        Log.d("Pre final", String.valueOf(b));
-        final Button btnLogin = (Button) findViewById(R.id.btn_pre_finish);
-        final Button btnInitSplep = (Button) findViewById(R.id.btn_iniTimeSlep);
-        final Button btn_return = (Button) findViewById(R.id.btn_return);
-
-
         if(b)
         {
-            btnLogin.setVisibility(View.VISIBLE);
-            btnInitSplep.setVisibility(View.VISIBLE);
-            btn_return.setVisibility(View.VISIBLE);
+            this.btnLogin.setVisibility(View.VISIBLE);
+            this.btnInitSplep.setVisibility(View.VISIBLE);
+            this.btn_return.setVisibility(View.VISIBLE);
         }else {
-            btnLogin.setVisibility(View.INVISIBLE);
-            btnInitSplep.setVisibility(View.INVISIBLE);
-            btn_return.setVisibility(View.INVISIBLE);
+            this.btnLogin.setVisibility(View.INVISIBLE);
+            this.btnInitSplep.setVisibility(View.INVISIBLE);
+            this.btn_return.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -2183,54 +2142,53 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-            if (this.daoTravel == null) {
-                this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
-            }
+        if (this.daoTravel == null) {
+            this.daoTravel = HttpConexion.getUri().create(ServicesTravel.class);
+        }
 
 
-            try {
-                loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
+        try {
+            loading = ProgressDialog.show(HomeActivity.this, "Enviado", "Espere unos Segundos...", true, false);
 
-                Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
+            Call<InfoTravelEntity> call = this.daoTravel.accept(idTravel);
 
-                Log.d("fatal", call.request().toString());
-                Log.d("fatal", call.request().headers().toString());
+            Log.d("fatal", call.request().toString());
+            Log.d("fatal", call.request().headers().toString());
 
-                call.enqueue(new Callback<InfoTravelEntity>() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
-                        loading.dismiss();
+            call.enqueue(new Callback<InfoTravelEntity>() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onResponse(Call<InfoTravelEntity> call, Response<InfoTravelEntity> response) {
+                    loading.dismiss();
 
-                        Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "VIAJE ACEPTADO...", Toast.LENGTH_LONG).show();
 //                        Log.d("fatal", response.body().toString());
 
 
-                        btnFlotingVisible(false);
-                        btInitVisible(true);
-                        btCancelVisible(true);
-                        cliaerNotificationAndoid();
-                        viewAlert = true;
-                        dialogTravel.dismiss();
-                        currentTravel = response.body();
-                        setInfoTravel();
+                    btInitVisible(true);
+                    btCancelVisible(true);
+                    cliaerNotificationAndoid();
+                    viewAlert = true;
+                    dialogTravel.dismiss();
+                    currentTravel = response.body();
+                    setInfoTravel();
 
-                    }
+                }
 
-                    public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
-                        loading.dismiss();
+                public void onFailure(Call<InfoTravelEntity> call, Throwable t) {
+                    loading.dismiss();
 
-                        Snackbar.make(findViewById(android.R.id.content),
-                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
-                    }
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                }
 
 
-                });
+            });
 
-            } finally {
+        } finally {
 
-                this.daoTravel = null;
-            }
+            this.daoTravel = null;
+        }
 
     }
 
@@ -2256,7 +2214,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             btInitVisible(false);
                             btCancelVisible(false);
                             btPreFinishVisible(true);
-                            btnFlotingVisible(false);
 
                             currentTravel = response.body();
                             setInfoTravel();
@@ -2352,13 +2309,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // BUSCAMOS EL VALOR DE EL PEAJE //
 
                 double myDouble;
-                String myString = ((EditText) findViewById(R.id.peajes_txt)).getText().toString();
+                String myString = peajes_txt.getText().toString();
                 if (myString != null && !myString.equals("")) {
                     myDouble = Double.valueOf(myString);
                 } else {
                     myDouble = 0;
                 }
-                ((EditText) findViewById(R.id.peajes_txt)).setText("");
+                peajes_txt.setText("");
 
                 double parkin;
                 String parkin_txt = ((EditText) findViewById(R.id.parkin_txt)).getText().toString();
@@ -2459,7 +2416,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         btInitVisible(false);
                         btCancelVisible(false);
                         btPreFinishVisible(false);
-                        btnFlotingVisible(true);
 
 
                         currentTravel = null;
@@ -2473,7 +2429,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
                         tiempoTxt = 0;
-                        textTiempo = (TextView) findViewById(R.id.textTiempo);
                         textTiempo.setVisibility(View.INVISIBLE);
 
 
@@ -2481,7 +2436,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         lg.setVisibility(View.INVISIBLE);
 
                         gloval.setGv_hour_init_travel(0);// GUARDAMOS LA HORA QUE LO INICIO
-                       // editor.putFloat("distanceTravel", 0);
+                        // editor.putFloat("distanceTravel", 0);
                         //editor.commit();
 
                     }
@@ -2543,10 +2498,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     finishTravel();
                 }
                 break;
+           /* case DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE:
+                //Check if the permission is granted or not.
+                if (resultCode == RESULT_OK)
+                    //If permission granted start floating widget service
+                    startFloatingWidgetService();
+                else
+                    //Permission is not available then display toast
+                    Toast.makeText(this,
+                            getResources().getString(R.string.draw_other_app_permission_denied),
+                            Toast.LENGTH_SHORT).show();*/
+
 
         }
 
     }
+
+
 
     public void preFinihMpago(){
 
@@ -2610,94 +2578,94 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public class SendPostRequest extends AsyncTask<String, Void, String> {
+public class SendPostRequest extends AsyncTask<String, Void, String> {
 
-        protected void onPreExecute(){}
+    protected void onPreExecute(){}
 
-        protected String doInBackground(String... arg0) {
+    protected String doInBackground(String... arg0) {
 
-            try {
+        try {
 
-                URL url = new URL(HttpConexion.BASE_URL+"as_mpago/index.php"); // here is your URL path
+            URL url = new URL(HttpConexion.BASE_URL+"as_mpago/index.php"); // here is your URL path
 
-                JSONObject postDataParams = new JSONObject();
-                postDataParams.put("clienteid", HomeActivity.PARAM_69);
-                postDataParams.put("clientesecret", HomeActivity.PARAM_79);
-                postDataParams.put("currency_id", HttpConexion.COUNTRY);
-                postDataParams.put("unit_price", totalFinal);
-                postDataParams.put("agency", gloval.getGv_base_intance());
-                postDataParams.put("idTravel", currentTravel.getIdTravel());
-
-
-                Log.d("postDataParams", String.valueOf(postDataParams));
+            JSONObject postDataParams = new JSONObject();
+            postDataParams.put("clienteid", HomeActivity.PARAM_69);
+            postDataParams.put("clientesecret", HomeActivity.PARAM_79);
+            postDataParams.put("currency_id", HttpConexion.COUNTRY);
+            postDataParams.put("unit_price", totalFinal);
+            postDataParams.put("agency", gloval.getGv_base_intance());
+            postDataParams.put("idTravel", currentTravel.getIdTravel());
 
 
-
-                String message = postDataParams.toString();
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setFixedLengthStreamingMode(message.getBytes().length);
+            Log.d("postDataParams", String.valueOf(postDataParams));
 
 
 
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
+            String message = postDataParams.toString();
 
-                writer.write(message);
-                writer.flush();
-                writer.close();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setFixedLengthStreamingMode(message.getBytes().length);
+
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+
+            writer.write(message);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int responseCode=conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+
+
+                InputStream inputStream = conn.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                String response = "";
+                String line = "";
+                while ((line = bufferedReader.readLine())!=null){
+                    response+= line;
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                conn.disconnect();
                 os.close();
+                return response.toString();
 
-                int responseCode=conn.getResponseCode();
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-
-
-
-                    InputStream inputStream = conn.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                    String response = "";
-                    String line = "";
-                    while ((line = bufferedReader.readLine())!=null){
-                        response+= line;
-                    }
-
-                    bufferedReader.close();
-                    inputStream.close();
-                    conn.disconnect();
-                    os.close();
-                    return response.toString();
-
-                }
-                else {
-                    return new String("false : "+responseCode);
-                }
             }
-            catch(Exception e){
-                return new String("Exception: " + e.getMessage());
+            else {
+                return new String("false : "+responseCode);
             }
-
+        }
+        catch(Exception e){
+            return new String("Exception: " + e.getMessage());
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-
-              loading.dismiss();
-              Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
-              HomeActivity.mp_jsonPaymentCard = result;
-              startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
-
-
-        }
     }
+
+    @Override
+    protected void onPostExecute(String result) {
+
+        loading.dismiss();
+        Intent intent = new Intent(getApplicationContext(), PaymentCreditCar.class);
+        HomeActivity.mp_jsonPaymentCard = result;
+        startActivityForResult(intent, CREDIT_CAR_ACTIVITY);
+
+
+    }
+}
 
 
 
@@ -2735,7 +2703,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-               // Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                // Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 
                 idPaymentFormKf = 5;
                 finishTravel();
@@ -2767,20 +2735,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    // CONONTRO BOTON FLOTANTE //
-    public  void  btnFlotingVisible(boolean isVisible)
-    {
-      /*  FloatingActionButton btnService = (FloatingActionButton) findViewById(R.id.fab);
 
-        if(!isVisible)
-        {
-            btnService.setVisibility(View.INVISIBLE);
-        }else
-        {
-            btnService.setVisibility(View.VISIBLE);
-        }*/
-
-    }
 
     // METODO OBTENER FOTO DE CHOFER //
     public void getPick(int idUserDriver)
@@ -2790,76 +2745,74 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public class DowloadImg extends AsyncTask<String, Void, Bitmap> {
+public class DowloadImg extends AsyncTask<String, Void, Bitmap> {
 
 
 
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
+    @Override
+    protected void onPreExecute() {
+        // TODO Auto-generated method stub
+        super.onPreExecute();
 
-        }
+    }
 
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            // TODO Auto-generated method stub
+    @Override
+    protected Bitmap doInBackground(String... params) {
+        // TODO Auto-generated method stub
 
-            Bitmap imagen = null;
-            try{
-
-
-                Log.i("doInBackground" , "Entra en doInBackground");
-                String url = params[0]+".JPEG";
-                 imagen = descargarImagen(url);
-                return imagen;
-
-            }catch (Exception e){
-                Log.d("ERROR",e.getMessage());
-                return imagen;
-            }
+        Bitmap imagen = null;
+        try{
 
 
-        }
+            Log.i("doInBackground" , "Entra en doInBackground");
+            String url = params[0]+".JPEG";
+            imagen = descargarImagen(url);
+            return imagen;
 
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
-
-
-            try {
-                CircleImageView your_imageView = (CircleImageView) findViewById(R.id.imageViewUser);
-
-                if (result != null) {
-                    your_imageView.setImageBitmap(result);
-
-                }
-            }catch (Exception e)
-            {
-
-            }
-
-
-
-        }
-
-        private Bitmap descargarImagen (String imageHttpAddress){
-            URL imageUrl = null;
-            Bitmap imagen = null;
-            try{
-                imageUrl = new URL(imageHttpAddress);
-                HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
-                conn.connect();
-                imagen = BitmapFactory.decodeStream(conn.getInputStream());
-            }catch(IOException ex){
-                ex.printStackTrace();
-            }
-
+        }catch (Exception e){
+            Log.d("ERROR",e.getMessage());
             return imagen;
         }
 
+
     }
+
+    @Override
+    protected void onPostExecute(Bitmap result) {
+        // TODO Auto-generated method stub
+        super.onPostExecute(result);
+
+
+        try {
+            if (result != null) {
+                your_imageView.setImageBitmap(result);
+
+            }
+        }catch (Exception e)
+        {
+
+        }
+
+
+
+    }
+
+    private Bitmap descargarImagen (String imageHttpAddress){
+        URL imageUrl = null;
+        Bitmap imagen = null;
+        try{
+            imageUrl = new URL(imageHttpAddress);
+            HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
+            conn.connect();
+            imagen = BitmapFactory.decodeStream(conn.getInputStream());
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+
+        return imagen;
+    }
+
+}
 
     public double getPriceReturnBylistBeneficion(List<BeneficioEntity> list,double distance){
         double value = 0;
@@ -2936,87 +2889,87 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
 
 
-             HttpConexion.setBase(HttpConexion.instance);
-            if (this.daoTravel == null) {
-                this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
-            }
+        HttpConexion.setBase(HttpConexion.instance);
+        if (this.daoTravel == null) {
+            this.apiService = HttpConexion.getUri().create(ServicesLoguin.class);
+        }
 
 
-            try {
+        try {
 
-                Call<Boolean> call = this.apiService.checkVersion(MainActivity.version);
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers().toString());
+            Call<Boolean> call = this.apiService.checkVersion(MainActivity.version);
+            Log.d("Call request", call.request().toString());
+            Log.d("Call request header", call.request().headers().toString());
 
-                call.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            call.enqueue(new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
-                        Log.d("Response request", call.request().toString());
-                        Log.d("Response request header", call.request().headers().toString());
-                        Log.d("Response raw header", response.headers().toString());
-                        Log.d("Response raw", String.valueOf(response.raw().body()));
-                        Log.d("Response code", String.valueOf(response.code()));
-
-
-                        if (response.code() == 200) {
-                            boolean rs = (boolean) response.body();
+                    Log.d("Response request", call.request().toString());
+                    Log.d("Response request header", call.request().headers().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", String.valueOf(response.raw().body()));
+                    Log.d("Response code", String.valueOf(response.code()));
 
 
-                            if (!rs) {
-                            } else {
-                                AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                                alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
-                                alertDialog.setCancelable(false);
-                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                                //       Uri.parse("http://as-nube.com/apk.apk"));
-                                                //startActivity(browserIntent);
-
-                                                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                                                try {
-                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                                } catch (android.content.ActivityNotFoundException anfe) {
-                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                                                }
-                                            }
-                                        });
-                                alertDialog.show();
+                    if (response.code() == 200) {
+                        boolean rs = (boolean) response.body();
 
 
-                            }
-
+                        if (!rs) {
                         } else {
-
                             AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
-                            alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
-                            alertDialog.setMessage(response.errorBody().source().toString());
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            alertDialog.setTitle("Existe Una Nueva version!, Debe Atualizar para poder Disfrutar de los Nuevos Beneficios!");
+                            alertDialog.setCancelable(false);
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Actualizar",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
+                                            // Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                            //       Uri.parse("http://as-nube.com/apk.apk"));
+                                            //startActivity(browserIntent);
+
+                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                                            try {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                            } catch (android.content.ActivityNotFoundException anfe) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                            }
                                         }
                                     });
                             alertDialog.show();
 
+
                         }
 
+                    } else {
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+                        alertDialog.setTitle("ERROR" + "(" + response.code() + ")");
+                        alertDialog.setMessage(response.errorBody().source().toString());
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
 
                     }
 
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                        Snackbar.make(findViewById(android.R.id.content),
-                                "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
-                    }
-                });
 
-            } finally {
-                this.apiService = null;
+                }
 
-            }
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR (" + t.getMessage() + ")", Snackbar.LENGTH_LONG).show();
+                }
+            });
+
+        } finally {
+            this.apiService = null;
+
+        }
 
 
     }
@@ -3030,48 +2983,48 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         try {
 
-        Call<List<paramEntity>> call = this.daoTravel.getparam();
+            Call<List<paramEntity>> call = this.daoTravel.getparam();
 
             Log.d("PARAM_69", call.request().toString());
             Log.d("PARAM_69", call.request().headers().toString());
 
 
             call.enqueue(new Callback<List<paramEntity>>() {
-            @Override
-            public void onResponse(Call<List<paramEntity>> call, Response<List<paramEntity>> response) {
+                @Override
+                public void onResponse(Call<List<paramEntity>> call, Response<List<paramEntity>> response) {
 
-                Log.d("PARAM_69", response.headers().toString());
-                Log.d("PARAM_69", String.valueOf(response.raw().body()));
-                Log.d("PARAM_69", String.valueOf(response.code()));
+                    Log.d("PARAM_69", response.headers().toString());
+                    Log.d("PARAM_69", String.valueOf(response.raw().body()));
+                    Log.d("PARAM_69", String.valueOf(response.code()));
 
 
 
-                if (response.code() == 200) {
+                    if (response.code() == 200) {
 
-                    //the response-body is already parseable to your ResponseBody object
-                    List<paramEntity> listParam = (List<paramEntity>) response.body();
-                    gloval.setGv_param(listParam);
-                    setParamLocal();
+                        //the response-body is already parseable to your ResponseBody object
+                        List<paramEntity> listParam = (List<paramEntity>) response.body();
+                        gloval.setGv_param(listParam);
+                        setParamLocal();
 
-                    refreshButomPermision();
+                        refreshButomPermision();
+
+
+                    }
 
 
                 }
 
+                @Override
+                public void onFailure(Call<List<paramEntity>> call, Throwable t) {
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
+                }
+            });
 
-            }
+        } finally {
+            this.daoTravel = null;
 
-            @Override
-            public void onFailure(Call<List<paramEntity>> call, Throwable t) {
-                Snackbar.make(findViewById(android.R.id.content),
-                        "ERROR ("+t.getMessage()+")", Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-    } finally {
-        this.daoTravel = null;
-
-    }
+        }
     }
 
     public void  refreshButomPermision(){
@@ -3104,3 +3057,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 }
+

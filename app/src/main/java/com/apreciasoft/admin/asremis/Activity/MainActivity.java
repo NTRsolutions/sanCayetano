@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Log.d("checkAndRequestPermissions()", String.valueOf(checkAndRequestPermissions()));
         if( checkAndRequestPermissions() == true) {
 
             if (pref.getBoolean("isLoged", false) == true) {
+
 
 
                 gloval.setGv_logeed(true);
@@ -90,13 +90,11 @@ public class MainActivity extends AppCompatActivity {
                 gloval.setGv_nr_driver(pref.getString("nrDriver", ""));
                 Gson gson = new Gson();
 
-                TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>() {
-                };
+                TypeToken<List<paramEntity>> token3 = new TypeToken<List<paramEntity>>() {};
                 List<paramEntity> listParam = gson.fromJson(pref.getString("param", ""), token3.getType());
                 gloval.setGv_param(listParam);
 
-                TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>() {
-                };
+                TypeToken<List<VehicleType>> token2 = new TypeToken<List<VehicleType>>() {};
                 List<VehicleType> vehicleTypenew = gson.fromJson(pref.getString("list_vehichle", ""), token2.getType());
                 gloval.setGv_listvehicleType(vehicleTypenew);
 
@@ -109,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(gloval.getGv_logeed() == true )
         {
+
+
+
             if(gloval.getGv_id_profile() == 2 || gloval.getGv_id_profile() == 5)
             {
                 // LAMAMOS A EL SEGUNDO ACTIVITY DE HOME CIENT//
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                final Button btn_newacount = (Button) findViewById(R.id.btn_newacount);
+                final Button btn_newacount =  findViewById(R.id.btn_newacount);
                 btn_newacount.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         // Perform action on click
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-                TextView txtVersion = (TextView)findViewById(R.id.lbl_version);
+                TextView txtVersion = findViewById(R.id.lbl_version);
                 txtVersion.setText("V: "+version);
             }
 

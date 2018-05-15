@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,16 +23,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apreciasoft.admin.asremis.Activity.HomeActivity;
+import com.apreciasoft.admin.asremis.Activity.MainActivity;
 import com.apreciasoft.admin.asremis.Entity.InfoTravelEntity;
 import com.apreciasoft.admin.asremis.Entity.token;
 import com.apreciasoft.admin.asremis.Entity.tokenFull;
@@ -80,6 +85,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -95,6 +102,8 @@ import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * Created by Admin on 04/01/2017.
@@ -116,8 +125,6 @@ public class HomeFragment extends Fragment implements
     /*++++++++++++*/
 
     private static View view;
-    //int _COUNT_CHANGUE = 0;
-    //public  boolean CONEXION_MAP_ERROR = false;
     public ServicesLoguin daoLoguin = null;
     public String TAG = "HomeFragment";
     public static List<LatLng> listPosition = new ArrayList<>();
@@ -148,10 +155,14 @@ public class HomeFragment extends Fragment implements
     public static TextView txt_piso_dialog = null;
     public static TextView txt_dpto_dialog = null;
     public static TextView txt_distance_real = null;
-    //public static LinearLayout content_ditanceReal = null;
     public static  SharedPreferences.Editor editor;
     public static  SharedPreferences pref;
     public  BitmapDrawable bitmapdraw;
+
+
+    // UI //
+    public static ImageView your_imageView;
+    //****//
 
 
     public MapFragment  mMap;
@@ -187,8 +198,12 @@ public class HomeFragment extends Fragment implements
 
 
 
+
         return view;
     }
+
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -221,45 +236,39 @@ public class HomeFragment extends Fragment implements
 
 
 
-        HomeFragment.txt_date_info = (TextView) getActivity().findViewById(R.id.txt_date_info);
-        HomeFragment.txt_client_info = (TextView) getActivity().findViewById(R.id.txt_client_info);
-        HomeFragment.txt_destination_info = (TextView) getActivity().findViewById(R.id.txt_destination_info);
-        HomeFragment.txt_origin_info = (TextView) getActivity().findViewById(R.id.txt_origin_info);
-        HomeFragment.txt_lote = (TextView) getActivity().findViewById(R.id.txt_lote);
-        HomeFragment.txt_flete = (TextView) getActivity().findViewById(R.id.txt_flete);
+        HomeFragment.txt_date_info =  getActivity().findViewById(R.id.txt_date_info);
+        HomeFragment.txt_client_info =  getActivity().findViewById(R.id.txt_client_info);
+        HomeFragment.txt_destination_info =  getActivity().findViewById(R.id.txt_destination_info);
+        HomeFragment.txt_origin_info =  getActivity().findViewById(R.id.txt_origin_info);
+        HomeFragment.txt_lote =  getActivity().findViewById(R.id.txt_lote);
+        HomeFragment.txt_flete =  getActivity().findViewById(R.id.txt_flete);
 
-        HomeFragment.txt_piso_dialog = (TextView) getActivity().findViewById(R.id.txt_piso_dialog);
-        HomeFragment.txt_dpto_dialog = (TextView) getActivity().findViewById(R.id.txt_dpto_dialog);
+        HomeFragment.txt_piso_dialog =  getActivity().findViewById(R.id.txt_piso_dialog);
+        HomeFragment.txt_dpto_dialog =  getActivity().findViewById(R.id.txt_dpto_dialog);
 
-        HomeFragment.txt_km_info = (TextView) getActivity().findViewById(R.id.txt_km_info);
-        HomeFragment.txt_amount_info = (TextView) getActivity().findViewById(R.id.txt_amount_info);
-        HomeFragment.txt_calling_info = (TextView) getActivity().findViewById(R.id.txt_calling_info);
-        HomeFragment.txt_observationFromDriver = (TextView) getActivity().findViewById(R.id.txt_observationFromDriver);
-        HomeFragment.txt_observationFlight = (TextView) getActivity().findViewById(R.id.txt_observationFlight);
+        HomeFragment.txt_km_info =  getActivity().findViewById(R.id.txt_km_info);
+        HomeFragment.txt_amount_info =  getActivity().findViewById(R.id.txt_amount_info);
+        HomeFragment.txt_calling_info =  getActivity().findViewById(R.id.txt_calling_info);
+        HomeFragment.txt_observationFromDriver =  getActivity().findViewById(R.id.txt_observationFromDriver);
+        HomeFragment.txt_observationFlight =  getActivity().findViewById(R.id.txt_observationFlight);
 
-        HomeFragment.txt_pasajeros_info = (TextView) getActivity().findViewById(R.id.txt_pasajeros_info);
+        HomeFragment.txt_pasajeros_info =  getActivity().findViewById(R.id.txt_pasajeros_info);
 
-        HomeFragment.txt_distance_real = (TextView) getActivity().findViewById(R.id.txt_distance_real);
+        HomeFragment.txt_distance_real =  getActivity().findViewById(R.id.txt_distance_real);
 
 
 
         bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.auto);
 
+        your_imageView =  view.findViewById(R.id.img_face_client);
 
 
-
-
-
-        infoGneral = (TextView) getActivity().findViewById(R.id.infoGneral);
+        infoGneral =  getActivity().findViewById(R.id.infoGneral);
         infoGneral.setText("SERVICIO ACTIVO");
 
 
-     //   infodistance = (TextView) getActivity().findViewById(R.id.infodistance);
 
 
-
-        // content_ditanceReal = (LinearLayout) getActivity().findViewById(R.id.content_ditance_real);
-        // content_ditanceReal.setVisibility(View.INVISIBLE);
 
 
 
@@ -270,6 +279,8 @@ public class HomeFragment extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         try {
+            Log.d("onDestroy", "onDestroy H");
+
             //stop location updates when Activity is no longer active
             if (mGoogleApiClient != null) {
                 Log.d("YA","6");
@@ -287,6 +298,7 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("onPause", "onPause H");
 
 
 /*
@@ -676,14 +688,14 @@ public class HomeFragment extends Fragment implements
 
                 try {
 
-                    Log.d("SOCK MAP", SPCKETMAP.id().toString());
+                    //Log.d("SOCK MAP","ENVIADO "+SPCKETMAP.id().toString());
 
 
                     if (SPCKETMAP.id() != null) {
 
 
                         token T = new token();
-                        T.setToken(new tokenFull(gloval.getGv_user_id(), SPCKETMAP.id().toString()));
+                        T.setToken(new tokenFull(pref.getInt("user_id", 0), SPCKETMAP.id().toString()));
 
                         GsonBuilder builder = new GsonBuilder();
                         Gson gson = builder.create();
@@ -823,11 +835,11 @@ public class HomeFragment extends Fragment implements
 
 
                     android.location.Address returnedAddress = addresses.get(0);
-                    StringBuilder strReturnedAddress = new StringBuilder("");
+                   // StringBuilder strReturnedAddress = new StringBuilder("");
 
-                    for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                        strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                    }
+                    //for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                      //  strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                    //}
                     String strAdd = returnedAddress.getAddressLine(0);
                     HomeFragment.nameLocation = strAdd.toString();
 
@@ -926,7 +938,7 @@ public class HomeFragment extends Fragment implements
                                     .color(Color.TRANSPARENT)
                                     .geodesic(true);
 
-                            Log.d("totalDistance listPosition", String.valueOf(HomeFragment.listPosition.size()));
+                            //Log.d("totalDistance listPosition", String.valueOf(HomeFragment.listPosition.size()));
 
 
                             for (int z = 0; z < HomeFragment.listPosition.size(); z++) {
@@ -940,13 +952,9 @@ public class HomeFragment extends Fragment implements
                                             .color(Color.TRANSPARENT)
                                             .geodesic(true);
                                     optionReturnActive.add(point);
-                                    //Log.d("totalDistance", "'RETORNO ADD");
 
                                 }else {
                                     HomeFragment.options.add(point);
-                                   // Log.d("totalDistance HP", String.valueOf(HomeFragment.options.getPoints().size()));
-
-
                                 }
 
 
@@ -988,10 +996,6 @@ public class HomeFragment extends Fragment implements
                     }
 
 
-                    //optionally, stop location updates if only current location is needed
-                    ///if (mGoogleApiClient != null) {
-                    // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-                    //}
                 }
 
 
@@ -1001,14 +1005,6 @@ public class HomeFragment extends Fragment implements
         }
     }
 
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
-    }
 
 
 
@@ -1457,18 +1453,6 @@ public class HomeFragment extends Fragment implements
     }
 
 
-    /*CARGAMOS LAS IMAGEN DE EL CLIENTE */
-
-    public String getStringImage(Bitmap bmp)
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
-    /* DESCARGAR IMAGEN PERFIL CLIENTE*/
 
     // METODO OBTENER FOTO DE CLIENTE //
     public static void getPick(int idUserClient)
@@ -1477,8 +1461,6 @@ public class HomeFragment extends Fragment implements
         dwImg.execute(HttpConexion.BASE_URL+HttpConexion.base+"/Frond/img_users/"+idUserClient);
 
     }
-
-
 
 
 
@@ -1508,7 +1490,6 @@ public class HomeFragment extends Fragment implements
             super.onPostExecute(result);
 
 
-            ImageView your_imageView = (ImageView) view.findViewById(R.id.img_face_client);
 
             if(result != null)
             {

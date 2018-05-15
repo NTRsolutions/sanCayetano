@@ -14,6 +14,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_DEBUG_APP"></uses-permission>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="TASKS"/>
+
 
 
     <application
@@ -70,6 +73,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyApZ1embZ2bhcI4Ir8NepmyjTfNvGvjUas" />
 
+        <service
+            android:name=".Util.FloatingWidgetService"
+            android:enabled="true"
+            android:exported="false" />
+
+
     </application>
+
 
 </manifest>
