@@ -127,8 +127,12 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
           //  e.printStackTrace();
         //}
 
+        String sound = gloval.getGv_travel_current_lite().getSound().toString();
+        Log.d("NOTIFICATE", sound);
+
+
         if(gloval.getGv_travel_current_lite().getSound() != null) {
-            switch (gloval.getGv_travel_current().getSound()) {
+            switch (sound) {
                 case "nuevareserva":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevareserva);//Here is FILE_NAME is the name of file that you want to play
                 case "nuevoviaje":

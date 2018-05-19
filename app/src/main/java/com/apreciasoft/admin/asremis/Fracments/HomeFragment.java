@@ -1505,7 +1505,7 @@ public class HomeFragment extends Fragment implements
         }
 
         private Bitmap descargarImagen (String imageHttpAddress){
-            URL imageUrl = null;
+            URL imageUrl;
             Bitmap imagen = null;
             try{
                 imageUrl = new URL(imageHttpAddress);
