@@ -450,8 +450,7 @@ public class HomeClientActivity extends AppCompatActivity
 
 
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
 
 
         int PARAM_35 =  Integer.parseInt(gloval.getGv_param().get(34).getValue());// PUEDE SOLICITAR  RESERVA
@@ -504,6 +503,12 @@ public class HomeClientActivity extends AppCompatActivity
             }
         });
 
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager key = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            key.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
 
     }

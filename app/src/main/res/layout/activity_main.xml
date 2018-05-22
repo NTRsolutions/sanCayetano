@@ -16,7 +16,7 @@
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo"
-        android:alpha=".65" />
+        android:alpha=".85" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:id="@+id/img_face_client"
             android:layout_width="130dp"
             android:layout_gravity="center"
-            android:layout_margin="30dp"
+            android:layout_margin="50dp"
             android:layout_height="130dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
@@ -82,7 +82,7 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_alignEnd="@+id/pass_text"
             android:layout_alignLeft="@+id/pass_text"
             android:layout_alignRight="@+id/pass_text"
@@ -90,7 +90,7 @@
             android:layout_below="@+id/pass_text"
             android:layout_marginTop="41dp"
             android:layout_weight="0.04"
-            android:height="60dp"
+            android:background="@drawable/buton_round_primary"
             android:text="Iniciar"
             android:textColor="@color/whithe"
             app:backgroundTint="@color/colorPrimary" />
@@ -99,17 +99,17 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_newacount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_alignEnd="@+id/pass_text"
             android:layout_alignLeft="@+id/pass_text"
             android:layout_alignRight="@+id/pass_text"
             android:layout_alignStart="@+id/pass_text"
             android:layout_below="@+id/pass_text"
-            android:layout_marginTop="1dp"
-            android:height="60dp"
+            android:layout_marginTop="5dp"
             android:text="No tengo una Cuenta!"
             android:textColor="@android:color/holo_red_light"
-            app:backgroundTint="@color/cast_expanded_controller_progress_text_color" />
+            android:background="@drawable/buton_round_withe"
+ />
 
 
     </LinearLayout>

@@ -131,19 +131,23 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         Log.d("NOTIFICATE", sound);
 
 
-        if(gloval.getGv_travel_current_lite().getSound() != null) {
+        if(sound != null) {
             switch (sound) {
                 case "nuevareserva":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevareserva);//Here is FILE_NAME is the name of file that you want to play
+                    break;
                 case "nuevoviaje":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.nuevoviaje);//Here is FILE_NAME is the name of file that you want to play
+                    break;
                 case "remis":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis);//Here is FILE_NAME is the name of file that you want to play
+                    break;
                 case "remis2":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis2);//Here is FILE_NAME is the name of file that you want to play
+                    break;
                 case "tienesreserva":
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tienesreserva);//Here is FILE_NAME is the name of file that you want to play
-
+                    break;
                 default:
                     soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.remis);//Here is FILE_NAME is the name of file that you want to play
 
@@ -156,9 +160,9 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
         Log.d("Notificación", String.valueOf(soundUri));
 
 
-        if(gloval.getGv_travel_current() != null)
+        if(gloval.getGv_travel_current_lite() != null)
         {
-           if(gloval.getGv_travel_current().getNameOrigin() != null) {
+           if(gloval.getGv_travel_current_lite().getNameOrigin() != null) {
 
                 Log.d("Notificación", String.valueOf("FINAL"));
 
@@ -171,7 +175,7 @@ public class FirebaseNotifactionSevices extends FirebaseMessagingService {
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                         .setContentTitle(title)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText(gloval.getGv_travel_current().getNameOrigin())
+                        .setContentText(gloval.getGv_travel_current_lite().getNameOrigin())
                         .setAutoCancel(true)
                         .setSound(soundUri)
                         .setContentIntent(pendingIntent);

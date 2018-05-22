@@ -1073,14 +1073,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Log.d("BroadcastReceiver 1-", String.valueOf(currentTravel));
+            Log.d("BroadcastReceiver 1-", String.valueOf(gloval.getGv_travel_current_lite()));
 
 
-            if(currentTravel == null){
+           /* if(gloval.getGv_travel_current_lite() == null){
                 getCurrentTravelByIdDriver();
             }else {
-                controlVieTravel();
-            }
+                if(gloval.getGv_travel_current_lite().getIdSatatusTravel() == 0){
+                    getCurrentTravelByIdDriver();
+                }else {
+                    controlVieTravel();
+
+                }
+            }*/
+
+            getCurrentTravelByIdDriver();
 
             Log.d("BroadcastReceiver 2-", String.valueOf(ws));
 
