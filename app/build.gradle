@@ -1,13 +1,14 @@
+
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
-        applicationId 'com.apreciasoft.admin.asremis'
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 1
+        applicationId 'com.apreciasoft.admin.SanCayetano'
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 4
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -23,7 +24,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            debuggable true
+            debuggable false
         }
     }
     dexOptions
@@ -34,57 +35,58 @@ android {
             }
     productFlavors {
     }
+
+
 }
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.android.support:cardview-v7:25.0.+'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.0.0'
+    implementation 'com.android.support:cardview-v7:27.0.+'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.google.code.gson:gson:2.6.2'
 
     def RETROFIT_VERSION = "2.1.0"
-    compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-    compile "com.squareup.retrofit2:converter-scalars:${RETROFIT_VERSION}"
-    compile("com.squareup.retrofit2:converter-simplexml:${RETROFIT_VERSION}") {
+    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    implementation "com.squareup.retrofit2:converter-scalars:${RETROFIT_VERSION}"
+    implementation("com.squareup.retrofit2:converter-simplexml:${RETROFIT_VERSION}") {
         exclude group: 'xpp3', module: 'xpp3'
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'stax', module: 'stax'
     }
 
     def OKHTTP_VERSION = "3.4.2"
-    compile "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
-    compile "com.squareup.okhttp3:logging-interceptor:${OKHTTP_VERSION}"
+    implementation "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${OKHTTP_VERSION}"
 
-
-    compile 'com.google.android.gms:play-services:10.0.1'
-    compile 'org.java-websocket:Java-WebSocket:1.3.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.google.firebase:firebase-messaging:9.4.0'
-    compile 'com.google.firebase:firebase-database:9.4.0'
-    compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.mcxiaoke.volley:library:1.0.0'
+    implementation 'com.google.android.gms:play-services:11.2.0'
+    implementation 'org.java-websocket:Java-WebSocket:1.3.0'
+    implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.google.firebase:firebase-messaging:10.2.1'
+    implementation 'com.google.firebase:firebase-database:9.4.0'
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'com.mcxiaoke.volley:library:1.0.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
-    compile 'com.github.clans:fab:1.6.4'
-    compile 'com.sothree.slidinguppanel:library:3.3.1'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.sothree.slidinguppanel:library:3.3.1'
     // animacion panel
-    compile 'com.mercadopago:sdk:3.8.0'
-    compile 'de.hdodenhof:circleimageview:2.1.0'// IMG CIRCLE
-    compile 'com.ernestoyaquello.stepperform:vertical-stepper-form:0.9.9'
-    compile('io.socket:socket.io-client:0.8.3') {
+    implementation 'com.mercadopago:sdk:3.8.0'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'// IMG CIRCLE
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:0.9.9'
+    implementation('io.socket:socket.io-client:0.8.3') {
         exclude group: 'org.json', module: 'json'
     }
-    compile 'com.kofigyan.stateprogressbar:stateprogressbar:0.0.6'
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:0.0.6'
 
 
 
@@ -92,11 +94,3 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
-
-
-
-
-
-
-
-

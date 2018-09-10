@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.apreciasoft.admin.asremis.Activity.HomeActivity">
+    tools:context="com.apreciasoft.admin.SanCayetano.Activity.HomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                 android:textSize="20dp"
                 android:text="RECHAZAR"
                 app:layout_anchorGravity="bottom|left"
-                android:drawableLeft="@drawable/ic_close_black_24dp" />
+                android:drawableLeft="@drawable/ic_phonelink_erase_black_24dp" />
 
 
 
@@ -93,12 +93,14 @@
     <TextView
 
         android:id="@+id/textTiempo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:textSize="20sp"
+        android:layout_marginLeft="-20dp"
+        android:paddingLeft="10dp"
         android:layout_marginTop="180dp"
-        android:background="@drawable/rounded_textview"
-        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_border_textview_time"
+        android:textColor="@color/succes"
         android:gravity="center" />
 
 
@@ -123,15 +125,15 @@
                 android:id="@+id/btn_iniTimeSlep"
                 android:padding="4dp"
                 android:layout_margin="5dp"
-                android:background="@drawable/buton_round_dark"
+                android:background="@drawable/buton_round_gray"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textColor="@color/whithe"
                 android:textStyle="bold"
-                android:textSize="15dp"
-                android:text="Espera"
+                android:textSize="13dp"
+                android:text="Esperar"
                 app:layout_anchorGravity="bottom|left"
                 android:drawableLeft="@drawable/ic_timer_black_40dp" />
 
@@ -188,5 +190,64 @@
     <include
         android:id="@+id/payment"
         layout="@layout/payment_layout" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/material_design_android_floating_action_menu_chofer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="11dp"
+        app:menu_animationDelayPerItem="55"
+        app:menu_backgroundColor="@android:color/transparent"
+        app:menu_buttonSpacing="0dp"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorPrimary"
+        app:menu_colorRipple="#fff"
+        app:menu_fab_label="Nuevo viaje"
+        app:menu_fab_size="normal"
+        app:menu_labels_colorPressed="#fff"
+        app:menu_labels_colorRipple="#fff"
+        app:menu_labels_cornerRadius="3dp"
+        app:menu_labels_ellipsize="none"
+        app:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+        app:menu_labels_margin="0dp"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_padding="8dp"
+        app:menu_labels_position="left"
+        app:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+        app:menu_labels_showShadow="false"
+        app:menu_labels_singleLine="false"
+        app:menu_labels_textColor="#f2f1f1"
+        app:menu_labels_textSize="15sp"
+        app:menu_openDirection="up"
+        app:menu_shadowColor="@color/colorPrimary"
+        app:menu_shadowRadius="0dp"
+        app:menu_shadowXOffset="0dp"
+        app:menu_shadowYOffset="0dp"
+        app:menu_showShadow="true"
+        tools:ignore="VectorDrawableCompat">
+
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/material_design_floating_action_menu_item_chofer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_record_voice_over_black_24dp"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDark"
+            app:fab_colorRipple="@color/colorAccent"
+            app:fab_size="normal"
+            app:fab_label="Viaje de Calle"
+            tools:ignore="VectorDrawableCompat" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+
+
 
 </android.support.design.widget.CoordinatorLayout>

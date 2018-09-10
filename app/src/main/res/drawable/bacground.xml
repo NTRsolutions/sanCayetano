@@ -4,12 +4,9 @@
     <item android:drawable="@drawable/fondo" />
 
     <item
+        android:gravity="center"
         android:width="200dp"
-        android:height="200dp"
-        android:left="95dp"
-        android:bottom="150dp"
-        android:top="150dp"
-        android:right="20dp">
+        android:height="200dp">
         <bitmap
 
             android:layout_gravity="center"

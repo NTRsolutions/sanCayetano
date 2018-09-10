@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">AsRemis</string>
+    <string name="app_name">San Cayetano</string>
     <string name="title_document">DNI</string>
-
+    <string name="title_serial_auto">DOMINIO</string>
     <string name="title_activity_home"></string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

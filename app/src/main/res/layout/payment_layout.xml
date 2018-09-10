@@ -4,13 +4,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco"
+    android:background="@color/CLEARINPUTWHITE"
 
     android:weightSum="1">
 
         <ScrollView
             android:layout_width="fill_parent"
-
             android:layout_height="wrap_content"
             android:layout_weight="1" >
                 <LinearLayout android:layout_width="match_parent"
@@ -79,60 +78,122 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="5dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
+
+                        <android.support.v7.widget.CardView
+                            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/card_view"
+                            android:padding="3dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            card_view:cardCornerRadius="9dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
 
                         <RelativeLayout
                             android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0">
+                                    android:layout_weight="1">
 
-                                <ImageView
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                                <TextView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="20dp"
+                                                    android:textAlignment="center"
+                                                    android:text="IDA"/>
+                                        <TextView
+                                            android:id="@+id/distance_txt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:padding="0dp"
-                                    android:tint="@color/mpsdk_argencard"
-                                    app:srcCompat="@drawable/ic_directions_black_24dp"
+                                            android:layout_alignParentLeft="true"
+                                            android:layout_alignParentStart="true"
                                     android:layout_alignParentTop="true"
-                                    android:layout_centerHorizontal="true" />
+                                            android:ems="25"
+                                            android:layout_marginTop="-7dp"
+                                            android:hint=""
+                                            android:text="0KM"
+                                            android:inputType="numberDecimal"
+                                            android:minHeight="50dp"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/mpsdk_review_description_text"
+                                            android:textSize="35dp" />
+
+                                        </LinearLayout>
 
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="70dp"
+                                    android:layout_width="50dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="20dp"
+                                            android:textAlignment="center"
+                                            android:text="VUELTA"/>
 
                                 <TextView
-                                    android:id="@+id/distance_txt"
+                                            android:id="@+id/distance_return_txt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
                                     android:layout_alignParentTop="true"
                                     android:ems="25"
-                                    android:paddingTop="10dp"
+                                            android:layout_marginTop="-7dp"
                                     android:hint=""
-                                    android:text=""
-                                    android:background="@drawable/rounded_border_textview"
+                                            android:text="0KM"
                                     android:inputType="numberDecimal"
                                     android:minHeight="50dp"
                                     android:textAlignment="center"
                                     android:textColor="@color/mpsdk_review_description_text"
-                                    android:textSize="30dp" />
-
+                                            android:textSize="35dp" />
+                                        </LinearLayout>
                         </RelativeLayout>
+                </LinearLayout>
+
+
+                        </android.support.v7.widget.CardView>
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
+                            android:layout_height="70dp"
+                            android:layout_margin="5dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view2"
+                                    android:padding="3dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    card_view:cardCornerRadius="9dp">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="horizontal">
+
 
                         <RelativeLayout
                             android:layout_width="50dp"
@@ -144,6 +205,7 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:padding="0dp"
+                                                            android:layout_marginTop="15dp"
                                     android:tint="@color/mpsdk_argencard"
                                     app:srcCompat="@drawable/ic_access_time_black_40dp"
                                     android:layout_alignParentTop="true"
@@ -152,38 +214,62 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
                             android:layout_weight="1">
 
+
+
+                                                        <TextView
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="20dp"
+                                                            android:textAlignment="center"
+                                                            android:text="Tiempo de espera"/>
                                 <TextView
                                     android:id="@+id/txtTimeslep"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentBottom="true"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
-
-
-                                    android:ems="20"
+                                                            android:layout_alignParentTop="true"
+                                                            android:ems="25"
+                                                            android:paddingTop="15dp"
                                     android:hint=""
+                                                            android:text="00:00:00"
                                     android:inputType="numberDecimal"
                                     android:minHeight="50dp"
-                                    android:background="@drawable/rounded_border_textview"
                                     android:textAlignment="center"
-                                    android:paddingTop="10dp"
                                     android:textColor="@color/mpsdk_review_description_text"
                                     android:textSize="30dp" />
 
                         </RelativeLayout>
                 </LinearLayout>
 
+
+                                </android.support.v7.widget.CardView>
+
+                        </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:layout_margin="10dp"
+                            android:layout_height="70dp"
+                            android:layout_margin="5dp"
                             android:baselineAligned="false"
                             android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view3"
+                                    android:padding="3dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    card_view:cardCornerRadius="9dp">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="horizontal">
+
 
                                 <RelativeLayout
                                     android:layout_width="50dp"
@@ -195,6 +281,7 @@
                                             android:layout_height="wrap_content"
                                             android:gravity="center"
                                             android:padding="0dp"
+                                                            android:layout_marginTop="15dp"
                                             android:tint="@color/mpsdk_argencard"
                                             app:srcCompat="@drawable/ic_airport_shuttle_black_40dp"
                                             android:layout_alignParentTop="true"
@@ -203,40 +290,65 @@
                                 </RelativeLayout>
 
                                 <RelativeLayout
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
                                     android:layout_weight="1">
+
+
+
+                                                        <TextView
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="20dp"
+                                                            android:textAlignment="center"
+                                                            android:text="Flete"/>
+
+
 
                                         <TextView
                                             android:id="@+id/amount_flet_txt"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_alignParentBottom="true"
                                             android:layout_alignParentLeft="true"
                                             android:layout_alignParentStart="true"
-
-
-                                            android:ems="20"
+                                                            android:layout_alignParentTop="true"
+                                                            android:ems="25"
+                                                            android:paddingTop="7dp"
                                             android:hint=""
+                                                            android:text="0"
                                             android:inputType="numberDecimal"
                                             android:minHeight="50dp"
-                                            android:background="@drawable/rounded_border_textview"
                                             android:textAlignment="center"
-                                            android:paddingTop="10dp"
                                             android:textColor="@color/mpsdk_review_description_text"
-                                            android:textSize="30dp" />
-
+                                                            android:textSize="45dp" />
 
                                 </RelativeLayout>
                         </LinearLayout>
 
 
+                                </android.support.v7.widget.CardView>
+
+                        </LinearLayout>
+
                         <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
+                            android:layout_height="70dp"
+                            android:layout_margin="5dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view4"
+                                    android:padding="3dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    card_view:cardCornerRadius="9dp">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="horizontal">
+
 
                         <RelativeLayout
                             android:layout_width="50dp"
@@ -248,6 +360,7 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:padding="0dp"
+                                                            android:layout_marginTop="15dp"
                                     android:tint="@color/mpsdk_argencard"
                                     app:srcCompat="@drawable/ic_local_parking_black_40dp"
                                     android:layout_alignParentTop="true"
@@ -256,36 +369,63 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
                             android:layout_weight="1">
 
+
+
+                                                        <TextView
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="20dp"
+                                                            android:textAlignment="center"
+                                                            android:text="Peaje"/>
+
                                 <EditText
+                                                            android:layout_margin="10dp"
                                     android:id="@+id/peajes_txt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                                            android:layout_alignParentBottom="true"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
-                                    android:layout_alignParentTop="true"
                                     android:ems="20"
-                                    android:hint=" Peaje"
+                                                            android:text=""
+                                                            android:hint=""
                                     android:inputType="numberDecimal"
-                                    android:minHeight="50dp"
                                     android:background="@drawable/rounded_border_textview"
                                     android:textAlignment="center"
-                                    android:paddingTop="0dp"
                                     android:textColor="@color/mpsdk_review_description_text"
                                     android:textSize="30dp" />
 
                         </RelativeLayout>
                 </LinearLayout>
 
+
+                                </android.support.v7.widget.CardView>
+
+                        </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
+                            android:layout_height="70dp"
+                            android:layout_margin="5dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view6"
+                                    android:padding="3dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    card_view:cardCornerRadius="9dp">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:orientation="horizontal">
+
 
                         <RelativeLayout
                             android:layout_width="50dp"
@@ -297,6 +437,7 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:padding="0dp"
+                                                            android:layout_marginTop="15dp"
                                     android:tint="@color/mpsdk_argencard"
                                     app:srcCompat="@drawable/ic_directions_car_black_40dp"
                                     android:layout_alignParentTop="true"
@@ -305,11 +446,20 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
                             android:layout_weight="1">
 
+
+
+                                                        <TextView
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="20dp"
+                                                            android:textAlignment="center"
+                                                            android:text="Estacionamiento"/>
+
                                 <EditText
+                                                            android:layout_margin="10dp"
                                     android:id="@+id/parkin_txt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -317,17 +467,24 @@
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
                                     android:ems="20"
-                                    android:hint=" Estacionamiento"
+                                                            android:text=""
+                                                            android:hint=""
                                     android:inputType="numberDecimal"
                                     android:background="@drawable/rounded_border_textview"
                                     android:textAlignment="center"
-                                    android:paddingTop="0dp"
                                     android:textColor="@color/mpsdk_review_description_text"
-                                    android:textSize="30dp"
-                                    android:layout_alignParentTop="true" />
+                                                            android:textSize="30dp" />
 
                         </RelativeLayout>
                 </LinearLayout>
+
+
+                                </android.support.v7.widget.CardView>
+
+                        </LinearLayout>
+
+
+
 
 
 

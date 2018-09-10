@@ -65,7 +65,7 @@
         android:ems="10"
         android:inputType="text"
         android:text=""
-        android:hint="@string/title_document"
+        android:hint="@string/title_serial_auto"
         android:layout_weight="0.08" />
 
 
