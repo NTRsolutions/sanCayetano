@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.apreciasoft.admin.SanCayetano">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.apreciasoft.mobile.SanCayetano">
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -20,13 +21,14 @@
 
 
     <application
-        android:name="com.apreciasoft.admin.SanCayetano.Util.GlovalVar"
+        android:name="com.apreciasoft.mobile.SanCayetano.Util.GlovalVar"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.apreciasoft.admin.SanCayetano.Activity.indexActivity"
+            android:name="com.apreciasoft.mobile.SanCayetano.Activity.indexActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,32 +37,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.apreciasoft.admin.SanCayetano.Activity.MainActivity" />
+            android:name="com.apreciasoft.mobile.SanCayetano.Activity.MainActivity" />
         <activity
-            android:name="com.apreciasoft.admin.SanCayetano.Activity.HomeActivity"
+            android:name="com.apreciasoft.mobile.SanCayetano.Activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.apreciasoft.admin.SanCayetano.Activity.HomeClientActivity"
+            android:name="com.apreciasoft.mobile.SanCayetano.Activity.HomeClientActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.PaymentCreditCar" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.activity_card" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.RegisterCliente" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.RegisterForm" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.NewFormDriver" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.NewFormClient" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Fracments.InfoDetailTravelAc" />
-        <activity android:name="com.apreciasoft.admin.SanCayetano.Util.Signature" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.PaymentCreditCar" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.activity_card" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.RegisterCliente" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.RegisterForm" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.NewFormDriver" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.NewFormClient" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Fracments.InfoDetailTravelAc" />
+        <activity android:name="com.apreciasoft.mobile.SanCayetano.Util.Signature" />
 
-        <service android:name="com.apreciasoft.admin.SanCayetano.Util.FirebaseNotifactionSevices">
+        <service android:name="com.apreciasoft.mobile.SanCayetano.Util.FirebaseNotifactionSevices">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.apreciasoft.admin.SanCayetano.Util.FirebaseInstanceIdSevices">
+        <service android:name="com.apreciasoft.mobile.SanCayetano.Util.FirebaseInstanceIdSevices">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -74,15 +76,19 @@
             android:value="AIzaSyApZ1embZ2bhcI4Ir8NepmyjTfNvGvjUas" />
 
         <service
-            android:name="com.apreciasoft.admin.SanCayetano.Util.FloatingWidgetService"
+            android:name="com.apreciasoft.mobile.SanCayetano.Util.FloatingWidgetService"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name=".Util.ServicesSleep"
+            android:name="com.apreciasoft.mobile.SanCayetano.Util.ServicesSleep"
             android:enabled="true"
             android:exported="false" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="49fba1b63755e1ea4cbc0d53acc6b33857d405f1"
+            />
 
     </application>
 
